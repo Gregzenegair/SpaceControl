@@ -16,5 +16,11 @@ import org.andengine.entity.primitive.Rectangle;
 	        sprite.setPosition(mCamera.getWidth() / 2 - sprite.getWidth() / 2,
 	            mCamera.getHeight() - sprite.getHeight() - 10);
 	    }
+
+
+		public void rotateTower(int fingerCoordX, int fingerCoordY) {
+			// TODO Auto-generated method stub
+			
+		}
 	
 }

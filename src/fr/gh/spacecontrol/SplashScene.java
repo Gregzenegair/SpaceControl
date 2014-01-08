@@ -1,5 +1,7 @@
 package fr.gh.spacecontrol;
 
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -10,7 +12,7 @@ public class SplashScene extends Scene {
 	BaseActivity activity;
 	
 	public SplashScene() {
-		setBackground(new Background(0.09804f, 0.6274f, 0));
+		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 		activity = BaseActivity.getSharedInstance();
 		Text title1 = new Text(0, 0, activity.mFont, activity.getString(R.string.title_1), activity.getVertexBufferObjectManager());
 		Text title2 = new Text(0, 0, activity.mFont, activity.getString(R.string.title_2), activity.getVertexBufferObjectManager());
@@ -24,7 +26,17 @@ public class SplashScene extends Scene {
 		title1.registerEntityModifier(new MoveXModifier(1, title1.getX(), activity.mCamera.getWidth() / 2 - title1.getWidth()));
 		title2.registerEntityModifier(new MoveXModifier(1, title2.getX(), activity.mCamera.getWidth() / 2));
 
+		loadResources();
 		
 	}
 
+	private void loadResources(){
+	DelayModifier dMod = new DelayModifier(3){
+	    @Override
+	    protected void onModifierFinished(IEntity pItem) {
+	        activity.setCurrentScene(new MainMenuScene());
+	    }
+	};
+	registerEntityModifier(dMod);
+	}
 }

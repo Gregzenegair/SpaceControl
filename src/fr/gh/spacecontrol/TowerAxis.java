@@ -1,10 +1,10 @@
 package fr.gh.spacecontrol;
 
-public class TowerAxe {
+public class TowerAxis {
 
 	private float startingY;
 
-	TowerAxe(float x, float y) {
+	TowerAxis(float x, float y) {
 		startingY = y;
 	}
 

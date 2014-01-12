@@ -1,5 +1,8 @@
 package fr.gh.spacecontrol;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.andengine.engine.handler.IUpdateHandler;
 
 public class GameLoopUpdateHandler implements IUpdateHandler {
@@ -12,6 +15,14 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 			if (ShootingDelay.getSharedInstance().checkValidity())
 				scene.tower1.shoot();
 		}
+
+		Iterator<Enemy> itE = scene.enemyList.iterator();
+
+		while (itE.hasNext()) {
+			Enemy e = itE.next();
+			e.move();
+		}
+
 	}
 
 	@Override

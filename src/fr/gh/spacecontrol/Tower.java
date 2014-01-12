@@ -1,10 +1,15 @@
 package fr.gh.spacecontrol;
 
+import java.io.IOException;
+import java.util.LinkedList;
+
+import org.andengine.audio.sound.Sound;
+import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.modifier.MoveXModifier;
-import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 
 public class Tower {
 	public Rectangle sprite;
@@ -17,27 +22,39 @@ public class Tower {
 	private int height;
 	private float startingAngle;
 	private float angle;
+	private boolean facingLeft;
 	private Camera mCamera;
 
-	public Tower(int width, int height) {
+	public Tower(int width, int height, LinkedList<Tower> towerList) {
+
 		sprite = new Rectangle(0, 0, width, height, BaseActivity
 				.getSharedInstance().getVertexBufferObjectManager());
 		spriteBase = new Rectangle(0, 0, width * 4, height - 8, BaseActivity
 				.getSharedInstance().getVertexBufferObjectManager());
 		this.width = width;
 		this.height = height;
-
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
+		this.facingLeft = false;
+		if (towerList.size() >= 2) {
+			this.facingLeft = true;
+		}
+		towerList.add(this);
 	}
 
 	public void setPosition(int posX, int posY) {
+
 		sprite.setPosition(posX, posY);
 		sprite.setRotationCenter(width / 2, height);
-		spriteBase.setPosition(posX / 2, posY + height - 6);
+		spriteBase.setPosition(posX - width / 2, posY + height - 6);
 		this.posX = posX;
 		this.posY = posY;
 		this.rotationCenterX = posX + height;
 		this.rotationCenterY = posY + width / 2;
+
+		if (this.facingLeft) {
+			spriteBase.setPosition(posX - width * 2.5f, posY + height - 6);
+		}
+
 	}
 
 	public void rotateTower(float inTouch, float startingTouch) {
@@ -56,8 +73,7 @@ public class Tower {
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 
-		float randAngle = (float) (angle + Math.round(Math.random()) * 1 - Math
-				.round(Math.random()) * 1);
+		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
 		b.sprite.setPosition(
@@ -83,6 +99,11 @@ public class Tower {
 		b.sprite.registerEntityModifier(movMod);
 		scene.bulletCount++;
 
+		int soundRandom = RandomTool.randInt(0, 3);
+		if (soundRandom == 0 || soundRandom == 1 || soundRandom == 2)
+			scene.soundTowerGun.play();
+		else
+			scene.soundTowerGunb.play();
 	}
 
 	public float getAngle() {

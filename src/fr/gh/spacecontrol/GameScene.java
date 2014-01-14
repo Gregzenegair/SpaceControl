@@ -31,10 +31,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	public LinkedList<Tower> towerList;
 	public LinkedList<Bullet> bulletList;
 	public LinkedList<Enemy> enemyList;
-
+	public LinkedList<Wreckage> wreckageList;
+	
 	private BaseActivity activity;
 	private Text text1;
 	public int bulletCount;
+	
 
 	public GameScene() {
 		soundTowerGun = BaseActivity.getSharedInstance().soundTowerGun;
@@ -48,6 +50,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		towerList = new LinkedList<Tower>();
 		bulletList = new LinkedList<Bullet>();
 		enemyList = new LinkedList<Enemy>();
+		wreckageList = new LinkedList<Wreckage>();
 
 		this.buildTowers();
 

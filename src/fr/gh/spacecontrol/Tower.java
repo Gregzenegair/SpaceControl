@@ -27,10 +27,9 @@ public class Tower {
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
 
-		sprite = new Rectangle(0, 0, width, height, BaseActivity
-				.getSharedInstance().getVertexBufferObjectManager());
-		spriteBase = new Rectangle(0, 0, width * 4, height - 8, BaseActivity
-				.getSharedInstance().getVertexBufferObjectManager());
+		sprite = new Rectangle(0, 0, width, height, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		spriteBase = new Rectangle(0, 0, width * 4, height - 8, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
 		this.width = width;
 		this.height = height;
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
@@ -76,24 +75,16 @@ public class Tower {
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
-		b.sprite.setPosition(
-				rotationCenterX
-						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * height)
-						+ width / 2 - height - 1, rotationCenterY
-						+ (float) Math.sin(Math.toRadians(270 - randAngle))
-						* height - width / 2 + height - 1);
+		b.sprite.setPosition(rotationCenterX - ((float) Math.cos(Math.toRadians(270 - randAngle)) * height) + width / 2
+				- height - 1, rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * height - width / 2
+				+ height - 1);
 
 		b.sprite.setRotation(randAngle);
-		MoveModifier movMod = new MoveModifier(
-				1.5f,
-				b.sprite.getX(),
-				rotationCenterX
-						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000)
-						+ width / 2 - height, b.sprite.getY(), rotationCenterY
-						+ (float) Math.sin(Math.toRadians(270 - randAngle))
-						* 1000 - width / 2 + height);
+		MoveModifier movMod = new MoveModifier(1.5f, b.sprite.getX(), rotationCenterX
+				- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000) + width / 2 - height, b.sprite.getY(),
+				rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000 - width / 2 + height);
+		
 		b.sprite.setVisible(true);
-		// b.sprite.detachSelf();
 		scene.attachChild(b.sprite);
 		scene.bulletList.add(b);
 		b.sprite.registerEntityModifier(movMod);

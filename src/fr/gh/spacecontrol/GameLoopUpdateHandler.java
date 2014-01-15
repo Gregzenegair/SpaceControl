@@ -9,18 +9,23 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
-		((GameScene) BaseActivity.getSharedInstance().mCurrentScene).cleaner();
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+		scene.cleaner();
 		if (scene.shoot) {
-			if (ShootingDelay.getSharedInstance().checkValidity())
-				scene.tower1.shoot();
+			if (ShootingDelay.getSharedInstance().checkValidity()) {
+				for (Tower tower : scene.towerList) {
+					if(tower.isActive())
+						tower.shoot();
+				}
+			}
+
 		}
 
 		Iterator<Enemy> itE = scene.enemyList.iterator();
 
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			e.move();
+			e.moveCenter();
 		}
 
 	}

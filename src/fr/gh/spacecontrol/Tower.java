@@ -13,7 +13,6 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegion
 
 public class Tower {
 	public Rectangle sprite;
-	public Rectangle spriteBase;
 	private int posX;
 	private int posY;
 	private int rotationCenterX;
@@ -23,13 +22,12 @@ public class Tower {
 	private float startingAngle;
 	private float angle;
 	private boolean facingLeft;
+	private boolean active;
 	private Camera mCamera;
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
 
 		sprite = new Rectangle(0, 0, width, height, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		spriteBase = new Rectangle(0, 0, width * 4, height - 8, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
 		this.width = width;
 		this.height = height;
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
@@ -44,24 +42,28 @@ public class Tower {
 
 		sprite.setPosition(posX, posY);
 		sprite.setRotationCenter(width / 2, height);
-		spriteBase.setPosition(posX - width / 2, posY + height - 6);
 		this.posX = posX;
 		this.posY = posY;
 		this.rotationCenterX = posX + height;
 		this.rotationCenterY = posY + width / 2;
 
-		if (this.facingLeft) {
-			spriteBase.setPosition(posX - width * 2.5f, posY + height - 6);
-		}
-
 	}
 
 	public void rotateTower(float inTouch, float startingTouch) {
-		angle = startingAngle + (inTouch - startingTouch) / 2;
-		if (angle < 0)
-			angle = 0;
-		if (angle > 90)
-			angle = 90;
+		if (this.facingLeft) {
+			angle = startingAngle - (inTouch - startingTouch) / 2;
+			if (angle < -90)
+				angle = -90;
+			if (angle > 0)
+				angle = 0;
+		} else {
+			angle = startingAngle + (inTouch - startingTouch) / 2;
+			if (angle < 0)
+				angle = 0;
+			if (angle > 90)
+				angle = 90;
+		}
+		
 
 		sprite.setRotation(angle);
 		// System.out.println(sprite.getRotationCenterY());
@@ -127,6 +129,22 @@ public class Tower {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
+	public boolean isFacingLeft() {
+		return facingLeft;
+	}
+
+	public void setFacingLeft(boolean facingLeft) {
+		this.facingLeft = facingLeft;
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.TimerTask;
 public class ShootingDelay {
 	private boolean valid;
 	private Timer timer;
-	private long delay = 40;
+	private long delay = 60;
 	private static ShootingDelay instance = null;
 
 	public static ShootingDelay getSharedInstance() {

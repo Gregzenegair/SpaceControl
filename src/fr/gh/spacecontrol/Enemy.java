@@ -19,8 +19,7 @@ public class Enemy {
 
 	public Enemy() {
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
-		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		sprite.setColor(0.06f, 0.004f, 0.004f);
 		init();
 	}
@@ -29,32 +28,37 @@ public class Enemy {
 	// the EnemyPool class
 	public void init() {
 		hp = MAX_HEALTH;
-		sprite.setPosition(
-				(RandomTool.randInt(100, (int) mCamera.getWidth() - 100)),
-				RandomTool.randInt(-300, 0));
+		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
 
-		this.finalPosX = RandomTool
-				.randInt(100, (int) mCamera.getWidth() - 100);
+		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
 		this.finalPosY = RandomTool.randInt(0, 100);
 
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10,
-				sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 	}
 
 	public void move() {
 		if ((int) sprite.getX() == this.finalPosX) {
 
 			int speed = RandomTool.randInt(2, 4);
-			this.finalPosX = RandomTool.randInt(50,
-					(int) mCamera.getWidth() - 50);
+			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
 			this.finalPosY = RandomTool.randInt(0, 500);
 
 			if (this.moveModifier != null)
 				sprite.unregisterEntityModifier(this.moveModifier);
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(
-					speed, sprite.getX(), this.finalPosX, sprite.getY(),
-					this.finalPosY));
+			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
+					sprite.getY(), this.finalPosY));
 		}
+	}
+
+	public void moveCenter() {
+		this.finalPosX = (int) mCamera.getWidth() / 2 - 15;
+		this.finalPosY = (int) mCamera.getHeight()/2;
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 	}
 
 	public void clean() {
@@ -64,7 +68,7 @@ public class Enemy {
 
 	// method for applying hit and checking if enemy died or not
 	// returns false if enemy died
-	public boolean gotHit() {
+	public boolean gotHitnDestroyed() {
 		synchronized (this) {
 			hp--;
 			if (hp <= 0)

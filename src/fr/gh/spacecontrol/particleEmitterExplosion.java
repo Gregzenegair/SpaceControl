@@ -69,25 +69,27 @@ public final class particleEmitterExplosion {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 		Camera mCamera = BaseActivity.getSharedInstance().mCamera;
 		int mTimePart = 2;
-		int mReveredRotation = (int) rotation - 90;
+		int mReveredRotation = (int) (rotation -90+ rotation / 2);
 
 		final Wreckage wreckage = WreckagePool.sharedWreckagePool().obtainPoolItem();
 		wreckage.sprite.setPosition(posX, posY);
 
 		wreckage.sprite.setRotation(mReveredRotation);
 		MoveModifier movMod = new MoveModifier(0.2f, posX, posX
-				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 20), posY, posY
-				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 20);
+				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 10), posY, posY
+				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 10);
 
-		final MoveModifier movMod2 = new MoveModifier(2.2f, wreckage.sprite.getX(), wreckage.sprite.getX()
-				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 4), wreckage.sprite.getY(), mCamera.getHeight());
+		final MoveModifier movMod2 = new MoveModifier(2.2f, posX
+				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 20), wreckage.sprite.getX()
+				+ ((float) Math.cos(Math.toRadians(mReveredRotation)) * 4), posY
+				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 20, mCamera.getHeight());
 
 		final RotationModifier rotMod = new RotationModifier(3.0f, mReveredRotation, mReveredRotation + 135);
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
 		wreckage.sprite.setVisible(true);
 		scene.attachChild(wreckage.sprite);
 		scene.wreckageList.add(wreckage);
-		
+
 		wreckage.sprite.registerEntityModifier(movMod);
 		wreckage.sprite.registerEntityModifier(alphaMod);
 

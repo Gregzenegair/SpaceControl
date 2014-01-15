@@ -17,9 +17,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	private Camera mCamera;
 	public Tower tower1;
-	private Tower tower2;
-	private Tower tower3;
-	private Tower tower4;
+	public Tower tower2;
+	public Tower tower3;
+	public Tower tower4;
 	private TowerAxis towerAxe;
 	public boolean shoot;
 
@@ -32,13 +32,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	public LinkedList<Bullet> bulletList;
 	public LinkedList<Enemy> enemyList;
 	public LinkedList<Wreckage> wreckageList;
-	
+
 	private BaseActivity activity;
 	private Text text1;
 	public int bulletCount;
-	
 
+	//TODO trouver pourquoi ça crash si scene dans le constructeur de tower
+	//TODO trouver pourquoi ca crash si selection d'une tower
+	//TODO Degager TowerAxis au profit d'une méthode de tower 
+	
 	public GameScene() {
+		activity = BaseActivity.getSharedInstance();
+		
 		soundTowerGun = BaseActivity.getSharedInstance().soundTowerGun;
 		soundTowerGunb = BaseActivity.getSharedInstance().soundTowerGunb;
 		soundImpact = BaseActivity.getSharedInstance().soundImpact;
@@ -62,9 +67,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			this.enemyList.add(enemy);
 		}
 
-		activity = BaseActivity.getSharedInstance();
-		text1 = new Text(20, 20, activity.mFont, "Score : ",
-				activity.getVertexBufferObjectManager());
+		
+		text1 = new Text(20, 20, activity.mFont, "Score : ", activity.getVertexBufferObjectManager());
 		text1.setScale(0.5f);
 		attachChild(text1);
 
@@ -73,16 +77,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void buildTowers() {
-		int towerSizeX = 10;
+		int towerSizeX = 20;
 		int towerSizeY = 40;
 
 		tower1 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower1.setPosition(20, (int) mCamera.getHeight() - tower1.getHeight()
-				- 240);
+		tower1.setPosition(20, (int) mCamera.getHeight() - tower1.getHeight() - 240);
 
 		tower2 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower2.setPosition(20, (int) mCamera.getHeight() - tower2.getHeight()
-				* 2);
+		tower2.setPosition(20, (int) mCamera.getHeight() - tower2.getHeight() * 2);
 
 		tower3 = new Tower(towerSizeX, towerSizeY, towerList);
 		tower3.setPosition((int) mCamera.getWidth() - tower3.getWidth() - 20,
@@ -94,22 +96,37 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		for (Tower tower : towerList) {
 			attachChild(tower.sprite);
-			attachChild(tower.spriteBase);
+		}
+	}
+	
+	private void buildBunkers() {
+		for (Tower tower : towerList) {
+			
+			attachChild(tower.sprite);
 		}
 	}
 
 	@Override
-	public boolean onSceneTouchEvent(Scene pScene,
-			final TouchEvent pSceneTouchEvent) {
+	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
 		if (pSceneTouchEvent.isActionDown()) {
-			towerAxe = new TowerAxis(pSceneTouchEvent.getX(),
-					pSceneTouchEvent.getY());
-			tower1.setStartingAngle(tower1.getAngle());
-			this.shoot = true;
+
+			int towerTouched;
+			if ((towerTouched = isTouchingATower(pSceneTouchEvent.getX(), pSceneTouchEvent.getY())) >= 0) {
+				towerList.get(towerTouched).setActive(true);
+			} else {
+				towerAxe = new TowerAxis(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
+				for (Tower tower : towerList) {
+					if (tower.isActive())
+						tower.setStartingAngle(tower.getAngle());
+				}
+				this.shoot = true;
+			}
 		}
 		if (pSceneTouchEvent.isActionMove()) {
-			tower1.rotateTower(pSceneTouchEvent.getY(), towerAxe.getStartingY());
-
+			for (Tower tower : towerList) {
+				if (tower.isActive())
+					tower.rotateTower(pSceneTouchEvent.getY(), towerAxe.getStartingY());
+			}
 		}
 		if (pSceneTouchEvent.isActionUp()) {
 			towerAxe = null;
@@ -128,35 +145,27 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				Iterator<Bullet> it = bulletList.iterator();
 				while (it.hasNext()) {
 					Bullet b = it.next();
-					if (b.sprite.getY() <= -b.sprite.getHeight()
-							|| b.sprite.getX() <= -b.sprite.getHeight()
+					if (b.sprite.getY() <= -b.sprite.getHeight() || b.sprite.getX() <= -b.sprite.getHeight()
 
-							|| b.sprite.getX() >= -b.sprite.getHeight()
-									+ mCamera.getWidth()) {
+					|| b.sprite.getX() >= -b.sprite.getHeight() + mCamera.getWidth()) {
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 						continue;
 					}
 
 					if (b.sprite.collidesWith(e.sprite)) {
-						if (!e.gotHit()) {
+						if (!e.gotHitnDestroyed()) {
 							soundExplosion.play();
-							particleEmitterExplosion.createExplosion(
-									e.sprite.getX() + e.sprite.getWidth() / 2,
-									e.sprite.getY() + e.sprite.getHeight() / 2,
-									e.sprite.getParent(),
-									BaseActivity.getSharedInstance(), 30, 3, 3,
-									b.sprite.getRotation());
+							particleEmitterExplosion.createExplosion(e.sprite.getX() + e.sprite.getWidth() / 2,
+									e.sprite.getY() + e.sprite.getHeight() / 2, e.sprite.getParent(),
+									BaseActivity.getSharedInstance(), 30, 3, 3, b.sprite.getRotation());
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 							eIt.remove();
 						}
 						soundImpact.play();
-						particleEmitterExplosion.createBulletImpact(
-								b.sprite.getX() + b.sprite.getWidth() / 2,
-								b.sprite.getY() + b.sprite.getHeight() / 2,
-								b.sprite.getParent(),
-								BaseActivity.getSharedInstance(), Color.BLACK,
-								1, 2, 3, b.sprite.getRotation());
+						particleEmitterExplosion.createBulletImpact(b.sprite.getX() + b.sprite.getWidth() / 2,
+								b.sprite.getY() + b.sprite.getHeight() / 2, b.sprite.getParent(),
+								BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.sprite.getRotation());
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 					}
@@ -165,4 +174,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		}
 	}
 
+	private int isTouchingATower(float posX, float posY) {
+		for (Tower tower : towerList) {
+			if (posX < tower.getPosX() + tower.getWidth() && posX > tower.getPosX()) {
+				if (posY < tower.getPosY() + tower.getHeight() && posY > tower.getPosY()) {
+					return towerList.indexOf(tower);
+				}
+			}
+		}
+		return -1;
+	}
 }

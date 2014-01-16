@@ -25,7 +25,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			e.moveCenter();
+			e.move();
 		}
 
 	}

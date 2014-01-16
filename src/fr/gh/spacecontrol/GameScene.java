@@ -13,6 +13,8 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 
+import android.util.Log;
+
 public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	private Camera mCamera;
@@ -20,7 +22,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	public Tower tower2;
 	public Tower tower3;
 	public Tower tower4;
-	private TowerAxis towerAxe;
+	private float towerAxe;
 	public boolean shoot;
 
 	public Sound soundTowerGun;
@@ -37,13 +39,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private Text text1;
 	public int bulletCount;
 
-	//TODO trouver pourquoi ça crash si scene dans le constructeur de tower
-	//TODO trouver pourquoi ca crash si selection d'une tower
-	//TODO Degager TowerAxis au profit d'une méthode de tower 
-	
+	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de tower
+	// TODO ajouter le bunker
+
 	public GameScene() {
 		activity = BaseActivity.getSharedInstance();
-		
+
 		soundTowerGun = BaseActivity.getSharedInstance().soundTowerGun;
 		soundTowerGunb = BaseActivity.getSharedInstance().soundTowerGunb;
 		soundImpact = BaseActivity.getSharedInstance().soundImpact;
@@ -52,10 +53,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		mCamera = BaseActivity.getSharedInstance().mCamera;
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 
-		towerList = new LinkedList<Tower>();
-		bulletList = new LinkedList<Bullet>();
-		enemyList = new LinkedList<Enemy>();
-		wreckageList = new LinkedList<Wreckage>();
+		this.towerList = new LinkedList<Tower>();
+		this.bulletList = new LinkedList<Bullet>();
+		this.enemyList = new LinkedList<Enemy>();
+		this.wreckageList = new LinkedList<Wreckage>();
 
 		this.buildTowers();
 
@@ -67,7 +68,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			this.enemyList.add(enemy);
 		}
 
-		
 		text1 = new Text(20, 20, activity.mFont, "Score : ", activity.getVertexBufferObjectManager());
 		text1.setScale(0.5f);
 		attachChild(text1);
@@ -77,7 +77,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void buildTowers() {
-		int towerSizeX = 20;
+		int towerSizeX = 10;
 		int towerSizeY = 40;
 
 		tower1 = new Tower(towerSizeX, towerSizeY, towerList);
@@ -98,10 +98,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			attachChild(tower.sprite);
 		}
 	}
-	
+
 	private void buildBunkers() {
 		for (Tower tower : towerList) {
-			
 			attachChild(tower.sprite);
 		}
 	}
@@ -111,10 +110,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		if (pSceneTouchEvent.isActionDown()) {
 
 			int towerTouched;
-			if ((towerTouched = isTouchingATower(pSceneTouchEvent.getX(), pSceneTouchEvent.getY())) >= 0) {
-				towerList.get(towerTouched).setActive(true);
+			towerAxe = pSceneTouchEvent.getY();
+			if ((towerTouched = isTouchingATower((int) pSceneTouchEvent.getX(), (int) pSceneTouchEvent.getY())) >= 0) {
+				for (Tower tower : towerList) {
+					tower.setActive(false);
+				}
+				this.towerList.get(towerTouched).setActive(true);
 			} else {
-				towerAxe = new TowerAxis(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 				for (Tower tower : towerList) {
 					if (tower.isActive())
 						tower.setStartingAngle(tower.getAngle());
@@ -125,11 +127,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		if (pSceneTouchEvent.isActionMove()) {
 			for (Tower tower : towerList) {
 				if (tower.isActive())
-					tower.rotateTower(pSceneTouchEvent.getY(), towerAxe.getStartingY());
+					tower.rotateTower(pSceneTouchEvent.getY(), towerAxe);
 			}
 		}
 		if (pSceneTouchEvent.isActionUp()) {
-			towerAxe = null;
 			this.shoot = false;
 		}
 
@@ -174,7 +175,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		}
 	}
 
-	private int isTouchingATower(float posX, float posY) {
+	private int isTouchingATower(int posX, int posY) {
 		for (Tower tower : towerList) {
 			if (posX < tower.getPosX() + tower.getWidth() && posX > tower.getPosX()) {
 				if (posY < tower.getPosY() + tower.getHeight() && posY > tower.getPosY()) {
@@ -184,4 +185,5 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		}
 		return -1;
 	}
+
 }

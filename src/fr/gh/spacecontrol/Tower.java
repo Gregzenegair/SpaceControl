@@ -23,6 +23,7 @@ public class Tower {
 	private float angle;
 	private boolean facingLeft;
 	private boolean active;
+	private float towerAxis;
 	private Camera mCamera;
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
@@ -145,6 +146,14 @@ public class Tower {
 
 	public void setFacingLeft(boolean facingLeft) {
 		this.facingLeft = facingLeft;
+	}
+
+	public float getTowerAxis() {
+		return towerAxis;
+	}
+
+	public void setTowerAxis(float towerAxis) {
+		this.towerAxis = towerAxis;
 	}
 
 }

@@ -1,6 +1,7 @@
 package fr.gh.spacecontrol;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
@@ -79,12 +80,16 @@ public final class particleEmitterExplosion {
 				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 10), posY, posY
 				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 10);
 
-		final MoveModifier movMod2 = new MoveModifier(2.2f, posX
+		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.sprite);
+		wreckage.sprite.registerUpdateHandler(movMod2);
+		movMod2.setVelocity(0,100);
+		/*
+		final MoveModifier movMod2 = new MoveModifier(1.2f, posX
 				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 20), wreckage.sprite.getX()
 				+ ((float) Math.cos(Math.toRadians(mReveredRotation)) * 4), posY
 				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 20, mCamera.getHeight());
-
-		final RotationModifier rotMod = new RotationModifier(3.0f, mReveredRotation, mReveredRotation + 135);
+		 */
+		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
 		wreckage.sprite.setVisible(true);
 		scene.attachChild(wreckage.sprite);
@@ -96,7 +101,7 @@ public final class particleEmitterExplosion {
 		target.registerUpdateHandler(new TimerHandler(0.2f, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
-				wreckage.sprite.registerEntityModifier(movMod2);
+				//wreckage.sprite.registerEntityModifier(movMod2);
 				wreckage.sprite.registerEntityModifier(rotMod);
 				target.sortChildren();
 			}

@@ -4,29 +4,27 @@ import org.andengine.entity.primitive.Rectangle;
 
 public class Bunker {
 
-	private Tower tower;
-	private Rectangle sprite;
+	public Rectangle sprite;
 	private int posX;
 	private int posY;
 	private int width;
 	private int height;
 
 	public Bunker(Tower tower) {
-		this.sprite = new Rectangle(0, 0, tower.getWidth() * 4, tower.getHeight() - 8, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
-		this.sprite.setPosition(tower.getPosX() - tower.getWidth() / 2, tower.getPosY() + tower.getHeight() - 6);
+		this.sprite = new Rectangle(0, 0, tower.getWidth() * 4,
+				tower.getHeight() - 8, BaseActivity.getSharedInstance()
+						.getVertexBufferObjectManager());
+		this.sprite.setPosition(tower.getPosX() - tower.getWidth() / 2,
+				tower.getPosY() + tower.getHeight() - 6);
 		if (tower.isFacingLeft()) {
-			this.sprite.setPosition(tower.getPosX() - tower.getWidth() * 2.5f, tower.getPosY() + tower.getHeight() - 6);
+			this.sprite.setPosition(tower.getPosX() - tower.getWidth() * 2.5f,
+					tower.getPosY() + tower.getHeight() - 6);
 		}
-		this.tower = tower;
-	}
-
-	public Tower getTower() {
-		return tower;
-	}
-
-	public void setTower(Tower tower) {
-		this.tower = tower;
+		this.posX = (int)this.sprite.getX();
+		this.posY = (int)this.sprite.getY();
+		this.width = (int)this.sprite.getWidth();
+		this.height = (int)this.sprite.getHeight();
+		
 	}
 
 	public int getPosX() {

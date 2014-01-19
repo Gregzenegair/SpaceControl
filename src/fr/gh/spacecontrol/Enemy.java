@@ -6,8 +6,16 @@ import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class Enemy {
+	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 	public Rectangle sprite;
 	public int hp;
 	protected final int MAX_HEALTH = 50;
@@ -77,4 +85,16 @@ public class Enemy {
 				return true;
 		}
 	}
+	
+    public void addPhysics() {
+    	GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+
+    	this.sprite.unregisterEntityModifier(this.moveModifier);
+    	
+    	Body body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
+
+        scene.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprite, body, true, true));
+}
+	
+	
 }

@@ -6,18 +6,21 @@ import java.util.LinkedList;
 import org.andengine.audio.music.Music;
 import org.andengine.audio.sound.Sound;
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.color.Color;
 
-import com.badlogic.gdx.math.Vector2;
-
 import android.hardware.SensorManager;
-import android.util.Log;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class GameScene extends Scene implements IOnSceneTouchListener {
 
@@ -28,6 +31,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	public Tower tower4;
 	private float towerAxe;
 	public boolean shoot;
+	static final int CAMERA_WIDTH = 480;
+	static final int CAMERA_HEIGHT = 800;
 
 	public Sound soundTowerGun;
 	public Sound soundTowerGunb;
@@ -46,7 +51,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de
 	// tower
-	// TODO ajouter le bunker
+	//TODO crash si creation de nouveaux enemies
 
 	public GameScene() {
 		activity = BaseActivity.getSharedInstance();
@@ -59,24 +64,18 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		mCamera = BaseActivity.getSharedInstance().mCamera;
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 
-		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0,
+				SensorManager.GRAVITY_EARTH), false);
 
-
-		
 		this.towerList = new LinkedList<Tower>();
 		this.bulletList = new LinkedList<Bullet>();
 		this.enemyList = new LinkedList<Enemy>();
 		this.wreckageList = new LinkedList<Wreckage>();
 
 		this.buildTowers();
+		this.creatingWalls();
 
 		this.setOnSceneTouchListener(this);
-
-		for (int x = 0; x < 10; x++) {
-			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
-			attachChild(enemy.sprite);
-			this.enemyList.add(enemy);
-		}
 
 		text1 = new Text(20, 20, activity.mFont, "Score : ",
 				activity.getVertexBufferObjectManager());
@@ -85,6 +84,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		// Enregistrement d'un update handler
 		registerUpdateHandler(new GameLoopUpdateHandler());
+		registerUpdateHandler(this.mPhysicsWorld);
 	}
 
 	private void buildTowers() {
@@ -176,7 +176,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					}
 
 					if (b.sprite.collidesWith(e.sprite)) {
-						if (!e.gotHitnDestroyed()) {
+						if (e.gotHitnDestroyed(b.angle) == 1) {
+							if (!e.isPhysic) {
+								particleEmitterExplosion.createExplosion(
+										e.sprite.getX() + e.sprite.getWidth()
+												/ 2,
+										e.sprite.getY() + e.sprite.getHeight()
+												/ 2, e.sprite.getParent(),
+										BaseActivity.getSharedInstance(), 30,
+										3, 3, b.sprite.getRotation());
+								e.addPhysics();
+								
+							}
+						} else if (e.gotHitnDestroyed(b.angle) == 0) {
 							soundExplosion.play();
 							particleEmitterExplosion.createExplosion(
 									e.sprite.getX() + e.sprite.getWidth() / 2,
@@ -184,13 +196,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 									e.sprite.getParent(),
 									BaseActivity.getSharedInstance(), 30, 3, 3,
 									b.sprite.getRotation());
-							
-							e.addPhysics();
-							
-							/*
+
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 							eIt.remove();
-							*/
+
 						}
 						soundImpact.play();
 						particleEmitterExplosion.createBulletImpact(
@@ -222,6 +231,30 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		}
 		return -1;
 	}
-	
-	
+
+	private void creatingWalls() {
+		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 52,
+				CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
+						.getVertexBufferObjectManager());
+		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2,
+				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT,
+				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2,
+				CAMERA_HEIGHT, BaseActivity.getSharedInstance()
+						.getVertexBufferObjectManager());
+
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0,
+				0.5f, 0.5f);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground,
+				BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof,
+				BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left,
+				BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right,
+				BodyType.StaticBody, wallFixtureDef);
+
+	}
+
 }

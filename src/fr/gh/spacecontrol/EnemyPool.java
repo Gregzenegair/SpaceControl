@@ -1,5 +1,6 @@
 package fr.gh.spacecontrol;
 
+import org.andengine.entity.shape.IShape;
 import org.andengine.util.adt.pool.GenericPool;
 
 public class EnemyPool extends GenericPool<Enemy> {
@@ -21,10 +22,13 @@ public class EnemyPool extends GenericPool<Enemy> {
         return new Enemy();
     }
  
-    protected void onHandleRecycleItem(final Enemy b) {
-        b.sprite.clearEntityModifiers();
-        b.sprite.clearUpdateHandlers();
-        b.sprite.setVisible(false);
-        b.sprite.detachSelf();
+    protected void onHandleRecycleItem(final Enemy e) {
+    	GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+
+        scene.mPhysicsWorld.destroyBody(e.body);
+        e.sprite.clearEntityModifiers();
+        e.sprite.clearUpdateHandlers();
+        e.sprite.setVisible(false);
+        e.sprite.detachSelf();
     }
 }

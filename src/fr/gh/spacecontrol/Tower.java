@@ -72,7 +72,7 @@ public class Tower {
 
 	}
 
-	public void shoot() {
+	public void shoot(int angle) {
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 
@@ -96,6 +96,7 @@ public class Tower {
 						+ (float) Math.sin(Math.toRadians(270 - randAngle))
 						* 1000 - width / 2 + height);
 
+		b.angle = angle;
 		b.sprite.setVisible(true);
 		scene.attachChild(b.sprite);
 		scene.bulletList.add(b);

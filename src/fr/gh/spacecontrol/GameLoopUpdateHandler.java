@@ -14,8 +14,8 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		if (scene.shoot) {
 			if (ShootingDelay.getSharedInstance().checkValidity()) {
 				for (Tower tower : scene.towerList) {
-					if(tower.isActive())
-						tower.shoot();
+					if (tower.isActive())
+						tower.shoot((int) tower.getAngle());
 				}
 			}
 
@@ -23,9 +23,17 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 		Iterator<Enemy> itE = scene.enemyList.iterator();
 
-		while (itE.hasNext()) {
-			Enemy e = itE.next();
-			e.move();
+		if (scene.enemyList.isEmpty()) {
+			for (int x = 0; x < 10; x++) {
+				Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
+				scene.attachChild(enemy.sprite);
+				scene.enemyList.add(enemy);
+			}
+		} else {
+			while (itE.hasNext()) {
+				Enemy e = itE.next();
+				e.move();
+			}
 		}
 
 	}

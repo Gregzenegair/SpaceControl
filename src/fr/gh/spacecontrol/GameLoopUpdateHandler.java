@@ -11,9 +11,9 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 	public void onUpdate(float pSecondsElapsed) {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 		scene.cleaner();
-		if (scene.shoot) {
+		if (scene.isShoot()) {
 			if (ShootingDelay.getSharedInstance().checkValidity()) {
-				for (Tower tower : scene.towerList) {
+				for (Tower tower : scene.getTowerList()) {
 					if (tower.isActive())
 						tower.shoot((int) tower.getAngle());
 				}
@@ -21,13 +21,13 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 		}
 
-		Iterator<Enemy> itE = scene.enemyList.iterator();
+		Iterator<Enemy> itE = scene.getEnemyList().iterator();
 
-		if (scene.enemyList.isEmpty()) {
+		if (scene.getEnemyList().isEmpty()) {
 			for (int x = 0; x < 10; x++) {
 				Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
-				scene.attachChild(enemy.sprite);
-				scene.enemyList.add(enemy);
+				scene.attachChild(enemy.getSprite());
+				scene.getEnemyList().add(enemy);
 			}
 		} else {
 			while (itE.hasNext()) {

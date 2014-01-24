@@ -12,7 +12,7 @@ import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 
 public class Tower {
-	public Rectangle sprite;
+	private Rectangle sprite;
 	private int posX;
 	private int posY;
 	private int rotationCenterX;
@@ -79,35 +79,35 @@ public class Tower {
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
-		b.sprite.setPosition(
+		b.getSprite().setPosition(
 				rotationCenterX
 						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * height)
 						+ width / 2 - height - 1, rotationCenterY
 						+ (float) Math.sin(Math.toRadians(270 - randAngle))
 						* height - width / 2 + height - 1);
 
-		b.sprite.setRotation(randAngle);
+		b.getSprite().setRotation(randAngle);
 		MoveModifier movMod = new MoveModifier(
 				1.5f,
-				b.sprite.getX(),
+				b.getSprite().getX(),
 				rotationCenterX
 						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000)
-						+ width / 2 - height, b.sprite.getY(), rotationCenterY
+						+ width / 2 - height, b.getSprite().getY(), rotationCenterY
 						+ (float) Math.sin(Math.toRadians(270 - randAngle))
 						* 1000 - width / 2 + height);
 
-		b.angle = angle;
-		b.sprite.setVisible(true);
-		scene.attachChild(b.sprite);
-		scene.bulletList.add(b);
-		b.sprite.registerEntityModifier(movMod);
-		scene.bulletCount++;
+		b.setAngle(angle);
+		b.getSprite().setVisible(true);
+		scene.attachChild(b.getSprite());
+		scene.getBulletList().add(b);
+		b.getSprite().registerEntityModifier(movMod);
+		scene.setBulletCount(scene.getBulletCount()+1);
 
 		int soundRandom = RandomTool.randInt(0, 3);
 		if (soundRandom == 0 || soundRandom == 1 || soundRandom == 2)
-			scene.soundTowerGun.play();
+			scene.getSoundTowerGun().play();
 		else
-			scene.soundTowerGunb.play();
+			scene.getSoundTowerGunb().play();
 	}
 
 	public float getAngle() {
@@ -172,6 +172,54 @@ public class Tower {
 
 	public void setBunker(Bunker bunker) {
 		this.bunker = bunker;
+	}
+
+	public Rectangle getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(Rectangle sprite) {
+		this.sprite = sprite;
+	}
+
+	public int getRotationCenterX() {
+		return rotationCenterX;
+	}
+
+	public void setRotationCenterX(int rotationCenterX) {
+		this.rotationCenterX = rotationCenterX;
+	}
+
+	public int getRotationCenterY() {
+		return rotationCenterY;
+	}
+
+	public void setRotationCenterY(int rotationCenterY) {
+		this.rotationCenterY = rotationCenterY;
+	}
+
+	public Camera getmCamera() {
+		return mCamera;
+	}
+
+	public void setmCamera(Camera mCamera) {
+		this.mCamera = mCamera;
+	}
+
+	public float getStartingAngle() {
+		return startingAngle;
+	}
+
+	public void setPosX(int posX) {
+		this.posX = posX;
+	}
+
+	public void setPosY(int posY) {
+		this.posY = posY;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
 	}
 
 }

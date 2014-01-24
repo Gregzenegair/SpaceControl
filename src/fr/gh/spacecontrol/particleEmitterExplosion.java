@@ -73,15 +73,15 @@ public final class particleEmitterExplosion {
 		int mReveredRotation = (int) (rotation -90+ rotation / 2);
 
 		final Wreckage wreckage = WreckagePool.sharedWreckagePool().obtainPoolItem();
-		wreckage.sprite.setPosition(posX, posY);
+		wreckage.getSprite().setPosition(posX, posY);
 
-		wreckage.sprite.setRotation(mReveredRotation);
+		wreckage.getSprite().setRotation(mReveredRotation);
 		MoveModifier movMod = new MoveModifier(0.2f, posX, posX
 				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 10), posY, posY
 				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 10);
 
-		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.sprite);
-		wreckage.sprite.registerUpdateHandler(movMod2);
+		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.getSprite());
+		wreckage.getSprite().registerUpdateHandler(movMod2);
 		movMod2.setVelocity(0,100);
 		/*
 		final MoveModifier movMod2 = new MoveModifier(1.2f, posX
@@ -91,18 +91,18 @@ public final class particleEmitterExplosion {
 		 */
 		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
-		wreckage.sprite.setVisible(true);
-		scene.attachChild(wreckage.sprite);
-		scene.wreckageList.add(wreckage);
+		wreckage.getSprite().setVisible(true);
+		scene.attachChild(wreckage.getSprite());
+		scene.getWreckageList().add(wreckage);
 
-		wreckage.sprite.registerEntityModifier(movMod);
-		wreckage.sprite.registerEntityModifier(alphaMod);
+		wreckage.getSprite().registerEntityModifier(movMod);
+		wreckage.getSprite().registerEntityModifier(alphaMod);
 
 		target.registerUpdateHandler(new TimerHandler(0.2f, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
 				//wreckage.sprite.registerEntityModifier(movMod2);
-				wreckage.sprite.registerEntityModifier(rotMod);
+				wreckage.getSprite().registerEntityModifier(rotMod);
 				target.sortChildren();
 			}
 		}));

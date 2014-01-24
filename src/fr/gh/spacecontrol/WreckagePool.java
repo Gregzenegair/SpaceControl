@@ -22,10 +22,10 @@ public class WreckagePool extends GenericPool<Wreckage> {
 	}
 
 	protected void onHandleRecycleItem(final Wreckage wreckage) {
-		wreckage.sprite.clearEntityModifiers();
-		wreckage.sprite.clearUpdateHandlers();
-		wreckage.sprite.setVisible(false);
-		wreckage.sprite.detachSelf();
+		wreckage.getSprite().clearEntityModifiers();
+		wreckage.getSprite().clearUpdateHandlers();
+		wreckage.getSprite().setVisible(false);
+		wreckage.getSprite().detachSelf();
 	}
 
 }

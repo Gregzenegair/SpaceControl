@@ -4,7 +4,7 @@ import org.andengine.entity.primitive.Rectangle;
 
 public class Bunker {
 
-	public Rectangle sprite;
+	private Rectangle sprite;
 	private int posX;
 	private int posY;
 	private int width;
@@ -58,4 +58,13 @@ public class Bunker {
 	public void setHeight(int height) {
 		this.height = height;
 	}
+
+	public Rectangle getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(Rectangle sprite) {
+		this.sprite = sprite;
+	}
+	
 }

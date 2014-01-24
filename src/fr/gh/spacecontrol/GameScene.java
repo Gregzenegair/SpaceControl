@@ -25,28 +25,28 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	private Camera mCamera;
-	public Tower tower1;
-	public Tower tower2;
-	public Tower tower3;
-	public Tower tower4;
+	private Tower tower1;
+	private Tower tower2;
+	private Tower tower3;
+	private Tower tower4;
 	private float towerAxe;
-	public boolean shoot;
+	private boolean shoot;
 	static final int CAMERA_WIDTH = 480;
 	static final int CAMERA_HEIGHT = 800;
 
-	public Sound soundTowerGun;
-	public Sound soundTowerGunb;
-	public Sound soundImpact;
-	public Music soundExplosion;
+	private Sound soundTowerGun;
+	private Sound soundTowerGunb;
+	private Sound soundImpact;
+	private Music soundExplosion;
 
-	public LinkedList<Tower> towerList;
-	public LinkedList<Bullet> bulletList;
-	public LinkedList<Enemy> enemyList;
-	public LinkedList<Wreckage> wreckageList;
+	private LinkedList<Tower> towerList;
+	private LinkedList<Bullet> bulletList;
+	private LinkedList<Enemy> enemyList;
+	private LinkedList<Wreckage> wreckageList;
 
 	private BaseActivity activity;
 	private Text text1;
-	public int bulletCount;
+	private int bulletCount;
 	public PhysicsWorld mPhysicsWorld;
 
 	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de
@@ -116,8 +116,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		tower4.setBunker(bunker4);
 
 		for (Tower tower : towerList) {
-			attachChild(tower.sprite);
-			attachChild(tower.getBunker().sprite);
+			attachChild(tower.getSprite());
+			attachChild(tower.getBunker().getSprite());
 		}
 	}
 
@@ -165,37 +165,37 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				Iterator<Bullet> it = bulletList.iterator();
 				while (it.hasNext()) {
 					Bullet b = it.next();
-					if (b.sprite.getY() <= -b.sprite.getHeight()
-							|| b.sprite.getX() <= -b.sprite.getHeight()
+					if (b.getSprite().getY() <= -b.getSprite().getHeight()
+							|| b.getSprite().getX() <= -b.getSprite().getHeight()
 
-							|| b.sprite.getX() >= -b.sprite.getHeight()
+							|| b.getSprite().getX() >= -b.getSprite().getHeight()
 									+ mCamera.getWidth()) {
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 						continue;
 					}
 
-					if (b.sprite.collidesWith(e.sprite)) {
-						if (e.gotHitnDestroyed(b.angle) == 1) {
-							if (!e.isPhysic) {
+					if (b.getSprite().collidesWith(e.getSprite())) {
+						if (e.gotHitnDestroyed(b.getAngle()) == 1) {
+							if (!e.isPhysic()) {
 								particleEmitterExplosion.createExplosion(
-										e.sprite.getX() + e.sprite.getWidth()
+										e.getSprite().getX() + e.getSprite().getWidth()
 												/ 2,
-										e.sprite.getY() + e.sprite.getHeight()
-												/ 2, e.sprite.getParent(),
+										e.getSprite().getY() + e.getSprite().getHeight()
+												/ 2, e.getSprite().getParent(),
 										BaseActivity.getSharedInstance(), 30,
-										3, 3, b.sprite.getRotation());
+										3, 3, b.getSprite().getRotation());
 								e.addPhysics();
 								
 							}
-						} else if (e.gotHitnDestroyed(b.angle) == 0) {
+						} else if (e.gotHitnDestroyed(b.getAngle()) == 0) {
 							soundExplosion.play();
 							particleEmitterExplosion.createExplosion(
-									e.sprite.getX() + e.sprite.getWidth() / 2,
-									e.sprite.getY() + e.sprite.getHeight() / 2,
-									e.sprite.getParent(),
+									e.getSprite().getX() + e.getSprite().getWidth() / 2,
+									e.getSprite().getY() + e.getSprite().getHeight() / 2,
+									e.getSprite().getParent(),
 									BaseActivity.getSharedInstance(), 30, 3, 3,
-									b.sprite.getRotation());
+									b.getSprite().getRotation());
 
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 							eIt.remove();
@@ -203,11 +203,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						}
 						soundImpact.play();
 						particleEmitterExplosion.createBulletImpact(
-								b.sprite.getX() + b.sprite.getWidth() / 2,
-								b.sprite.getY() + b.sprite.getHeight() / 2,
-								b.sprite.getParent(),
+								b.getSprite().getX() + b.getSprite().getWidth() / 2,
+								b.getSprite().getY() + b.getSprite().getHeight() / 2,
+								b.getSprite().getParent(),
 								BaseActivity.getSharedInstance(), Color.BLACK,
-								1, 2, 3, b.sprite.getRotation());
+								1, 2, 3, b.getSprite().getRotation());
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 					}
@@ -255,6 +255,166 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right,
 				BodyType.StaticBody, wallFixtureDef);
 
+	}
+
+	public Camera getmCamera() {
+		return mCamera;
+	}
+
+	public void setmCamera(Camera mCamera) {
+		this.mCamera = mCamera;
+	}
+
+	public Tower getTower1() {
+		return tower1;
+	}
+
+	public void setTower1(Tower tower1) {
+		this.tower1 = tower1;
+	}
+
+	public Tower getTower2() {
+		return tower2;
+	}
+
+	public void setTower2(Tower tower2) {
+		this.tower2 = tower2;
+	}
+
+	public Tower getTower3() {
+		return tower3;
+	}
+
+	public void setTower3(Tower tower3) {
+		this.tower3 = tower3;
+	}
+
+	public Tower getTower4() {
+		return tower4;
+	}
+
+	public void setTower4(Tower tower4) {
+		this.tower4 = tower4;
+	}
+
+	public float getTowerAxe() {
+		return towerAxe;
+	}
+
+	public void setTowerAxe(float towerAxe) {
+		this.towerAxe = towerAxe;
+	}
+
+	public boolean isShoot() {
+		return shoot;
+	}
+
+	public void setShoot(boolean shoot) {
+		this.shoot = shoot;
+	}
+
+	public Sound getSoundTowerGun() {
+		return soundTowerGun;
+	}
+
+	public void setSoundTowerGun(Sound soundTowerGun) {
+		this.soundTowerGun = soundTowerGun;
+	}
+
+	public Sound getSoundTowerGunb() {
+		return soundTowerGunb;
+	}
+
+	public void setSoundTowerGunb(Sound soundTowerGunb) {
+		this.soundTowerGunb = soundTowerGunb;
+	}
+
+	public Sound getSoundImpact() {
+		return soundImpact;
+	}
+
+	public void setSoundImpact(Sound soundImpact) {
+		this.soundImpact = soundImpact;
+	}
+
+	public Music getSoundExplosion() {
+		return soundExplosion;
+	}
+
+	public void setSoundExplosion(Music soundExplosion) {
+		this.soundExplosion = soundExplosion;
+	}
+
+	public LinkedList<Tower> getTowerList() {
+		return towerList;
+	}
+
+	public void setTowerList(LinkedList<Tower> towerList) {
+		this.towerList = towerList;
+	}
+
+	public LinkedList<Bullet> getBulletList() {
+		return bulletList;
+	}
+
+	public void setBulletList(LinkedList<Bullet> bulletList) {
+		this.bulletList = bulletList;
+	}
+
+	public LinkedList<Enemy> getEnemyList() {
+		return enemyList;
+	}
+
+	public void setEnemyList(LinkedList<Enemy> enemyList) {
+		this.enemyList = enemyList;
+	}
+
+	public LinkedList<Wreckage> getWreckageList() {
+		return wreckageList;
+	}
+
+	public void setWreckageList(LinkedList<Wreckage> wreckageList) {
+		this.wreckageList = wreckageList;
+	}
+
+	public BaseActivity getActivity() {
+		return activity;
+	}
+
+	public void setActivity(BaseActivity activity) {
+		this.activity = activity;
+	}
+
+	public Text getText1() {
+		return text1;
+	}
+
+	public void setText1(Text text1) {
+		this.text1 = text1;
+	}
+
+	public int getBulletCount() {
+		return bulletCount;
+	}
+
+	public void setBulletCount(int bulletCount) {
+		this.bulletCount = bulletCount;
+	}
+
+	public PhysicsWorld getmPhysicsWorld() {
+		return mPhysicsWorld;
+	}
+
+	public void setmPhysicsWorld(PhysicsWorld mPhysicsWorld) {
+		this.mPhysicsWorld = mPhysicsWorld;
+	}
+
+	public static int getCameraWidth() {
+		return CAMERA_WIDTH;
+	}
+
+	public static int getCameraHeight() {
+		return CAMERA_HEIGHT;
 	}
 
 }

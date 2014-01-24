@@ -25,10 +25,10 @@ public class EnemyPool extends GenericPool<Enemy> {
     protected void onHandleRecycleItem(final Enemy e) {
     	GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 
-        scene.mPhysicsWorld.destroyBody(e.body);
-        e.sprite.clearEntityModifiers();
-        e.sprite.clearUpdateHandlers();
-        e.sprite.setVisible(false);
-        e.sprite.detachSelf();
+        scene.mPhysicsWorld.destroyBody(e.getBody());
+        e.getSprite().clearEntityModifiers();
+        e.getSprite().clearUpdateHandlers();
+        e.getSprite().setVisible(false);
+        e.getSprite().detachSelf();
     }
 }

@@ -22,9 +22,9 @@ public class BulletPool extends GenericPool<Bullet> {
     }
  
     protected void onHandleRecycleItem(final Bullet b) {
-        b.sprite.clearEntityModifiers();
-        b.sprite.clearUpdateHandlers();
-        b.sprite.setVisible(false);
-        b.sprite.detachSelf();
+        b.getSprite().clearEntityModifiers();
+        b.getSprite().clearUpdateHandlers();
+        b.getSprite().setVisible(false);
+        b.getSprite().detachSelf();
     }
 }

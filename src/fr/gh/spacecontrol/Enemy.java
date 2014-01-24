@@ -17,12 +17,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 public class Enemy {
 
-	public Rectangle sprite;
-	public Body body;
-	public int hp;
-	public boolean isPhysic;
-	public int finalPosX;
-	public int finalPosY;
+	private Rectangle sprite;
+	private Body body;
+	private int hp;
+	private boolean physic;
+	private int finalPosX;
+	private int finalPosY;
 
 	protected final int MAX_HEALTH = 50;
 
@@ -55,7 +55,7 @@ public class Enemy {
 
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10,
 				sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
-		isPhysic = false;
+		physic = false;
 	}
 
 	public void move() {
@@ -97,7 +97,7 @@ public class Enemy {
 			if (hp <= 0) {
 				return 0;
 			} else if (hp <= MAX_HEALTH / 4) {
-				if (this.isPhysic) {
+				if (this.physic) {
 					if (angle >= 0)
 						
 						body.setLinearVelocity(hitVectorL);
@@ -121,7 +121,95 @@ public class Enemy {
 
 		scene.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
 				this.sprite, body, true, true));
-		isPhysic = true;
+		physic = true;
+	}
+
+	public Rectangle getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(Rectangle sprite) {
+		this.sprite = sprite;
+	}
+
+	public Body getBody() {
+		return body;
+	}
+
+	public void setBody(Body body) {
+		this.body = body;
+	}
+
+	public int getHp() {
+		return hp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public boolean isPhysic() {
+		return physic;
+	}
+
+	public void setPhysic(boolean physic) {
+		this.physic = physic;
+	}
+
+	public int getFinalPosX() {
+		return finalPosX;
+	}
+
+	public void setFinalPosX(int finalPosX) {
+		this.finalPosX = finalPosX;
+	}
+
+	public int getFinalPosY() {
+		return finalPosY;
+	}
+
+	public void setFinalPosY(int finalPosY) {
+		this.finalPosY = finalPosY;
+	}
+
+	public Camera getmCamera() {
+		return mCamera;
+	}
+
+	public void setmCamera(Camera mCamera) {
+		this.mCamera = mCamera;
+	}
+
+	public MoveModifier getMoveModifier() {
+		return moveModifier;
+	}
+
+	public void setMoveModifier(MoveModifier moveModifier) {
+		this.moveModifier = moveModifier;
+	}
+
+	public Vector2 getHitVectorL() {
+		return hitVectorL;
+	}
+
+	public void setHitVectorL(Vector2 hitVectorL) {
+		this.hitVectorL = hitVectorL;
+	}
+
+	public Vector2 getHitVectorR() {
+		return hitVectorR;
+	}
+
+	public void setHitVectorR(Vector2 hitVectorR) {
+		this.hitVectorR = hitVectorR;
+	}
+
+	public int getMAX_HEALTH() {
+		return MAX_HEALTH;
+	}
+
+	public static FixtureDef getFixtureDef() {
+		return FIXTURE_DEF;
 	}
 
 }

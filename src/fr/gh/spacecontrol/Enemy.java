@@ -23,15 +23,15 @@ public class Enemy {
 	private boolean physic;
 	private int finalPosX;
 	private int finalPosY;
-
-	protected final int MAX_HEALTH = 50;
-
 	private Camera mCamera;
 	private MoveModifier moveModifier;
+	
+	protected final int MAX_HEALTH = 50;
+
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory
 			.createFixtureDef(10, 0.02f, 0.02f);
-	private Vector2 hitVectorL = new Vector2(1, 1);
-	private Vector2 hitVectorR = new Vector2(-1, 1);
+	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
+	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
 
 	public Enemy() {
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
@@ -100,9 +100,9 @@ public class Enemy {
 				if (this.physic) {
 					if (angle >= 0)
 						
-						body.setLinearVelocity(hitVectorL);
+						body.setLinearVelocity(HIT_VECTOR_L);
 					else
-						body.setLinearVelocity(hitVectorR);
+						body.setLinearVelocity(HIT_VECTOR_R);
 				}
 				return 1;
 			} else {
@@ -186,22 +186,6 @@ public class Enemy {
 
 	public void setMoveModifier(MoveModifier moveModifier) {
 		this.moveModifier = moveModifier;
-	}
-
-	public Vector2 getHitVectorL() {
-		return hitVectorL;
-	}
-
-	public void setHitVectorL(Vector2 hitVectorL) {
-		this.hitVectorL = hitVectorL;
-	}
-
-	public Vector2 getHitVectorR() {
-		return hitVectorR;
-	}
-
-	public void setHitVectorR(Vector2 hitVectorR) {
-		this.hitVectorR = hitVectorR;
 	}
 
 	public int getMAX_HEALTH() {

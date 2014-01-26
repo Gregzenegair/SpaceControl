@@ -20,23 +20,23 @@ public class Enemy {
 	private Rectangle sprite;
 	private Body body;
 	private int hp;
+	private int speed;
 	private boolean physic;
 	private int finalPosX;
 	private int finalPosY;
 	private Camera mCamera;
 	private MoveModifier moveModifier;
-	
-	protected final int MAX_HEALTH = 50;
 
-	private static final FixtureDef FIXTURE_DEF = PhysicsFactory
-			.createFixtureDef(10, 0.02f, 0.02f);
+	protected final int MAX_HEALTH = 50;
+	protected final int PHYSIC_HEALTH = MAX_HEALTH / 4;
+
+	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
 	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
 
 	public Enemy() {
 		this.mCamera = BaseActivity.getSharedInstance().mCamera;
-		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		sprite.setColor(0.06f, 0.004f, 0.004f);
 		init();
 	}
@@ -45,32 +45,27 @@ public class Enemy {
 	// the EnemyPool class
 	public void init() {
 		hp = MAX_HEALTH;
-		sprite.setPosition(
-				(RandomTool.randInt(100, (int) mCamera.getWidth() - 100)),
-				RandomTool.randInt(-300, 0));
+		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
 
-		this.finalPosX = RandomTool
-				.randInt(100, (int) mCamera.getWidth() - 100);
+		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
 		this.finalPosY = RandomTool.randInt(0, 100);
 
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10,
-				sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 		physic = false;
 	}
 
 	public void move() {
-		if ((int) sprite.getX() == this.finalPosX) {
+		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic()) {
 
 			int speed = RandomTool.randInt(2, 4);
-			this.finalPosX = RandomTool.randInt(50,
-					(int) mCamera.getWidth() - 50);
+			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
 			this.finalPosY = RandomTool.randInt(0, 500);
 
 			if (this.moveModifier != null)
 				sprite.unregisterEntityModifier(this.moveModifier);
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(
-					speed, sprite.getX(), this.finalPosX, sprite.getY(),
-					this.finalPosY));
+			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
+					sprite.getY(), this.finalPosY));
 		}
 	}
 
@@ -80,26 +75,20 @@ public class Enemy {
 
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1,
-				sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 	}
+	
 
-	public void clean() {
-		sprite.clearEntityModifiers();
-		sprite.clearUpdateHandlers();
-	}
-
-	// method for applying hit and checking if enemy died or not
-	// returns false if enemy died
 	public int gotHitnDestroyed(int angle) {
 		synchronized (this) {
 			hp--;
 			if (hp <= 0) {
 				return 0;
-			} else if (hp <= MAX_HEALTH / 4) {
+			} else if (hp <= PHYSIC_HEALTH) {
 				if (this.physic) {
 					if (angle >= 0)
-						
+
 						body.setLinearVelocity(HIT_VECTOR_L);
 					else
 						body.setLinearVelocity(HIT_VECTOR_R);
@@ -116,11 +105,9 @@ public class Enemy {
 
 		this.sprite.unregisterEntityModifier(this.moveModifier);
 
-		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld,
-				this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
+		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
-		scene.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
-				this.sprite, body, true, true));
+		scene.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprite, body, true, true));
 		physic = true;
 	}
 

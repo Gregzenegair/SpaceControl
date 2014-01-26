@@ -21,11 +21,13 @@ public class EnemyPool extends GenericPool<Enemy> {
     protected Enemy onAllocatePoolItem() {
         return new Enemy();
     }
- 
+    
+    @Override
     protected void onHandleRecycleItem(final Enemy e) {
     	GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 
         scene.mPhysicsWorld.destroyBody(e.getBody());
+    	e.setPhysic(false);
         e.getSprite().clearEntityModifiers();
         e.getSprite().clearUpdateHandlers();
         e.getSprite().setVisible(false);

@@ -51,7 +51,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de
 	// tower
-	//TODO crash si creation de nouveaux enemies
+	// TODO crash si creation de nouveaux enemies
 
 	public GameScene() {
 		activity = BaseActivity.getSharedInstance();
@@ -64,8 +64,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		mCamera = BaseActivity.getSharedInstance().mCamera;
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 
-		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0,
-				SensorManager.GRAVITY_EARTH), false);
+		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
 		this.towerList = new LinkedList<Tower>();
 		this.bulletList = new LinkedList<Bullet>();
@@ -77,8 +76,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.setOnSceneTouchListener(this);
 
-		text1 = new Text(20, 20, activity.mFont, "Score : ",
-				activity.getVertexBufferObjectManager());
+		text1 = new Text(20, 20, activity.mFont, "Score : ", activity.getVertexBufferObjectManager());
 		text1.setScale(0.5f);
 		attachChild(text1);
 
@@ -92,14 +90,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		int towerSizeY = 40;
 
 		tower1 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower1.setPosition(20, (int) mCamera.getHeight() - tower1.getHeight()
-				- 240);
+		tower1.setPosition(20, (int) mCamera.getHeight() - tower1.getHeight() - 240);
 		Bunker bunker1 = new Bunker(tower1);
 		tower1.setBunker(bunker1);
 
 		tower2 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower2.setPosition(20, (int) mCamera.getHeight() - tower2.getHeight()
-				* 2);
+		tower2.setPosition(20, (int) mCamera.getHeight() - tower2.getHeight() * 2);
 		Bunker bunker2 = new Bunker(tower2);
 		tower2.setBunker(bunker2);
 
@@ -122,15 +118,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	@Override
-	public boolean onSceneTouchEvent(Scene pScene,
-			final TouchEvent pSceneTouchEvent) {
+	public boolean onSceneTouchEvent(Scene pScene, final TouchEvent pSceneTouchEvent) {
 		if (pSceneTouchEvent.isActionDown()) {
 
 			int towerTouched;
 			towerAxe = pSceneTouchEvent.getY();
-			if ((towerTouched = isTouchingABunker(
-					(int) pSceneTouchEvent.getX(),
-					(int) pSceneTouchEvent.getY())) >= 0) {
+			if ((towerTouched = isTouchingABunker((int) pSceneTouchEvent.getX(), (int) pSceneTouchEvent.getY())) >= 0) {
 				for (Tower tower : towerList) {
 					tower.setActive(false);
 				}
@@ -168,8 +161,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					if (b.getSprite().getY() <= -b.getSprite().getHeight()
 							|| b.getSprite().getX() <= -b.getSprite().getHeight()
 
-							|| b.getSprite().getX() >= -b.getSprite().getHeight()
-									+ mCamera.getWidth()) {
+							|| b.getSprite().getX() >= -b.getSprite().getHeight() + mCamera.getWidth()) {
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 						continue;
@@ -178,24 +170,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					if (b.getSprite().collidesWith(e.getSprite())) {
 						if (e.gotHitnDestroyed(b.getAngle()) == 1) {
 							if (!e.isPhysic()) {
-								particleEmitterExplosion.createExplosion(
-										e.getSprite().getX() + e.getSprite().getWidth()
-												/ 2,
-										e.getSprite().getY() + e.getSprite().getHeight()
-												/ 2, e.getSprite().getParent(),
-										BaseActivity.getSharedInstance(), 30,
-										3, 3, b.getSprite().getRotation());
+								particleEmitterExplosion.createExplosion(e.getSprite().getX()
+										+ e.getSprite().getWidth() / 2, e.getSprite().getY()
+										+ e.getSprite().getHeight() / 2, e.getSprite().getParent(),
+										BaseActivity.getSharedInstance(), 30, 3, 3, b.getSprite().getRotation());
 								e.addPhysics();
-								
+
 							}
 						} else if (e.gotHitnDestroyed(b.getAngle()) == 0) {
 							soundExplosion.play();
-							particleEmitterExplosion.createExplosion(
-									e.getSprite().getX() + e.getSprite().getWidth() / 2,
-									e.getSprite().getY() + e.getSprite().getHeight() / 2,
-									e.getSprite().getParent(),
-									BaseActivity.getSharedInstance(), 30, 3, 3,
-									b.getSprite().getRotation());
+							particleEmitterExplosion.createExplosion(e.getSprite().getX() + e.getSprite().getWidth()
+									/ 2, e.getSprite().getY() + e.getSprite().getHeight() / 2, e.getSprite()
+									.getParent(), BaseActivity.getSharedInstance(), 30, 3, 3, b.getSprite()
+									.getRotation());
 
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 							eIt.remove();
@@ -203,11 +190,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						}
 						soundImpact.play();
 						particleEmitterExplosion.createBulletImpact(
-								b.getSprite().getX() + b.getSprite().getWidth() / 2,
-								b.getSprite().getY() + b.getSprite().getHeight() / 2,
-								b.getSprite().getParent(),
-								BaseActivity.getSharedInstance(), Color.BLACK,
-								1, 2, 3, b.getSprite().getRotation());
+								b.getSprite().getX() + b.getSprite().getWidth() / 2, b.getSprite().getY()
+										+ b.getSprite().getHeight() / 2, b.getSprite().getParent(),
+								BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						it.remove();
 					}
@@ -219,11 +204,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private int isTouchingABunker(int posX, int posY) {
 		int marginSelection = 20;
 		for (Tower tower : towerList) {
-			if (posX < tower.getBunker().getPosX()
-					+ tower.getBunker().getWidth() + marginSelection
+			if (posX < tower.getBunker().getPosX() + tower.getBunker().getWidth() + marginSelection
 					&& posX > tower.getBunker().getPosX() - marginSelection) {
-				if (posY < tower.getBunker().getPosY()
-						+ tower.getBunker().getHeight() + marginSelection
+				if (posY < tower.getBunker().getPosY() + tower.getBunker().getHeight() + marginSelection
 						&& posY > tower.getBunker().getPosY() - marginSelection) {
 					return towerList.indexOf(tower);
 				}
@@ -233,27 +216,20 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void creatingWalls() {
-		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 52,
-				CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
-						.getVertexBufferObjectManager());
-		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2,
-				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT,
-				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2,
-				CAMERA_HEIGHT, BaseActivity.getSharedInstance()
-						.getVertexBufferObjectManager());
+		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 52, CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
+		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
+		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
+		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
 
-		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0,
-				0.5f, 0.5f);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground,
-				BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof,
-				BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left,
-				BodyType.StaticBody, wallFixtureDef);
-		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right,
-				BodyType.StaticBody, wallFixtureDef);
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
+		PhysicsFactory.createBoxBody(this.mPhysicsWorld, right, BodyType.StaticBody, wallFixtureDef);
 
 	}
 

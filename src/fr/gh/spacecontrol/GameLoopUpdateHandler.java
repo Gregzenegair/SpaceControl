@@ -27,6 +27,9 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 			for (int x = 0; x < 10; x++) {
 				Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
 				scene.attachChild(enemy.getSprite());
+				enemy.setHp(enemy.MAX_HEALTH);
+				enemy.getSprite().setVisible(true);
+				//enemy.move();
 				scene.getEnemyList().add(enemy);
 			}
 		} else {

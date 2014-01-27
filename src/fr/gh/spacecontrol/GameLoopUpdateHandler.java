@@ -9,7 +9,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 		scene.cleaner();
 		if (scene.isShoot()) {
 			if (ShootingDelay.getSharedInstance().checkValidity()) {

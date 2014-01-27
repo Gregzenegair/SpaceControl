@@ -6,6 +6,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_1">Gregzenegair</string>
     <string name="title_2">" Softwares"</string>
-    <string name="start">Start Game</string>
+    <string name="start">Start a new game</string>
+    <string name="backToGame">Back to game</string>
+    
 
 </resources>

@@ -14,24 +14,25 @@ public class SplashScene extends Scene {
 	public SplashScene() {
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 		activity = BaseActivity.getSharedInstance();
-		Text title1 = new Text(0, 0, activity.mFont,
+		activity.setCurrentScreen(1);
+		Text title1 = new Text(0, 0, activity.getmFont(),
 				activity.getString(R.string.title_1),
 				activity.getVertexBufferObjectManager());
-		Text title2 = new Text(0, 0, activity.mFont,
+		Text title2 = new Text(0, 0, activity.getmFont(),
 				activity.getString(R.string.title_2),
 				activity.getVertexBufferObjectManager());
 
-		title1.setPosition(-title1.getWidth(), activity.mCamera.getHeight() / 2);
-		title2.setPosition(activity.mCamera.getWidth(),
-				activity.mCamera.getHeight() / 2);
+		title1.setPosition(-title1.getWidth(), activity.getmCamera().getHeight() / 2);
+		title2.setPosition(activity.getmCamera().getWidth(),
+				activity.getmCamera().getHeight() / 2);
 
 		attachChild(title1);
 		attachChild(title2);
 
 		title1.registerEntityModifier(new MoveXModifier(1, title1.getX(),
-				activity.mCamera.getWidth() / 2 - title1.getWidth()));
+				activity.getmCamera().getWidth() / 2 - title1.getWidth()));
 		title2.registerEntityModifier(new MoveXModifier(1, title2.getX(),
-				activity.mCamera.getWidth() / 2));
+				activity.getmCamera().getWidth() / 2));
 
 		loadResources();
 

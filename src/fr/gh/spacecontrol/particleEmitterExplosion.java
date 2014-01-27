@@ -67,8 +67,8 @@ public final class particleEmitterExplosion {
 			final SimpleBaseGameActivity activity, final Color color, int mNumPart, final int width, final int height,
 			float rotation) {
 
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
-		Camera mCamera = BaseActivity.getSharedInstance().mCamera;
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		Camera mCamera = BaseActivity.getSharedInstance().getmCamera();
 		int mTimePart = 2;
 		int mReveredRotation = (int) (rotation -90+ rotation / 2);
 

@@ -11,18 +11,31 @@ public class MainMenuScene extends MenuScene implements
 
 	BaseActivity activity;
 	final int MENU_START = 0;
+	final int MENU_BACKTOGAME = 1;
 
 	public MainMenuScene() {
-		super(BaseActivity.getSharedInstance().mCamera);
+		super(BaseActivity.getSharedInstance().getmCamera());
 		activity = BaseActivity.getSharedInstance();
+		activity.setCurrentScreen(2);
 
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
-		IMenuItem startButton = new TextMenuItem(MENU_START, activity.mFont,
+
+		IMenuItem startButton = new TextMenuItem(MENU_START, activity.getmFont(),
 				activity.getString(R.string.start),
 				activity.getVertexBufferObjectManager());
-		startButton.setPosition(mCamera.getWidth() / 2 - startButton.getWidth()
-				/ 2, mCamera.getHeight() / 2 - startButton.getHeight() / 2);
+		startButton.setPosition(
+				(mCamera.getWidth() / 2 - startButton.getWidth() / 2),
+				mCamera.getHeight() / 2 - startButton.getHeight() / 2);
+
+		IMenuItem backToGameButton = new TextMenuItem(MENU_BACKTOGAME,
+				activity.getmFont(), activity.getString(R.string.backToGame),
+				activity.getVertexBufferObjectManager());
+		backToGameButton.setPosition(
+				(mCamera.getWidth() / 2 - backToGameButton.getWidth() / 2),
+				(mCamera.getHeight() / 2 - startButton.getHeight() / 2) + 40);
+
 		addMenuItem(startButton);
+		addMenuItem(backToGameButton);
 
 		setOnMenuItemClickListener(this);
 	}
@@ -33,6 +46,13 @@ public class MainMenuScene extends MenuScene implements
 		case MENU_START:
 			activity.setCurrentScene(new GameScene());
 			return true;
+		case MENU_BACKTOGAME:
+			if (activity.isGameStarted()) {
+				activity.setCurrentScene(activity.getGameScene());
+				activity.setCurrentScreen(activity.GAME_SCREEN);
+				return true;
+			}
+			return false;
 		default:
 			break;
 		}

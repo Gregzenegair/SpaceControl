@@ -31,8 +31,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private Tower tower4;
 	private float towerAxe;
 	private boolean shoot;
-	static final int CAMERA_WIDTH = 480;
-	static final int CAMERA_HEIGHT = 800;
 
 	private Sound soundTowerGun;
 	private Sound soundTowerGunb;
@@ -51,17 +49,17 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de
 	// tower
-	// TODO crash si creation de nouveaux enemies
 
 	public GameScene() {
 		activity = BaseActivity.getSharedInstance();
+		activity.setCurrentScreen(activity.GAME_SCREEN);
+		activity.setGameStarted(true);
+		soundTowerGun = BaseActivity.getSharedInstance().getSoundTowerGun();
+		soundTowerGunb = BaseActivity.getSharedInstance().getSoundTowerGunb();
+		soundImpact = BaseActivity.getSharedInstance().getSoundImpact();
+		soundExplosion = BaseActivity.getSharedInstance().getSoundExplosion();
 
-		soundTowerGun = BaseActivity.getSharedInstance().soundTowerGun;
-		soundTowerGunb = BaseActivity.getSharedInstance().soundTowerGunb;
-		soundImpact = BaseActivity.getSharedInstance().soundImpact;
-		soundExplosion = BaseActivity.getSharedInstance().soundExplosion;
-
-		mCamera = BaseActivity.getSharedInstance().mCamera;
+		mCamera = BaseActivity.getSharedInstance().getmCamera();
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
@@ -76,7 +74,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.setOnSceneTouchListener(this);
 
-		text1 = new Text(20, 20, activity.mFont, "Score : ", activity.getVertexBufferObjectManager());
+		text1 = new Text(20, 20, activity.getmFont(), "Score : ", activity.getVertexBufferObjectManager());
 		text1.setScale(0.5f);
 		attachChild(text1);
 
@@ -216,13 +214,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void creatingWalls() {
-		final Rectangle ground = new Rectangle(0, CAMERA_HEIGHT - 52, CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
+		final Rectangle ground = new Rectangle(0, activity.CAMERA_HEIGHT - 52, activity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
-		final Rectangle roof = new Rectangle(0, 0, CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
+		final Rectangle roof = new Rectangle(0, 0, activity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
-		final Rectangle left = new Rectangle(0, 0, 2, CAMERA_HEIGHT, BaseActivity.getSharedInstance()
+		final Rectangle left = new Rectangle(0, 0, 2, activity.CAMERA_HEIGHT, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
-		final Rectangle right = new Rectangle(CAMERA_WIDTH - 2, 0, 2, CAMERA_HEIGHT, BaseActivity.getSharedInstance()
+		final Rectangle right = new Rectangle(activity.CAMERA_WIDTH - 2, 0, 2, activity.CAMERA_HEIGHT, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
 
 		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
@@ -383,14 +381,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setmPhysicsWorld(PhysicsWorld mPhysicsWorld) {
 		this.mPhysicsWorld = mPhysicsWorld;
-	}
-
-	public static int getCameraWidth() {
-		return CAMERA_WIDTH;
-	}
-
-	public static int getCameraHeight() {
-		return CAMERA_HEIGHT;
 	}
 
 }

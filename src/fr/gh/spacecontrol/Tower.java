@@ -33,7 +33,7 @@ public class Tower {
 				.getSharedInstance().getVertexBufferObjectManager());
 		this.width = width;
 		this.height = height;
-		this.mCamera = BaseActivity.getSharedInstance().mCamera;
+		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 		this.facingLeft = false;
 		if (towerList.size() >= 2) {
 			this.facingLeft = true;
@@ -74,7 +74,7 @@ public class Tower {
 
 	public void shoot(int angle) {
 
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 

@@ -35,7 +35,7 @@ public class Enemy {
 	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
 
 	public Enemy() {
-		this.mCamera = BaseActivity.getSharedInstance().mCamera;
+		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		sprite.setColor(0.06f, 0.004f, 0.004f);
 		init();
@@ -101,7 +101,7 @@ public class Enemy {
 	}
 
 	public void addPhysics() {
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
 		this.sprite.unregisterEntityModifier(this.moveModifier);
 

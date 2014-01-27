@@ -24,7 +24,7 @@ public class EnemyPool extends GenericPool<Enemy> {
     
     @Override
     protected void onHandleRecycleItem(final Enemy e) {
-    	GameScene scene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+    	GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
         scene.mPhysicsWorld.destroyBody(e.getBody());
     	e.setPhysic(false);

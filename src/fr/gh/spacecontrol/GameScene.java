@@ -43,7 +43,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private LinkedList<Wreckage> wreckageList;
 
 	private BaseActivity activity;
-	private Text text1;
+	private Text scoreText;
+	private int scoreValue = 0;
 	private int bulletCount;
 	public PhysicsWorld mPhysicsWorld;
 
@@ -74,9 +75,20 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.setOnSceneTouchListener(this);
 
-		text1 = new Text(20, 20, activity.getmFont(), "Score : ", activity.getVertexBufferObjectManager());
-		text1.setScale(0.5f);
-		attachChild(text1);
+		scoreText = new Text(20, 20, activity.getmFont(), "Score : " + String.valueOf(scoreValue), 12,
+				activity.getVertexBufferObjectManager());
+		scoreText.setScale(0.5f);
+		attachChild(scoreText);
+
+		// Enemy creation
+
+		for (int x = 0; x < 3; x++) {
+			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
+			enemy.getSprite().setVisible(true);
+			this.attachChild(enemy.getSprite());
+			this.getEnemyList().add(enemy);
+			enemy.init();
+		}
 
 		// Enregistrement d'un update handler
 		registerUpdateHandler(new GameLoopUpdateHandler());
@@ -171,7 +183,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 								particleEmitterExplosion.createExplosion(e.getSprite().getX()
 										+ e.getSprite().getWidth() / 2, e.getSprite().getY()
 										+ e.getSprite().getHeight() / 2, e.getSprite().getParent(),
-										BaseActivity.getSharedInstance(), 30, 3, 3, b.getSprite().getRotation());
+										BaseActivity.getSharedInstance(), 10, 3, 3, b.getSprite().getRotation());
 								e.addPhysics();
 
 							}
@@ -179,11 +191,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 							soundExplosion.play();
 							particleEmitterExplosion.createExplosion(e.getSprite().getX() + e.getSprite().getWidth()
 									/ 2, e.getSprite().getY() + e.getSprite().getHeight() / 2, e.getSprite()
-									.getParent(), BaseActivity.getSharedInstance(), 30, 3, 3, b.getSprite()
+									.getParent(), BaseActivity.getSharedInstance(), 20, 3, 3, b.getSprite()
 									.getRotation());
 
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 							eIt.remove();
+							this.scoreValue += e.getScoreValue();
 
 						}
 						soundImpact.play();
@@ -214,14 +227,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void creatingWalls() {
-		final Rectangle ground = new Rectangle(0, activity.CAMERA_HEIGHT - 52, activity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		final Rectangle ground = new Rectangle(0, activity.CAMERA_HEIGHT - 52, activity.CAMERA_WIDTH, 2, BaseActivity
+				.getSharedInstance().getVertexBufferObjectManager());
 		final Rectangle roof = new Rectangle(0, 0, activity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
 		final Rectangle left = new Rectangle(0, 0, 2, activity.CAMERA_HEIGHT, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
-		final Rectangle right = new Rectangle(activity.CAMERA_WIDTH - 2, 0, 2, activity.CAMERA_HEIGHT, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		final Rectangle right = new Rectangle(activity.CAMERA_WIDTH - 2, 0, 2, activity.CAMERA_HEIGHT, BaseActivity
+				.getSharedInstance().getVertexBufferObjectManager());
 
 		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
@@ -360,11 +373,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	public Text getText1() {
-		return text1;
+		return scoreText;
 	}
 
 	public void setText1(Text text1) {
-		this.text1 = text1;
+		this.scoreText = text1;
 	}
 
 	public int getBulletCount() {
@@ -381,6 +394,22 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setmPhysicsWorld(PhysicsWorld mPhysicsWorld) {
 		this.mPhysicsWorld = mPhysicsWorld;
+	}
+
+	public int getScoreValue() {
+		return scoreValue;
+	}
+
+	public void setScoreValue(int scoreValue) {
+		this.scoreValue = scoreValue;
+	}
+
+	public Text getScoreText() {
+		return scoreText;
+	}
+
+	public void setScoreText(Text scoreText) {
+		this.scoreText = scoreText;
 	}
 
 }

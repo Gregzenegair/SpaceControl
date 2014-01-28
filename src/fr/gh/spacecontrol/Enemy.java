@@ -22,11 +22,14 @@ public class Enemy {
 	private int hp;
 	private int speed;
 	private boolean physic;
+	private boolean destroyed;
 	private int finalPosX;
 	private int finalPosY;
 	private Camera mCamera;
 	private MoveModifier moveModifier;
+	private PhysicsConnector PhysicsConnector;
 
+	private int scoreValue;
 	protected final int MAX_HEALTH = 10;
 	protected final int PHYSIC_HEALTH = MAX_HEALTH / 4;
 
@@ -38,27 +41,32 @@ public class Enemy {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		sprite.setColor(0.06f, 0.004f, 0.004f);
-		init();
 	}
 
 	// method for initializing the Enemy object , used by the constructor and
 	// the EnemyPool class
 	public void init() {
+
+		this.scoreValue = 50;
 		hp = MAX_HEALTH;
-		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
+		destroyed = false;
+		physic = false;
+
+		sprite.setVisible(true);
+		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(0, 300));
 
 		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
 		this.finalPosY = RandomTool.randInt(0, 100);
 
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(10, sprite.getX(), this.finalPosX, sprite
 				.getY(), this.finalPosY));
-		physic = false;
+
 	}
 
 	public void move() {
-		System.out.println("Enemy.move()");
-		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic()) {
-			System.out.println("Enemy.move() OK");
+		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic() && !this.isDestroyed()) {
 			int speed = RandomTool.randInt(2, 4);
 			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
 			this.finalPosY = RandomTool.randInt(0, 500);
@@ -69,7 +77,7 @@ public class Enemy {
 					sprite.getY(), this.finalPosY));
 		}
 	}
-
+	
 	public void moveCenter() {
 		this.finalPosX = (int) mCamera.getWidth() / 2 - 15;
 		this.finalPosY = (int) mCamera.getHeight() / 2;
@@ -79,7 +87,6 @@ public class Enemy {
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
 				.getY(), this.finalPosY));
 	}
-	
 
 	public int gotHitnDestroyed(int angle) {
 		synchronized (this) {
@@ -108,8 +115,25 @@ public class Enemy {
 
 		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
-		scene.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(this.sprite, body, true, true));
+		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
 		physic = true;
+	}
+
+	public void remove() {
+		if (this.isPhysic()) {
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+
+			scene.mPhysicsWorld.destroyBody(this.getBody());
+			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);
+		}
+
+		sprite.clearEntityModifiers();
+		sprite.clearUpdateHandlers();
+		sprite.setVisible(false);
+		sprite.detachSelf();
+		this.physic = false;
+		this.destroyed = true;
 	}
 
 	public Rectangle getSprite() {
@@ -182,6 +206,22 @@ public class Enemy {
 
 	public static FixtureDef getFixtureDef() {
 		return FIXTURE_DEF;
+	}
+
+	public boolean isDestroyed() {
+		return destroyed;
+	}
+
+	public void setDestroyed(boolean destroyed) {
+		this.destroyed = destroyed;
+	}
+
+	public int getScoreValue() {
+		return scoreValue;
+	}
+
+	public void setScoreValue(int scoreValue) {
+		this.scoreValue = scoreValue;
 	}
 
 }

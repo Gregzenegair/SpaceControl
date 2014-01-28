@@ -4,33 +4,26 @@ import org.andengine.entity.shape.IShape;
 import org.andengine.util.adt.pool.GenericPool;
 
 public class EnemyPool extends GenericPool<Enemy> {
-	 
-    public static EnemyPool instance;
- 
-    public static EnemyPool sharedEnemyPool() {
-        if (instance == null)
-            instance = new EnemyPool();
-        return instance;
-    }
- 
-    private EnemyPool() {
-        super();
-    }
- 
-    @Override
-    protected Enemy onAllocatePoolItem() {
-        return new Enemy();
-    }
-    
-    @Override
-    protected void onHandleRecycleItem(final Enemy e) {
-    	GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
-        scene.mPhysicsWorld.destroyBody(e.getBody());
-    	e.setPhysic(false);
-        e.getSprite().clearEntityModifiers();
-        e.getSprite().clearUpdateHandlers();
-        e.getSprite().setVisible(false);
-        e.getSprite().detachSelf();
-    }
+	public static EnemyPool instance;
+
+	public static EnemyPool sharedEnemyPool() {
+		if (instance == null)
+			instance = new EnemyPool();
+		return instance;
+	}
+
+	private EnemyPool() {
+		super();
+	}
+
+	@Override
+	protected Enemy onAllocatePoolItem() {
+		return new Enemy();
+	}
+
+	@Override
+	protected void onHandleRecycleItem(final Enemy e) {
+		e.remove();
+	}
 }

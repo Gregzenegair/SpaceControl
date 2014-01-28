@@ -200,12 +200,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private int isTouchingABunker(int posX, int posY) {
-		int marginSelection = 20;
+		final int MARGIN_SELECTION = 20;
 		for (Tower tower : towerList) {
-			if (posX < tower.getBunker().getPosX() + tower.getBunker().getWidth() + marginSelection
-					&& posX > tower.getBunker().getPosX() - marginSelection) {
-				if (posY < tower.getBunker().getPosY() + tower.getBunker().getHeight() + marginSelection
-						&& posY > tower.getBunker().getPosY() - marginSelection) {
+			if (posX < tower.getBunker().getPosX() + tower.getBunker().getWidth() + MARGIN_SELECTION
+					&& posX > tower.getBunker().getPosX() - MARGIN_SELECTION) {
+				if (posY < tower.getBunker().getPosY() + tower.getBunker().getHeight() + MARGIN_SELECTION
+						&& posY > tower.getBunker().getPosY() - MARGIN_SELECTION) {
 					return towerList.indexOf(tower);
 				}
 			}

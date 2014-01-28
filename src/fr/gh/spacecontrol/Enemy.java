@@ -27,7 +27,7 @@ public class Enemy {
 	private Camera mCamera;
 	private MoveModifier moveModifier;
 
-	protected final int MAX_HEALTH = 50;
+	protected final int MAX_HEALTH = 10;
 	protected final int PHYSIC_HEALTH = MAX_HEALTH / 4;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
@@ -56,8 +56,9 @@ public class Enemy {
 	}
 
 	public void move() {
+		System.out.println("Enemy.move()");
 		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic()) {
-
+			System.out.println("Enemy.move() OK");
 			int speed = RandomTool.randInt(2, 4);
 			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
 			this.finalPosY = RandomTool.randInt(0, 500);

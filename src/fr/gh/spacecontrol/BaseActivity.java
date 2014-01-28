@@ -26,7 +26,7 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	static final int SPLASH_SCREEN = 1;
 	static final int MAIN_MENU_SCREEN = 2;
 	static final int GAME_SCREEN = 10;
-	
+
 	private Font mFont;
 	private Camera mCamera;
 	private int currentScreen = 0;
@@ -44,37 +44,27 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	public EngineOptions onCreateEngineOptions() {
 		instance = this;
 		mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		EngineOptions engineOptions = new EngineOptions(true,
-				ScreenOrientation.PORTRAIT_SENSOR, new RatioResolutionPolicy(
-						CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR,
+				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
 		engineOptions.getAudioOptions().setNeedsSound(true);
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
 	}
 
 	protected void onCreateResources() {
-		mFont = FontFactory.create(this.getFontManager(),
-				this.getTextureManager(), 256, 256,
+		mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256,
 				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32);
 		mFont.load();
 
 		try {
-			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity
-					.getSharedInstance().getSoundManager(), BaseActivity
-					.getSharedInstance().getApplicationContext(),
-					"sounds/soundTowerGun.mp3");
-			soundTowerGunb = SoundFactory.createSoundFromAsset(BaseActivity
-					.getSharedInstance().getSoundManager(), BaseActivity
-					.getSharedInstance().getApplicationContext(),
-					"sounds/soundTowerGunb.mp3");
-			soundImpact = SoundFactory.createSoundFromAsset(BaseActivity
-					.getSharedInstance().getSoundManager(), BaseActivity
-					.getSharedInstance().getApplicationContext(),
-					"sounds/soundImpact.mp3");
-			soundExplosion = MusicFactory.createMusicFromAsset(BaseActivity
-					.getSharedInstance().getMusicManager(), BaseActivity
-					.getSharedInstance().getApplicationContext(),
-					"sounds/soundExplosion.mp3");
+			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
+					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGun.mp3");
+			soundTowerGunb = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
+					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGunb.mp3");
+			soundImpact = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
+					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundImpact.mp3");
+			soundExplosion = MusicFactory.createMusicFromAsset(BaseActivity.getSharedInstance().getMusicManager(),
+					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundExplosion.mp3");
 			soundTowerGun.setVolume(0.2f);
 			soundTowerGunb.setVolume(0.2f);
 			soundImpact.setVolume(0.05f);
@@ -104,8 +94,7 @@ public class BaseActivity extends SimpleBaseGameActivity {
 		super.onPause();
 		if (this.isGameLoaded()) {
 			if (this.currentScreen == GAME_SCREEN) {
-				this.mCurrentScene = (GameScene) BaseActivity
-						.getSharedInstance().mCurrentScene;
+				this.mCurrentScene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 			}
 		}
 
@@ -150,12 +139,7 @@ public class BaseActivity extends SimpleBaseGameActivity {
 		if (this.currentScreen == GAME_SCREEN) {
 			this.gameScene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 			this.setCurrentScene(new MainMenuScene());
-
-		} else {
-			// Otherwise defer to system default behavior.
-			super.onBackPressed();
 		}
-
 	}
 
 	public Font getmFont() {

@@ -6,12 +6,12 @@ import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.TextMenuItem;
 
-public class MainMenuScene extends MenuScene implements
-		IOnMenuItemClickListener {
+public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener {
 
 	BaseActivity activity;
 	final int MENU_START = 0;
 	final int MENU_BACKTOGAME = 1;
+	final int MENU_EXIT = 2;
 
 	public MainMenuScene() {
 		super(BaseActivity.getSharedInstance().getmCamera());
@@ -21,27 +21,28 @@ public class MainMenuScene extends MenuScene implements
 		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
 
 		IMenuItem startButton = new TextMenuItem(MENU_START, activity.getmFont(),
-				activity.getString(R.string.start),
-				activity.getVertexBufferObjectManager());
-		startButton.setPosition(
-				(mCamera.getWidth() / 2 - startButton.getWidth() / 2),
-				mCamera.getHeight() / 2 - startButton.getHeight() / 2);
+				activity.getString(R.string.startGame), activity.getVertexBufferObjectManager());
+		startButton.setPosition((mCamera.getWidth() / 2 - startButton.getWidth() / 2), mCamera.getHeight() / 2
+				- startButton.getHeight() / 2);
 
-		IMenuItem backToGameButton = new TextMenuItem(MENU_BACKTOGAME,
-				activity.getmFont(), activity.getString(R.string.backToGame),
+		IMenuItem backToGameButton = new TextMenuItem(MENU_BACKTOGAME, activity.getmFont(),
+				activity.getString(R.string.backToGame), activity.getVertexBufferObjectManager());
+		backToGameButton.setPosition((mCamera.getWidth() / 2 - backToGameButton.getWidth() / 2),
+				(mCamera.getHeight() / 2 - backToGameButton.getHeight() / 2) + (backToGameButton.getHeight() * 2));
+
+		IMenuItem exitButton = new TextMenuItem(MENU_EXIT, activity.getmFont(), activity.getString(R.string.exitGame),
 				activity.getVertexBufferObjectManager());
-		backToGameButton.setPosition(
-				(mCamera.getWidth() / 2 - backToGameButton.getWidth() / 2),
-				(mCamera.getHeight() / 2 - startButton.getHeight() / 2) + 40);
+		exitButton.setPosition((mCamera.getWidth() / 2 - exitButton.getWidth() / 2),
+				(mCamera.getHeight() / 2 - exitButton.getHeight() / 2) + (exitButton.getHeight() * 4));
 
 		addMenuItem(startButton);
 		addMenuItem(backToGameButton);
+		addMenuItem(exitButton);
 
 		setOnMenuItemClickListener(this);
 	}
 
-	public boolean onMenuItemClicked(MenuScene arg0, IMenuItem arg1,
-			float arg2, float arg3) {
+	public boolean onMenuItemClicked(MenuScene arg0, IMenuItem arg1, float arg2, float arg3) {
 		switch (arg1.getID()) {
 		case MENU_START:
 			activity.setCurrentScene(new GameScene());
@@ -53,6 +54,9 @@ public class MainMenuScene extends MenuScene implements
 				return true;
 			}
 			return false;
+		case MENU_EXIT:
+			activity.finish();
+			return true;
 		default:
 			break;
 		}

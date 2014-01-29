@@ -15,12 +15,12 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-public class Enemy {
+public class Reactor {
 
 	private Rectangle sprite;
 	private Body body;
 	private int hp;
-	private int speed = 2;
+	private int speed;
 	private boolean physic;
 	private boolean destroyed;
 	private int finalPosX;
@@ -28,73 +28,77 @@ public class Enemy {
 	private Camera mCamera;
 	private MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
-	private Reactor reactorRight;
-	private Reactor reactorLeft;
+	private Enemy enemy;
+	private int reactorSide;
 
 	private int scoreValue;
 	protected final int MAX_HEALTH = 20;
 	protected final int PHYSIC_HEALTH = MAX_HEALTH / 3;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
-	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
-	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
+	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
+	private static final Vector2 HIT_VECTOR_RIGHT = new Vector2(-1, 1);
+	protected static final int REACTOR_RIGHT = 0;
+	protected static final int REACTOR_LEFT = 1;
 
-	public Enemy() {
+	public Reactor() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.06f, 0.004f, 0.004f);
+		sprite = new Rectangle(0, 0, 10, 20, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		sprite.setColor(0.5f, 0.004f, 0.2f);
 	}
 
-	// method for initializing the Enemy object , used by the constructor and
-	// the EnemyPool class
-	public void init() {
+	// method for initializing the Reactor object , used by the constructor and
+	// the ReactorPool class
+	public void init(Enemy enemy, int reactorSide) {
 
-		this.scoreValue = 120;
+		this.enemy = enemy;
+		this.scoreValue = 20;
+		this.reactorSide = reactorSide;
 		hp = MAX_HEALTH;
 		destroyed = false;
 		physic = false;
-
-		reactorLeft = ReactorPool.sharedEnemyPool().obtainPoolItem();
-		reactorRight = ReactorPool.sharedEnemyPool().obtainPoolItem();
-		reactorLeft.init(this, Reactor.REACTOR_LEFT);
-		reactorRight.init(this, Reactor.REACTOR_RIGHT);
+		speed = enemy.getSpeed();
 
 		sprite.setRotation(0);
+		sprite.setPosition(0, 0);
+		sprite.setRotationCenter(0, 0);
 		sprite.setVisible(true);
-		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
+		sprite.setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
 
-		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
-		this.finalPosY = RandomTool.randInt(0, 100);
-
-		if (this.moveModifier != null)
-			sprite.unregisterEntityModifier(this.moveModifier);
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite
-				.getY(), this.finalPosY));
+		this.finalPosX = enemy.getFinalPosX();
+		this.finalPosY = enemy.getFinalPosY();
 
 	}
 
 	public void move() {
 
-		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic() && !this.isDestroyed()) {
-			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
-			this.finalPosY = RandomTool.randInt(0, 500);
+		this.finalPosX = enemy.getFinalPosX();
+		this.finalPosY = enemy.getFinalPosY();
 
-			if (this.moveModifier != null)
-				sprite.unregisterEntityModifier(this.moveModifier);
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
-					sprite.getY(), this.finalPosY));
-		}
-	}
+		sprite.setRotation(enemy.getSprite().getRotation());
 
-	public void moveCenter() {
-		this.finalPosX = (int) mCamera.getWidth() / 2 - 15;
-		this.finalPosY = (int) mCamera.getHeight() / 2;
+		float posXRotated = (float) ((Math.cos(Math.toRadians(enemy.getSprite().getRotation())))
+				* enemy.getSprite().getHeight() + enemy.getSprite().getHeight()) / 2;
+		float posYRotated = (float) ((Math.sin(Math.toRadians(enemy.getSprite().getRotation())))
+				* enemy.getSprite().getWidth() + enemy.getSprite().getWidth()) / 2;
+		System.out.println(posYRotated);
 
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
-				.getY(), this.finalPosY));
-		sprite.setRotation(sprite.getRotation() + 0.3f);
+
+		switch (reactorSide) {
+		case REACTOR_LEFT:
+			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getSprite().getX()
+					- sprite.getWidth() + posXRotated, this.finalPosX, enemy.getSprite().getY(), this.finalPosY
+					+ posYRotated));
+			break;
+		case REACTOR_RIGHT:
+			break;
+
+		default:
+			break;
+		}
+
 	}
 
 	public int gotHitnDestroyed(int angle) {
@@ -106,10 +110,10 @@ public class Enemy {
 				if (this.physic) {
 					if (angle >= 0) {
 
-						body.setLinearVelocity(HIT_VECTOR_L);
+						body.setLinearVelocity(HIT_VECTOR_LEFT);
 						body.setAngularVelocity(-0.3f);
 					} else {
-						body.setLinearVelocity(HIT_VECTOR_R);
+						body.setLinearVelocity(HIT_VECTOR_RIGHT);
 						body.setAngularVelocity(0.3f);
 					}
 				}
@@ -236,28 +240,20 @@ public class Enemy {
 		this.scoreValue = scoreValue;
 	}
 
-	public int getSpeed() {
-		return speed;
+	public Enemy getEnemy() {
+		return enemy;
 	}
 
-	public void setSpeed(int speed) {
-		this.speed = speed;
+	public void setEnemy(Enemy enemy) {
+		this.enemy = enemy;
 	}
 
-	public Reactor getReactorRight() {
-		return reactorRight;
+	public int getReactorSide() {
+		return reactorSide;
 	}
 
-	public void setReactorRight(Reactor reactorRight) {
-		this.reactorRight = reactorRight;
-	}
-
-	public Reactor getReactorLeft() {
-		return reactorLeft;
-	}
-
-	public void setReactorLeft(Reactor reactorLeft) {
-		this.reactorLeft = reactorLeft;
+	public void setReactorSide(int reactorSide) {
+		this.reactorSide = reactorSide;
 	}
 
 }

@@ -41,15 +41,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private LinkedList<Bullet> bulletList;
 	private LinkedList<Enemy> enemyList;
 	private LinkedList<Wreckage> wreckageList;
+	private LinkedList<Reactor> reactorList;
 
 	private BaseActivity activity;
 	private Text scoreText;
+	private Text debugText;
 	private int scoreValue = 0;
 	private int bulletCount;
 	public PhysicsWorld mPhysicsWorld;
-
-	// TODO low : trouver pourquoi ça crash si scene dans le constructeur de
-	// tower
 
 	public GameScene() {
 		activity = BaseActivity.getSharedInstance();
@@ -69,25 +68,40 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		this.bulletList = new LinkedList<Bullet>();
 		this.enemyList = new LinkedList<Enemy>();
 		this.wreckageList = new LinkedList<Wreckage>();
+		this.reactorList = new LinkedList<Reactor>();
 
 		this.buildTowers();
 		this.creatingWalls();
 
 		this.setOnSceneTouchListener(this);
 
-		scoreText = new Text(20, 20, activity.getmFont(), "Score : " + String.valueOf(scoreValue), 12,
+		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 12,
 				activity.getVertexBufferObjectManager());
+		scoreText.setPosition(mCamera.getWidth() / 2 - scoreText.getWidth() / 2, 20);
 		scoreText.setScale(0.5f);
 		attachChild(scoreText);
+		
+		debugText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 12,
+				activity.getVertexBufferObjectManager());
+		debugText.setPosition(mCamera.getWidth() / 2 - debugText.getWidth() / 2, 60);
+		debugText.setScale(0.5f);
+		attachChild(debugText);
 
 		// Enemy creation
 
-		for (int x = 0; x < 3; x++) {
+		for (int x = 0; x < 1; x++) {
 			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
 			enemy.getSprite().setVisible(true);
 			this.attachChild(enemy.getSprite());
 			this.getEnemyList().add(enemy);
 			enemy.init();
+			
+			enemy.getReactorLeft().getSprite().setVisible(true);
+			enemy.getReactorRight().getSprite().setVisible(true);
+			this.attachChild(enemy.getReactorLeft().getSprite());
+			this.attachChild(enemy.getReactorRight().getSprite());
+			this.getReactorList().add(enemy.getReactorLeft());
+			this.getReactorList().add(enemy.getReactorRight());
 		}
 
 		// Enregistrement d'un update handler
@@ -195,6 +209,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 									.getRotation());
 
 							EnemyPool.sharedEnemyPool().recyclePoolItem(e);
+							ReactorPool.sharedEnemyPool().recyclePoolItem(e.getReactorLeft());
+							ReactorPool.sharedEnemyPool().recyclePoolItem(e.getReactorRight());
 							eIt.remove();
 							this.scoreValue += e.getScoreValue();
 
@@ -236,7 +252,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		final Rectangle right = new Rectangle(activity.CAMERA_WIDTH - 2, 0, 2, activity.CAMERA_HEIGHT, BaseActivity
 				.getSharedInstance().getVertexBufferObjectManager());
 
-		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.5f, 0.5f);
+		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.1f, 0.1f);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, roof, BodyType.StaticBody, wallFixtureDef);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, left, BodyType.StaticBody, wallFixtureDef);
@@ -410,6 +426,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setScoreText(Text scoreText) {
 		this.scoreText = scoreText;
+	}
+
+	public LinkedList<Reactor> getReactorList() {
+		return reactorList;
+	}
+
+	public void setReactorList(LinkedList<Reactor> reactorList) {
+		this.reactorList = reactorList;
 	}
 
 }

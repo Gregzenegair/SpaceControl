@@ -19,12 +19,19 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 		scene.cleaner();
 
-		// TODO
+		if (this.scoreTemp + 100 < scene.getScoreValue()) {
+			this.scoreTemp += 100;
+		}
 		if (this.scoreTemp != scene.getScoreValue()) {
 			this.scoreTemp++;
 		}
+		String textScore = String.valueOf(this.scoreTemp);
+		while (textScore.length() < 10) {
+			textScore = "0" + textScore;
+		}
+
+		scene.getScoreText().setText(textScore);
 		
-		scene.getScoreText().setText("Score : " + String.valueOf(this.scoreTemp));
 
 		if (scene.isShoot()) {
 			if (ShootingDelay.getSharedInstance().checkValidity()) {
@@ -41,7 +48,12 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		Iterator<Enemy> itE = scene.getEnemyList().iterator();
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			e.move();
+			//++DEBUG
+			scene.getScoreText().setText(String.valueOf(e.getSprite().getRotation()));
+			//--DEBUG			
+			e.moveCenter();
+			e.getReactorLeft().move();
+			e.getReactorRight().move();
 		}
 
 		if (scene.getEnemyList().isEmpty()) {

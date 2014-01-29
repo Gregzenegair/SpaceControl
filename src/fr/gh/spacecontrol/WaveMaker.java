@@ -1,10 +1,10 @@
 package fr.gh.spacecontrol;
 
 public class WaveMaker {
-	
+
 	private int wave;
 	private GameScene scene;
-	
+
 	public static WaveMaker instance;
 
 	public static WaveMaker getSharedWaveMaker(GameScene scene) {
@@ -18,16 +18,21 @@ public class WaveMaker {
 		this.scene = scene;
 	}
 
-
-
 	public void newWave() {
-			for (int x = 0; x < this.wave*1.3f; x++) {
-				Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
-				enemy.getSprite().setVisible(true);
-				scene.attachChild(enemy.getSprite());
-				scene.getEnemyList().add(enemy);
-				enemy.init();
-			}
+		for (int x = 0; x < this.wave * 1.3f; x++) {
+			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
+			enemy.getSprite().setVisible(true);
+			scene.attachChild(enemy.getSprite());
+			scene.getEnemyList().add(enemy);
+			enemy.init();
+			
+			enemy.getReactorLeft().getSprite().setVisible(true);
+			enemy.getReactorRight().getSprite().setVisible(true);
+			scene.attachChild(enemy.getReactorLeft().getSprite());
+			scene.attachChild(enemy.getReactorRight().getSprite());
+			scene.getReactorList().add(enemy.getReactorLeft());
+			scene.getReactorList().add(enemy.getReactorRight());
+		}
 
 		this.wave++;
 	}
@@ -39,5 +44,5 @@ public class WaveMaker {
 	public void setWave(int wave) {
 		this.wave = wave;
 	}
-	
+
 }

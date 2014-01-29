@@ -29,8 +29,7 @@ public class Tower {
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
 
-		sprite = new Rectangle(0, 0, width, height, BaseActivity
-				.getSharedInstance().getVertexBufferObjectManager());
+		sprite = new Rectangle(0, 0, width, height, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		this.width = width;
 		this.height = height;
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
@@ -79,29 +78,25 @@ public class Tower {
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
-		b.getSprite().setPosition(
-				rotationCenterX
-						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * height)
-						+ width / 2 - height - 1, rotationCenterY
-						+ (float) Math.sin(Math.toRadians(270 - randAngle))
-						* height - width / 2 + height - 1);
+		b.getSprite()
+				.setPosition(
+						rotationCenterX - ((float) Math.cos(Math.toRadians(270 - randAngle)) * height) + width / 2
+								- height - 1,
+						rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * height - width / 2
+								+ height - 1);
 
 		b.getSprite().setRotation(randAngle);
-		MoveModifier movMod = new MoveModifier(
-				1.5f,
-				b.getSprite().getX(),
-				rotationCenterX
-						- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000)
-						+ width / 2 - height, b.getSprite().getY(), rotationCenterY
-						+ (float) Math.sin(Math.toRadians(270 - randAngle))
-						* 1000 - width / 2 + height);
+		MoveModifier movMod = new MoveModifier(1.5f, b.getSprite().getX(), rotationCenterX
+				- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000) + width / 2 - height,
+				b.getSprite().getY(), rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000
+						- width / 2 + height);
 
 		b.setAngle(angle);
 		b.getSprite().setVisible(true);
 		scene.attachChild(b.getSprite());
 		scene.getBulletList().add(b);
 		b.getSprite().registerEntityModifier(movMod);
-		scene.setBulletCount(scene.getBulletCount()+1);
+		scene.setBulletCount(scene.getBulletCount() + 1);
 
 		int soundRandom = RandomTool.randInt(0, 3);
 		if (soundRandom == 0 || soundRandom == 1 || soundRandom == 2)

@@ -32,6 +32,7 @@ public class WaveMaker {
 			scene.attachChild(enemy.getReactorRight().getSprite());
 			scene.getReactorList().add(enemy.getReactorLeft());
 			scene.getReactorList().add(enemy.getReactorRight());
+			
 		}
 
 		this.wave++;

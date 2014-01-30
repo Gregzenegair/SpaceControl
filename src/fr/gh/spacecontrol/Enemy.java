@@ -54,8 +54,8 @@ public class Enemy {
 		destroyed = false;
 		physic = false;
 
-		reactorLeft = ReactorPool.sharedEnemyPool().obtainPoolItem();
-		reactorRight = ReactorPool.sharedEnemyPool().obtainPoolItem();
+		reactorLeft = ReactorPool.sharedReactorPool().obtainPoolItem();
+		reactorRight = ReactorPool.sharedReactorPool().obtainPoolItem();
 		reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		reactorRight.init(this, Reactor.REACTOR_RIGHT);
 
@@ -94,7 +94,7 @@ public class Enemy {
 			sprite.unregisterEntityModifier(this.moveModifier);
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
 				.getY(), this.finalPosY));
-		sprite.setRotation(sprite.getRotation() + 0.3f);
+
 	}
 
 	public int gotHitnDestroyed(int angle) {
@@ -105,7 +105,6 @@ public class Enemy {
 			} else if (hp <= PHYSIC_HEALTH) {
 				if (this.physic) {
 					if (angle >= 0) {
-
 						body.setLinearVelocity(HIT_VECTOR_L);
 						body.setAngularVelocity(-0.3f);
 					} else {

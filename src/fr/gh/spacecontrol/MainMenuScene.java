@@ -1,5 +1,7 @@
 package fr.gh.spacecontrol;
 
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -40,6 +42,17 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		addMenuItem(exitButton);
 
 		setOnMenuItemClickListener(this);
+		/*
+		//++DEBUG
+		DelayModifier dMod = new DelayModifier(2) {
+			@Override
+			protected void onModifierFinished(IEntity pItem) {
+				activity.setCurrentScene(new GameScene());
+			}
+		};
+		registerEntityModifier(dMod);
+		//--DEBUG
+		 */
 	}
 
 	public boolean onMenuItemClicked(MenuScene arg0, IMenuItem arg1, float arg2, float arg3) {

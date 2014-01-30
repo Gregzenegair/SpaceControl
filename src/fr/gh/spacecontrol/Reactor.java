@@ -1,19 +1,17 @@
 package fr.gh.spacecontrol;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.entity.modifier.EntityModifier;
-import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
-import org.andengine.extension.physics.box2d.PhysicsWorld;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 public class Reactor {
 
@@ -32,7 +30,7 @@ public class Reactor {
 	private int reactorSide;
 
 	private int scoreValue;
-	protected final int MAX_HEALTH = 20;
+	protected final int MAX_HEALTH = 5;
 	protected final int PHYSIC_HEALTH = MAX_HEALTH / 3;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
@@ -60,8 +58,8 @@ public class Reactor {
 		speed = enemy.getSpeed();
 
 		sprite.setRotation(0);
-		sprite.setPosition(0, 0);
-		sprite.setRotationCenter(0, 0);
+		sprite.setPosition(-sprite.getWidth(), -sprite.getHeight());
+//		sprite.setRotationCenter(0, 0);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getSprite().getX(), enemy.getSprite().getY());
 
@@ -72,33 +70,27 @@ public class Reactor {
 
 	public void move() {
 
-		this.finalPosX = enemy.getFinalPosX();
-		this.finalPosY = enemy.getFinalPosY();
+		if (!this.physic && !this.destroyed) {
+			this.finalPosX = enemy.getFinalPosX();
+			this.finalPosY = enemy.getFinalPosY();
 
-		sprite.setRotation(enemy.getSprite().getRotation());
+			if (this.moveModifier != null)
+				sprite.unregisterEntityModifier(this.moveModifier);
 
-		float posXRotated = (float) ((Math.cos(Math.toRadians(enemy.getSprite().getRotation())))
-				* enemy.getSprite().getHeight() + enemy.getSprite().getHeight()) / 2;
-		float posYRotated = (float) ((Math.sin(Math.toRadians(enemy.getSprite().getRotation())))
-				* enemy.getSprite().getWidth() + enemy.getSprite().getWidth()) / 2;
-		System.out.println(posYRotated);
+			switch (reactorSide) {
+			case REACTOR_LEFT:
+				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getSprite().getX()
+						- sprite.getWidth(), this.finalPosX, enemy.getSprite().getY(), this.finalPosY));
+				break;
+			case REACTOR_RIGHT:
+				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getSprite().getX()
+						+ enemy.getSprite().getWidth(), this.finalPosX, enemy.getSprite().getY(), this.finalPosY));
+				break;
 
-		if (this.moveModifier != null)
-			sprite.unregisterEntityModifier(this.moveModifier);
-
-		switch (reactorSide) {
-		case REACTOR_LEFT:
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getSprite().getX()
-					- sprite.getWidth() + posXRotated, this.finalPosX, enemy.getSprite().getY(), this.finalPosY
-					+ posYRotated));
-			break;
-		case REACTOR_RIGHT:
-			break;
-
-		default:
-			break;
+			default:
+				break;
+			}
 		}
-
 	}
 
 	public int gotHitnDestroyed(int angle) {
@@ -125,15 +117,24 @@ public class Reactor {
 	}
 
 	public void addPhysics() {
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		if (!this.destroyed && !this.physic) {
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
-		this.sprite.unregisterEntityModifier(this.moveModifier);
+			this.sprite.unregisterEntityModifier(this.moveModifier);
 
-		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
+			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody,
+					FIXTURE_DEF);
 
-		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
-		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-		physic = true;
+			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
+			physic = true;
+
+			final WeldJointDef joint = new WeldJointDef();
+			joint.initialize(enemy.getBody(), this.body, enemy.getBody().getWorldCenter());
+
+			scene.mPhysicsWorld.createJoint(joint);
+		}
+
 	}
 
 	public void remove() {

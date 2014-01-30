@@ -19,7 +19,7 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
-public final class particleEmitterExplosion {
+public final class ParticleEmitterExplosion {
 
 	public static void createExplosion(final float posX, final float posY, final IEntity target,
 			final SimpleBaseGameActivity activity, int mNumPart, final int width, final int height, float rotation) {
@@ -70,7 +70,7 @@ public final class particleEmitterExplosion {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 		Camera mCamera = BaseActivity.getSharedInstance().getmCamera();
 		int mTimePart = 2;
-		int mReveredRotation = (int) (rotation -90+ rotation / 2);
+		int mReveredRotation = (int) (rotation - 90 + rotation / 2);
 
 		final Wreckage wreckage = WreckagePool.sharedWreckagePool().obtainPoolItem();
 		wreckage.getSprite().setPosition(posX, posY);
@@ -82,13 +82,15 @@ public final class particleEmitterExplosion {
 
 		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.getSprite());
 		wreckage.getSprite().registerUpdateHandler(movMod2);
-		movMod2.setVelocity(0,100);
-		/*
-		final MoveModifier movMod2 = new MoveModifier(1.2f, posX
-				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 20), wreckage.sprite.getX()
-				+ ((float) Math.cos(Math.toRadians(mReveredRotation)) * 4), posY
-				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 20, mCamera.getHeight());
-		 */
+		movMod2.setVelocity(0, 100);
+		
+//		  final MoveModifier movMod2 = new MoveModifier(1.2f, posX - ((float)
+//		  Math.cos(Math.toRadians(mReveredRotation)) * 20),
+//		  wreckage.sprite.getX() + ((float)
+//		  Math.cos(Math.toRadians(mReveredRotation)) * 4), posY + (float)
+//		  Math.sin(Math.toRadians(mReveredRotation)) * 20,
+//		  mCamera.getHeight());
+		 
 		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
 		wreckage.getSprite().setVisible(true);
@@ -101,7 +103,7 @@ public final class particleEmitterExplosion {
 		target.registerUpdateHandler(new TimerHandler(0.2f, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
-				//wreckage.sprite.registerEntityModifier(movMod2);
+				// wreckage.sprite.registerEntityModifier(movMod2);
 				wreckage.getSprite().registerEntityModifier(rotMod);
 				target.sortChildren();
 			}

@@ -45,7 +45,7 @@ public class SplashScene extends Scene {
 				activity.setCurrentScene(new MainMenuScene());
 			}
 		};
-		registerEntityModifier(dMod);		
+		registerEntityModifier(dMod);
 	}
 	
 }

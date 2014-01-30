@@ -40,7 +40,6 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 						tower.shoot((int) tower.getAngle());
 				}
 			}
-
 		}
 
 		// System.out.println(WaveMaker.getSharedWaveMaker(scene).getWave());
@@ -48,10 +47,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		Iterator<Enemy> itE = scene.getEnemyList().iterator();
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			//++DEBUG
-			scene.getScoreText().setText(String.valueOf(e.getSprite().getRotation()));
-			//--DEBUG			
-			e.moveCenter();
+			e.move();
 			e.getReactorLeft().move();
 			e.getReactorRight().move();
 		}

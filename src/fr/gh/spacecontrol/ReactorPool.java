@@ -7,7 +7,7 @@ public class ReactorPool extends GenericPool<Reactor> {
 
 	public static ReactorPool instance;
 
-	public static ReactorPool sharedEnemyPool() {
+	public static ReactorPool sharedReactorPool() {
 		if (instance == null)
 			instance = new ReactorPool();
 		return instance;

@@ -183,7 +183,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						damagingElement(b, e.getReactorLeft(), bIt, eIt);
 					}
 					if (b.getSprite().collidesWith(e.getReactorRight().getSprite())) {
-						damagingElement(b, e.getReactorLeft(), bIt, eIt);
+						damagingElement(b, e.getReactorRight(), bIt, eIt);
 					}
 				}
 			}
@@ -193,6 +193,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private void damagingElement(Bullet b, Object element, Iterator<Bullet> bIt, Iterator<Enemy> eIt) {
 		if (element.getClass().getSimpleName().equals("Enemy")) {
 			Enemy e = (Enemy) element;
+			// System.out.println(e.getSprite().getParent());
 			if (e.gotHitnDestroyed(b.getAngle()) == 1) {
 				if (!e.isPhysic()) {
 					ParticleEmitterExplosion.createExplosion(e.getSprite().getX() + e.getSprite().getWidth() / 2, e
@@ -223,20 +224,19 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			bIt.remove();
 		} else if (element.getClass().getSimpleName().equals("Reactor")) {
 			Reactor r = (Reactor) element;
+			// System.out.println(r.getSprite().getParent());
 			if (r.gotHitnDestroyed(b.getAngle()) == 1) {
 				if (!r.isPhysic()) {
-					ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
-							.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
-							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
-					r.addPhysics();
-					r.addPhysics();
+//					ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
+//							.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
+//							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 					r.addPhysics();
 				}
 			} else if (r.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
-				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
-						.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
-						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
+//				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
+//						.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
+//						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 				ReactorPool.sharedReactorPool().recyclePoolItem(r);
 				this.scoreValue += r.getScoreValue();
 

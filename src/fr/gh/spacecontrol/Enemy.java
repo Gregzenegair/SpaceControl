@@ -56,8 +56,7 @@ public class Enemy {
 
 		reactorLeft = ReactorPool.sharedReactorPool().obtainPoolItem();
 		reactorRight = ReactorPool.sharedReactorPool().obtainPoolItem();
-		reactorLeft.init(this, Reactor.REACTOR_LEFT);
-		reactorRight.init(this, Reactor.REACTOR_RIGHT);
+
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);
@@ -65,7 +64,10 @@ public class Enemy {
 
 		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
 		this.finalPosY = RandomTool.randInt(0, 100);
-
+		
+		reactorLeft.init(this, Reactor.REACTOR_LEFT);
+		reactorRight.init(this, Reactor.REACTOR_RIGHT);
+		
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite

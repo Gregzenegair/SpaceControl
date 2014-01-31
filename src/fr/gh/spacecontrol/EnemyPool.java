@@ -24,6 +24,10 @@ public class EnemyPool extends GenericPool<Enemy> {
 
 	@Override
 	protected void onHandleRecycleItem(final Enemy e) {
-		e.remove();
+		try {
+			e.remove();
+		} catch (Exception ex) {
+			System.err.println(ex + " Objet : " + this.toString());
+		}
 	}
 }

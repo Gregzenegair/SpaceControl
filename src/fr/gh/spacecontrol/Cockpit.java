@@ -1,24 +1,26 @@
 package fr.gh.spacecontrol;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.modifier.EntityModifier;
+import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveModifier;
+import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
-public class Reactor {
+public class Cockpit {
 
 	private Rectangle sprite;
 	private Body body;
 	private int hp;
-	private int speed;
+	private int speed = 2;
 	private boolean physic;
 	private boolean destroyed;
 	private int finalPosX;
@@ -26,73 +28,68 @@ public class Reactor {
 	private Camera mCamera;
 	private MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
-	private int reactorSide;
 	private Enemy enemy;
+
 	private int scoreValue;
-	protected final int MAX_HEALTH = 5;
+	protected final int MAX_HEALTH = 20;
 	protected final int PHYSIC_HEALTH = MAX_HEALTH / 3;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
-	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
-	private static final Vector2 HIT_VECTOR_RIGHT = new Vector2(-1, 1);
-	protected static final int REACTOR_RIGHT = 0;
-	protected static final int REACTOR_LEFT = 1;
+	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
+	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
 
-	public Reactor() {
+	public Cockpit() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 10, 20, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.5f, 0.004f, 0.2f);
+		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		sprite.setColor(0.06f, 0.004f, 0.004f);
 	}
 
-	// method for initializing the Reactor object , used by the constructor and
-	// the ReactorPool class
-	public void init(Enemy enemy, int reactorSide) {
+	// method for initializing the Enemy object , used by the constructor and
+	// the EnemyPool class
+	public void init(Enemy enemyParent) {
 
 		this.enemy = enemy;
-		this.scoreValue = 20;
-		this.reactorSide = reactorSide;
+		this.scoreValue = 120;
 		hp = MAX_HEALTH;
 		destroyed = false;
 		physic = false;
-		speed = enemy.getCockpit().getSpeed();
 
 		sprite.setRotation(0);
-		sprite.setPosition(-sprite.getWidth(), -sprite.getHeight());
-		// sprite.setRotationCenter(0, 0);
 		sprite.setVisible(true);
-		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
+		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
 
-		this.finalPosX = enemy.getCockpit().getFinalPosX();
-		this.finalPosY = enemy.getCockpit().getFinalPosY();
+		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
+		this.finalPosY = RandomTool.randInt(0, 100);
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 
 	}
 
 	public void move() {
 
-		if (!this.physic && !this.destroyed) {
-			this.finalPosX = enemy.getCockpit().getFinalPosX();
-			this.finalPosY = enemy.getCockpit().getFinalPosY();
+		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic() && !this.isDestroyed()) {
+			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
+			this.finalPosY = RandomTool.randInt(0, 500);
 
 			if (this.moveModifier != null)
 				sprite.unregisterEntityModifier(this.moveModifier);
-
-			switch (reactorSide) {
-			case REACTOR_LEFT:
-				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
-						.getSprite().getX()
-						- sprite.getWidth(), this.finalPosX, enemy.getCockpit().getSprite().getY(), this.finalPosY));
-				break;
-			case REACTOR_RIGHT:
-				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
-						.getSprite().getX()
-						+ enemy.getCockpit().getSprite().getWidth(), this.finalPosX, enemy.getCockpit().getSprite()
-						.getY(), this.finalPosY));
-				break;
-
-			default:
-				break;
-			}
+			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
+					sprite.getY(), this.finalPosY));
 		}
+	}
+
+	public void moveCenter() {
+		this.finalPosX = (int) mCamera.getWidth() / 2 - 15;
+		this.finalPosY = (int) mCamera.getHeight() / 2;
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
+
 	}
 
 	public int gotHitnDestroyed(int angle) {
@@ -103,10 +100,10 @@ public class Reactor {
 			} else if (hp <= PHYSIC_HEALTH) {
 				if (this.physic) {
 					if (angle >= 0) {
-						body.setLinearVelocity(HIT_VECTOR_LEFT);
+						body.setLinearVelocity(HIT_VECTOR_L);
 						body.setAngularVelocity(-0.3f);
 					} else {
-						body.setLinearVelocity(HIT_VECTOR_RIGHT);
+						body.setLinearVelocity(HIT_VECTOR_R);
 						body.setAngularVelocity(0.3f);
 					}
 				}
@@ -118,24 +115,15 @@ public class Reactor {
 	}
 
 	public void addPhysics() {
-		if (!this.destroyed && !this.physic) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
-			this.sprite.unregisterEntityModifier(this.moveModifier);
+		this.sprite.unregisterEntityModifier(this.moveModifier);
 
-			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody,
-					FIXTURE_DEF);
+		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
-			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
-			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-			physic = true;
-
-			final WeldJointDef joint = new WeldJointDef();
-			joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
-
-			scene.mPhysicsWorld.createJoint(joint);
-		}
-
+		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
+		physic = true;
 	}
 
 	public void remove() {
@@ -152,6 +140,7 @@ public class Reactor {
 		sprite.detachSelf();
 		this.physic = false;
 		this.destroyed = true;
+
 	}
 
 	public Rectangle getSprite() {
@@ -242,20 +231,16 @@ public class Reactor {
 		this.scoreValue = scoreValue;
 	}
 
-	public int getReactorSide() {
-		return reactorSide;
+	public int getSpeed() {
+		return speed;
 	}
 
-	public void setReactorSide(int reactorSide) {
-		this.reactorSide = reactorSide;
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
-	public PhysicsConnector getPhysicsConnector() {
-		return PhysicsConnector;
-	}
-
-	public void setPhysicsConnector(PhysicsConnector physicsConnector) {
-		PhysicsConnector = physicsConnector;
+	public Enemy getEnemy() {
+		return enemy;
 	}
 
 	public void setEnemy(Enemy enemy) {

@@ -39,8 +39,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	private LinkedList<Tower> towerList;
 	private LinkedList<Bullet> bulletList;
-	private LinkedList<Enemy> enemyList;
 	private LinkedList<Wreckage> wreckageList;
+	private LinkedList<Enemy> enemyList;
+	private LinkedList<Cockpit> cockpitList;	
 	private LinkedList<Reactor> reactorList;
 
 	private BaseActivity activity;
@@ -66,8 +67,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.towerList = new LinkedList<Tower>();
 		this.bulletList = new LinkedList<Bullet>();
-		this.enemyList = new LinkedList<Enemy>();
+		
 		this.wreckageList = new LinkedList<Wreckage>();
+		this.cockpitList = new LinkedList<Cockpit>();
+		this.enemyList = new LinkedList<Enemy>();
 		this.reactorList = new LinkedList<Reactor>();
 
 		this.buildTowers();
@@ -175,7 +178,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						continue;
 					}
 
-					if (b.getSprite().collidesWith(e.getSprite())) {
+					if (b.getSprite().collidesWith(e.getCockpit().getSprite())) {
 						damagingElement(b, e, bIt, eIt);
 					}
 
@@ -191,29 +194,32 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void damagingElement(Bullet b, Object element, Iterator<Bullet> bIt, Iterator<Enemy> eIt) {
-		if (element.getClass().getSimpleName().equals("Enemy")) {
-			Enemy e = (Enemy) element;
+		if (element.getClass().getSimpleName().equals("Cockpit")) {
+			Cockpit c = (Cockpit) element;
+			Enemy e = c.getEnemy();
 			// System.out.println(e.getSprite().getParent());
-			if (e.gotHitnDestroyed(b.getAngle()) == 1) {
-				if (!e.isPhysic()) {
-					ParticleEmitterExplosion.createExplosion(e.getSprite().getX() + e.getSprite().getWidth() / 2, e
-							.getSprite().getY() + e.getSprite().getHeight() / 2, e.getSprite().getParent(),
+			if (c.gotHitnDestroyed(b.getAngle()) == 1) {
+				if (!c.isPhysic()) {
+					ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
+							.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
 							BaseActivity.getSharedInstance(), 8, 3, 3, b.getSprite().getRotation());
-					e.addPhysics();
+					c.addPhysics();
 					e.getReactorLeft().addPhysics();
 					e.getReactorRight().addPhysics();
 				}
-			} else if (e.gotHitnDestroyed(b.getAngle()) == 0) {
+			} else if (c.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
-				ParticleEmitterExplosion.createExplosion(e.getSprite().getX() + e.getSprite().getWidth() / 2, e
-						.getSprite().getY() + e.getSprite().getHeight() / 2, e.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
+						.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 12, 3, 3, b.getSprite().getRotation());
 
-				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
-				ReactorPool.sharedReactorPool().recyclePoolItem(e.getReactorLeft());
-				ReactorPool.sharedReactorPool().recyclePoolItem(e.getReactorRight());
+				CockpitPool.sharedEnemyBodyPool().recyclePoolItem(c);
+				if (!e.getReactorLeft().isDestroyed())
+					ReactorPool.sharedReactorPool().recyclePoolItem(e.getReactorLeft());
+				if (!e.getReactorRight().isDestroyed())
+					ReactorPool.sharedReactorPool().recyclePoolItem(e.getReactorRight());
 				eIt.remove();
-				this.scoreValue += e.getScoreValue();
+				this.scoreValue += c.getScoreValue();
 
 			}
 			soundImpact.play();
@@ -222,14 +228,15 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
+			
 		} else if (element.getClass().getSimpleName().equals("Reactor")) {
 			Reactor r = (Reactor) element;
 			// System.out.println(r.getSprite().getParent());
 			if (r.gotHitnDestroyed(b.getAngle()) == 1) {
 				if (!r.isPhysic()) {
-//					ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
-//							.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
-//							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
+					ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
+							.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
+							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 					r.addPhysics();
 				}
 			} else if (r.gotHitnDestroyed(b.getAngle()) == 0) {
@@ -241,12 +248,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				this.scoreValue += r.getScoreValue();
 
 			}
-			soundImpact.play();
+//			soundImpact.play();
 //			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b
 //					.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
 //					BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
-			BulletPool.sharedBulletPool().recyclePoolItem(b);
-			bIt.remove();
+//			BulletPool.sharedBulletPool().recyclePoolItem(b);
+//			bIt.remove();
 		}
 
 	}
@@ -401,6 +408,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setWreckageList(LinkedList<Wreckage> wreckageList) {
 		this.wreckageList = wreckageList;
+	}
+
+	public LinkedList<Cockpit> getCockpitList() {
+		return cockpitList;
+	}
+
+	public void setCockpitList(LinkedList<Cockpit> cockpitList) {
+		this.cockpitList = cockpitList;
 	}
 
 	public BaseActivity getActivity() {

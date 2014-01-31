@@ -24,6 +24,11 @@ public class ReactorPool extends GenericPool<Reactor> {
 
 	@Override
 	protected void onHandleRecycleItem(final Reactor r) {
-		r.remove();
+		try {
+			r.remove();
+		} catch (Exception e) {
+			System.err.println(e + " Objet : " + this.toString());
+		}
+
 	}
 }

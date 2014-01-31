@@ -21,18 +21,21 @@ public class WaveMaker {
 	public void newWave() {
 		for (int x = 0; x < this.wave * 1.3f; x++) {
 			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
-			enemy.getSprite().setVisible(true);
-			scene.attachChild(enemy.getSprite());
-			scene.getEnemyList().add(enemy);
-			enemy.init();
 			
+			scene.attachChild(enemy.getCockpit().getSprite());
+			enemy.getCockpit().getSprite().setVisible(true);
 			enemy.getReactorLeft().getSprite().setVisible(true);
 			enemy.getReactorRight().getSprite().setVisible(true);
+
 			scene.attachChild(enemy.getReactorLeft().getSprite());
 			scene.attachChild(enemy.getReactorRight().getSprite());
+
+			scene.getCockpitList().add(enemy.getCockpit());
 			scene.getReactorList().add(enemy.getReactorLeft());
 			scene.getReactorList().add(enemy.getReactorRight());
-			
+
+			scene.getEnemyList().add(enemy);
+
 		}
 
 		this.wave++;

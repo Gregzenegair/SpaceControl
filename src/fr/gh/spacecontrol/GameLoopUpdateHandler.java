@@ -47,7 +47,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		Iterator<Enemy> itE = scene.getEnemyList().iterator();
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			e.move();
+			e.getCockpit().move();
 			e.getReactorLeft().move();
 			e.getReactorRight().move();
 		}

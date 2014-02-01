@@ -29,8 +29,8 @@ public class Reactor {
 	private int reactorSide;
 	private Enemy enemy;
 	private int scoreValue;
-	protected final int MAX_HEALTH = 5;
-	protected final int PHYSIC_HEALTH = MAX_HEALTH / 3;
+	protected final int MAX_HEALTH = 6;
+	protected final int PHYSIC_HEALTH = 1;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
@@ -58,7 +58,6 @@ public class Reactor {
 
 		sprite.setRotation(0);
 		sprite.setPosition(-sprite.getWidth(), -sprite.getHeight());
-		// sprite.setRotationCenter(0, 0);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
 
@@ -104,10 +103,10 @@ public class Reactor {
 				if (this.physic) {
 					if (angle >= 0) {
 						body.setLinearVelocity(HIT_VECTOR_LEFT);
-						body.setAngularVelocity(-0.3f);
+						body.setAngularVelocity(1f);
 					} else {
 						body.setLinearVelocity(HIT_VECTOR_RIGHT);
-						body.setAngularVelocity(0.3f);
+						body.setAngularVelocity(-1f);
 					}
 				}
 				return 1;
@@ -128,12 +127,17 @@ public class Reactor {
 
 			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
 			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-			physic = true;
+			this.physic = true;
 
-			final WeldJointDef joint = new WeldJointDef();
-			joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
+			int random = RandomTool.randInt(-5, 5);
+			body.setAngularVelocity(random);
+			random = RandomTool.randInt(0, 4);
+			if (random != 0) {
+				final WeldJointDef joint = new WeldJointDef();
+				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
 
-			scene.mPhysicsWorld.createJoint(joint);
+				scene.mPhysicsWorld.createJoint(joint);
+			}
 		}
 
 	}
@@ -260,6 +264,10 @@ public class Reactor {
 
 	public void setEnemy(Enemy enemy) {
 		this.enemy = enemy;
+	}
+
+	public Enemy getEnemy() {
+		return enemy;
 	}
 
 }

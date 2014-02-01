@@ -31,8 +31,8 @@ public class Cockpit {
 	private Enemy enemy;
 
 	private int scoreValue;
-	protected final int MAX_HEALTH = 20;
-	protected final int PHYSIC_HEALTH = MAX_HEALTH / 3;
+	protected final int MAX_HEALTH = 10;
+	protected final int PHYSIC_HEALTH = 2;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
@@ -46,7 +46,7 @@ public class Cockpit {
 
 	// method for initializing the Enemy object , used by the constructor and
 	// the EnemyPool class
-	public void init(Enemy enemyParent) {
+	public void init(Enemy enemy) {
 
 		this.enemy = enemy;
 		this.scoreValue = 120;
@@ -123,7 +123,7 @@ public class Cockpit {
 
 		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
 		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-		physic = true;
+		this.physic = true;
 	}
 
 	public void remove() {

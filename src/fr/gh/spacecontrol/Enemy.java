@@ -11,6 +11,9 @@ public class Enemy {
 	
 	public Enemy() {
 		super();
+	}
+	
+	public void init() {
 		this.cockpit = CockpitPool.sharedEnemyBodyPool().obtainPoolItem();
 		this.reactorLeft = ReactorPool.sharedReactorPool().obtainPoolItem();
 		this.reactorRight = ReactorPool.sharedReactorPool().obtainPoolItem();

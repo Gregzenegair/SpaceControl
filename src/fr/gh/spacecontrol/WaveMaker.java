@@ -1,5 +1,8 @@
 package fr.gh.spacecontrol;
 
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
+
 public class WaveMaker {
 
 	private int wave;
@@ -19,22 +22,31 @@ public class WaveMaker {
 	}
 
 	public void newWave() {
+		scene.registerUpdateHandler(new TimerHandler(2, new ITimerCallback() {
+            
+            @Override
+            public void onTimePassed(TimerHandler pTimerHandler) {
+
+            }
+    }));
 		for (int x = 0; x < this.wave * 1.3f; x++) {
 			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
 			
+			enemy.init();
+			
+			enemy.getCockpit().getSprite().detachSelf();
+			enemy.getReactorLeft().getSprite().detachSelf();
+			enemy.getReactorRight().getSprite().detachSelf();
+			
 			scene.attachChild(enemy.getCockpit().getSprite());
-			enemy.getCockpit().getSprite().setVisible(true);
-			enemy.getReactorLeft().getSprite().setVisible(true);
-			enemy.getReactorRight().getSprite().setVisible(true);
-
 			scene.attachChild(enemy.getReactorLeft().getSprite());
 			scene.attachChild(enemy.getReactorRight().getSprite());
 
-			scene.getCockpitList().add(enemy.getCockpit());
-			scene.getReactorList().add(enemy.getReactorLeft());
-			scene.getReactorList().add(enemy.getReactorRight());
-
 			scene.getEnemyList().add(enemy);
+			
+			enemy.getCockpit().getSprite().setVisible(true);
+			enemy.getReactorLeft().getSprite().setVisible(true);
+			enemy.getReactorRight().getSprite().setVisible(true);
 
 		}
 

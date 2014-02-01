@@ -38,20 +38,17 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 				(mCamera.getHeight() / 2 - exitButton.getHeight() / 2) + (exitButton.getHeight() * 4));
 
 		addMenuItem(startButton);
-		addMenuItem(backToGameButton);
+		if (activity.isGameStarted())
+			addMenuItem(backToGameButton);
 		addMenuItem(exitButton);
 
 		setOnMenuItemClickListener(this);
 		/*
-		//++DEBUG
-		DelayModifier dMod = new DelayModifier(2) {
-			@Override
-			protected void onModifierFinished(IEntity pItem) {
-				activity.setCurrentScene(new GameScene());
-			}
-		};
-		registerEntityModifier(dMod);
-		//--DEBUG
+		 * //++DEBUG DelayModifier dMod = new DelayModifier(2) {
+		 * 
+		 * @Override protected void onModifierFinished(IEntity pItem) {
+		 * activity.setCurrentScene(new GameScene()); } };
+		 * registerEntityModifier(dMod); //--DEBUG
 		 */
 	}
 

@@ -24,6 +24,10 @@ public final class ParticleEmitterExplosion {
 	public static void createExplosion(final float posX, final float posY, final IEntity target,
 			final SimpleBaseGameActivity activity, int mNumPart, final int width, final int height, float rotation) {
 
+		if (target == null) {
+			return;
+		}
+
 		int mTimePart = 2;
 		int mRotation = (int) rotation;
 
@@ -67,6 +71,10 @@ public final class ParticleEmitterExplosion {
 			final SimpleBaseGameActivity activity, final Color color, int mNumPart, final int width, final int height,
 			float rotation) {
 
+		if (target == null) {
+			return;
+		}
+
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 		Camera mCamera = BaseActivity.getSharedInstance().getmCamera();
 		int mTimePart = 2;
@@ -83,14 +91,14 @@ public final class ParticleEmitterExplosion {
 		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.getSprite());
 		wreckage.getSprite().registerUpdateHandler(movMod2);
 		movMod2.setVelocity(0, 100);
-		
-//		  final MoveModifier movMod2 = new MoveModifier(1.2f, posX - ((float)
-//		  Math.cos(Math.toRadians(mReveredRotation)) * 20),
-//		  wreckage.sprite.getX() + ((float)
-//		  Math.cos(Math.toRadians(mReveredRotation)) * 4), posY + (float)
-//		  Math.sin(Math.toRadians(mReveredRotation)) * 20,
-//		  mCamera.getHeight());
-		 
+
+		// final MoveModifier movMod2 = new MoveModifier(1.2f, posX - ((float)
+		// Math.cos(Math.toRadians(mReveredRotation)) * 20),
+		// wreckage.sprite.getX() + ((float)
+		// Math.cos(Math.toRadians(mReveredRotation)) * 4), posY + (float)
+		// Math.sin(Math.toRadians(mReveredRotation)) * 20,
+		// mCamera.getHeight());
+
 		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
 		wreckage.getSprite().setVisible(true);
@@ -113,7 +121,7 @@ public final class ParticleEmitterExplosion {
 		target.registerUpdateHandler(new TimerHandler(mTimePart * 2, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
-				WreckagePool.sharedWreckagePool().onHandleRecycleItem(wreckage);
+				WreckagePool.sharedWreckagePool().recyclePoolItem(wreckage);
 				target.sortChildren();
 				target.unregisterUpdateHandler(pTimerHandler);
 			}

@@ -23,11 +23,11 @@ public class CockpitPool extends GenericPool<Cockpit> {
 	}
 
 	@Override
-	protected void onHandleRecycleItem(final Cockpit e) {
+	protected void onHandleRecycleItem(final Cockpit c) {
 		try {
-			e.remove();
-		} catch (Exception ex) {
-			System.err.println(ex + " Objet : " + this.toString());
+			c.remove();
+		} catch (Exception e) {
+			System.err.println(e + " Objet : " + this.toString());
 		}
 	}
 }

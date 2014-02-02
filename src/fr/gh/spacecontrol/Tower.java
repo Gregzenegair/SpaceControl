@@ -1,24 +1,16 @@
 package fr.gh.spacecontrol;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
-import org.andengine.audio.sound.Sound;
-import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
-import org.andengine.entity.primitive.Rectangle;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
-import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.entity.sprite.Sprite;
 
 public class Tower {
-	private Rectangle sprite;
-	private int posX;
-	private int posY;
+	private Sprite sprite;
 	private int rotationCenterX;
 	private int rotationCenterY;
-	private int width;
-	private int height;
+	private float scaleYSaved;
 	private float startingAngle;
 	private float angle;
 	private boolean facingLeft;
@@ -29,9 +21,10 @@ public class Tower {
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
 
-		sprite = new Rectangle(0, 0, width, height, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		this.width = width;
-		this.height = height;
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().getTowerTexture(), BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
+
+		this.scaleYSaved = sprite.getScaleY();
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 		this.facingLeft = false;
 		if (towerList.size() >= 2) {
@@ -43,11 +36,9 @@ public class Tower {
 	public void setPosition(int posX, int posY) {
 
 		sprite.setPosition(posX, posY);
-		sprite.setRotationCenter(width / 2, height);
-		this.posX = posX;
-		this.posY = posY;
-		this.rotationCenterX = posX + height;
-		this.rotationCenterY = posY + width / 2;
+		sprite.setRotationCenter(sprite.getWidth() / 2, sprite.getHeight());
+		this.rotationCenterX = (int) (sprite.getX() + sprite.getHeight());
+		this.rotationCenterY = (int) (sprite.getY() + sprite.getWidth() / 2);
 
 	}
 
@@ -78,19 +69,20 @@ public class Tower {
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
-		b.getSprite()
-				.setPosition(
-						rotationCenterX - ((float) Math.cos(Math.toRadians(270 - randAngle)) * height) + width / 2
-								- height - 1,
-						rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * height - width / 2
-								+ height - 1);
+		b.getSprite().setPosition(
+				rotationCenterX - ((float) Math.cos(Math.toRadians(270 - randAngle)) * sprite.getHeight())
+						+ sprite.getWidth() / 2 - sprite.getHeight() - 1,
+				rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * sprite.getHeight()
+						- sprite.getWidth() / 2 + sprite.getHeight() - 1);
 
 		b.getSprite().setRotation(randAngle);
 		MoveModifier movMod = new MoveModifier(1.5f, b.getSprite().getX(), rotationCenterX
-				- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000) + width / 2 - height,
-				b.getSprite().getY(), rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000
-						- width / 2 + height);
+				- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000) + sprite.getWidth() / 2
+				- sprite.getHeight(), b.getSprite().getY(), rotationCenterY
+				+ (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000 - sprite.getWidth() / 2 + sprite.getHeight());
 
+		sprite.setScaleY(0.8f);
+System.out.println(scaleYSaved);
 		b.setAngle(angle);
 		b.getSprite().setVisible(true);
 		scene.attachChild(b.getSprite());
@@ -111,30 +103,6 @@ public class Tower {
 
 	public void setStartingAngle(float startingAngle) {
 		this.startingAngle = startingAngle;
-	}
-
-	public int getPosX() {
-		return posX;
-	}
-
-	public int getPosY() {
-		return posY;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public void setHeight(int height) {
-		this.height = height;
 	}
 
 	public boolean isActive() {
@@ -169,11 +137,11 @@ public class Tower {
 		this.bunker = bunker;
 	}
 
-	public Rectangle getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
-	public void setSprite(Rectangle sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 
@@ -205,16 +173,12 @@ public class Tower {
 		return startingAngle;
 	}
 
-	public void setPosX(int posX) {
-		this.posX = posX;
-	}
-
-	public void setPosY(int posY) {
-		this.posY = posY;
-	}
-
 	public void setAngle(float angle) {
 		this.angle = angle;
+	}
+
+	public float getScaleYSaved() {
+		return scaleYSaved;
 	}
 
 }

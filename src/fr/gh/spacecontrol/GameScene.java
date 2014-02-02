@@ -97,24 +97,24 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		int towerSizeY = 40;
 
 		tower1 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower1.setPosition(20, (int) mCamera.getHeight() - tower1.getHeight() - 240);
+		tower1.setPosition(20, (int) (mCamera.getHeight() - tower1.getSprite().getHeight() - 240));
 		Bunker bunker1 = new Bunker(tower1);
 		tower1.setBunker(bunker1);
 
 		tower2 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower2.setPosition(20, (int) mCamera.getHeight() - tower2.getHeight() * 2);
+		tower2.setPosition(20, (int) (mCamera.getHeight() - tower2.getSprite().getHeight() * 2));
 		Bunker bunker2 = new Bunker(tower2);
 		tower2.setBunker(bunker2);
 
 		tower3 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower3.setPosition((int) mCamera.getWidth() - tower3.getWidth() - 20,
-				(int) mCamera.getHeight() - tower3.getHeight() * 2);
+		tower3.setPosition((int) (mCamera.getWidth() - tower3.getSprite().getHeight() - 20),
+				(int) (mCamera.getHeight() - tower3.getSprite().getHeight() * 2));
 		Bunker bunker3 = new Bunker(tower3);
 		tower3.setBunker(bunker3);
 
 		tower4 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower4.setPosition((int) mCamera.getWidth() - tower4.getWidth() - 20,
-				(int) mCamera.getHeight() - tower4.getHeight() - 240);
+		tower4.setPosition((int) (mCamera.getWidth() - tower4.getSprite().getHeight() - 20), (int) (mCamera.getHeight()
+				- tower4.getSprite().getHeight() - 240));
 		Bunker bunker4 = new Bunker(tower4);
 		tower4.setBunker(bunker4);
 
@@ -265,10 +265,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private int isTouchingABunker(int posX, int posY) {
 		final int MARGIN_SELECTION = 20;
 		for (Tower tower : towerList) {
-			if (posX < tower.getBunker().getPosX() + tower.getBunker().getWidth() + MARGIN_SELECTION
-					&& posX > tower.getBunker().getPosX() - MARGIN_SELECTION) {
-				if (posY < tower.getBunker().getPosY() + tower.getBunker().getHeight() + MARGIN_SELECTION
-						&& posY > tower.getBunker().getPosY() - MARGIN_SELECTION) {
+			if (posX < tower.getBunker().getSprite().getX() + tower.getBunker().getSprite().getWidth()
+					+ MARGIN_SELECTION
+					&& posX > tower.getBunker().getSprite().getX() - MARGIN_SELECTION) {
+				if (posY < tower.getBunker().getSprite().getY() + tower.getBunker().getSprite().getHeight()
+						+ MARGIN_SELECTION
+						&& posY > tower.getBunker().getSprite().getY() - MARGIN_SELECTION) {
 					return towerList.indexOf(tower);
 				}
 			}

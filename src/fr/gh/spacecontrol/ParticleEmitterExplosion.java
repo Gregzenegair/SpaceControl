@@ -42,9 +42,9 @@ public final class ParticleEmitterExplosion {
 		final ParticleSystem particleSystem = new ParticleSystem(recFact, particleEmitter, 500, 500, mNumPart);
 
 		if (mRotation > 0 && mRotation < 90) {
-			particleSystem.addParticleInitializer(new VelocityParticleInitializer(0, 20, 10, 20));
+			particleSystem.addParticleInitializer(new VelocityParticleInitializer(-10, 10, -10, -20));
 		} else {
-			particleSystem.addParticleInitializer(new VelocityParticleInitializer(-20, 0, 10, 20));
+			particleSystem.addParticleInitializer(new VelocityParticleInitializer(-10, 10, -10, -20));
 		}
 
 		particleSystem.addParticleModifier(new ColorParticleModifier(0, 1.6f * mTimePart, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,

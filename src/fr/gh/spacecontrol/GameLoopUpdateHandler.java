@@ -34,8 +34,13 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		if (scene.isShoot()) {
 			if (ShootingDelay.getSharedInstance().checkValidity()) {
 				for (Tower tower : scene.getTowerList()) {
-					if (tower.isActive())
+					if (tower.isActive()) {
 						tower.shoot((int) tower.getAngle());
+					}
+				}
+			} else {
+				for (Tower tower : scene.getTowerList()) {
+					tower.getSprite().setScaleY(tower.getScaleYSaved());
 				}
 			}
 		}
@@ -59,8 +64,8 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 					enemy.getReactorRight().setHp(enemy.getReactorRight().getHp() - 1);
 					if (enemy.getReactorRight().getHp() == 0) {
 						ParticleEmitterExplosion.createExplosion(enemy.getReactorRight().getSprite().getX()
-								+ enemy.getReactorRight().getSprite().getWidth() / 2, enemy.getReactorRight().getSprite()
-								.getY()
+								+ enemy.getReactorRight().getSprite().getWidth() / 2, enemy.getReactorRight()
+								.getSprite().getY()
 								+ enemy.getReactorRight().getSprite().getHeight() / 2, enemy.getReactorRight()
 								.getSprite().getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
 						enemy.getReactorRight().remove();

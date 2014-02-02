@@ -9,18 +9,22 @@ import org.andengine.audio.sound.SoundFactory;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
-import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
+import org.andengine.opengl.texture.TextureOptions;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
+import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 
 import android.graphics.Typeface;
 
 public class BaseActivity extends SimpleBaseGameActivity {
 
-	static final int CAMERA_WIDTH = 480;
+	static final int CAMERA_WIDTH = 600;
 	static final int CAMERA_HEIGHT = 800;
 	static final int NO_SCREEN = 0;
 	static final int SPLASH_SCREEN = 1;
@@ -39,13 +43,18 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	private Sound soundTowerGunb;
 	private Sound soundImpact;
 	private Music soundExplosion;
+
+	private BitmapTextureAtlas textureAtlas;
+	private ITextureRegion bunkerTexture;
+	private ITextureRegion towerTexture;
+
 	private static BaseActivity instance;
 
 	public EngineOptions onCreateEngineOptions() {
 		instance = this;
 		mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR,
-				new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
+				new FillResolutionPolicy(), mCamera);
 		engineOptions.getAudioOptions().setNeedsSound(true);
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
@@ -68,6 +77,16 @@ public class BaseActivity extends SimpleBaseGameActivity {
 			soundTowerGun.setVolume(0.2f);
 			soundTowerGunb.setVolume(0.2f);
 			soundImpact.setVolume(0.05f);
+
+			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+			textureAtlas = new BitmapTextureAtlas(getTextureManager(), 64, 64, TextureOptions.DEFAULT);
+			bunkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "bunker.png", 0,
+					0);
+			towerTexture = BitmapTextureAtlasTextureRegionFactory
+					.createFromAsset(textureAtlas, this, "tower.png", 32, 0);
+
+			textureAtlas.load();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -228,6 +247,30 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	public void setGameScene(Scene gameScene) {
 		this.gameScene = gameScene;
+	}
+
+	public BitmapTextureAtlas getTextureAtlas() {
+		return textureAtlas;
+	}
+
+	public void setTextureAtlas(BitmapTextureAtlas textureAtlas) {
+		this.textureAtlas = textureAtlas;
+	}
+
+	public ITextureRegion getBunkerTexture() {
+		return bunkerTexture;
+	}
+
+	public void setBunkerTexture(ITextureRegion bunkerTexture) {
+		this.bunkerTexture = bunkerTexture;
+	}
+
+	public ITextureRegion getTowerTexture() {
+		return towerTexture;
+	}
+
+	public void setTowerTexture(ITextureRegion towerTexture) {
+		this.towerTexture = towerTexture;
 	}
 
 }

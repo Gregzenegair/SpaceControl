@@ -1,6 +1,5 @@
 package fr.gh.spacecontrol;
 
-import org.andengine.entity.shape.IShape;
 import org.andengine.util.adt.pool.GenericPool;
 
 public class EnemyPool extends GenericPool<Enemy> {

@@ -1,6 +1,5 @@
 package fr.gh.spacecontrol;
 
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.Sprite;
 
 public class Bunker {

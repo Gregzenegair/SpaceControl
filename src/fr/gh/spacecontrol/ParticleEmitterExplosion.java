@@ -32,7 +32,7 @@ public final class ParticleEmitterExplosion {
 		int mRotation = (int) rotation;
 
 		PointParticleEmitter particleEmitter = new PointParticleEmitter(posX, posY);
-		IEntityFactory recFact = new IEntityFactory() {
+		IEntityFactory<Rectangle> recFact = new IEntityFactory<Rectangle>() {
 			@Override
 			public Rectangle create(float pX, float pY) {
 				Rectangle rect = new Rectangle(posX, posY, width, height, activity.getVertexBufferObjectManager());
@@ -76,7 +76,6 @@ public final class ParticleEmitterExplosion {
 		}
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
-		Camera mCamera = BaseActivity.getSharedInstance().getmCamera();
 		int mTimePart = 2;
 		int mReveredRotation = (int) (rotation - 90 + rotation / 2);
 

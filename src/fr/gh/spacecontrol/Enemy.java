@@ -1,11 +1,11 @@
 package fr.gh.spacecontrol;
 
-import org.andengine.entity.primitive.Rectangle;
 
 public class Enemy {
 	private Reactor reactorLeft;
 	private Reactor reactorRight;
 	private Cockpit cockpit;
+	private Gunship gunship;
 
 
 	
@@ -14,11 +14,13 @@ public class Enemy {
 	}
 	
 	public void init() {
-		this.cockpit = CockpitPool.sharedEnemyBodyPool().obtainPoolItem();
+		this.cockpit = CockpitPool.sharedCockpitPool().obtainPoolItem();
+		this.gunship = GunshipPool.sharedGunshipPool().obtainPoolItem();
 		this.reactorLeft = ReactorPool.sharedReactorPool().obtainPoolItem();
 		this.reactorRight = ReactorPool.sharedReactorPool().obtainPoolItem();
 		
 		this.cockpit.init(this);
+		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		this.reactorRight.init(this, Reactor.REACTOR_RIGHT);
 	}
@@ -27,8 +29,30 @@ public class Enemy {
 		this.reactorLeft.remove();
 		this.reactorRight.remove();
 		this.cockpit.remove();
+		this.gunship.remove();
+
 	}
 
+	public void move(){
+		this.getCockpit().move();
+		this.getGunship().move();
+		this.getReactorLeft().move();
+		this.getReactorRight().move();
+	}
+	
+	public void addPhysics() {
+		this.getCockpit().addPhysics();
+		this.getGunship().addPhysics();
+		this.getReactorLeft().addPhysics();
+		this.getReactorRight().addPhysics();
+	}
+	
+	public boolean shoot() {
+		
+		return true;
+	}
+	
+	// Getters and setters
 	public Reactor getReactorLeft() {
 		return reactorLeft;
 	}
@@ -51,6 +75,14 @@ public class Enemy {
 
 	public void setCockpit(Cockpit cockpit) {
 		this.cockpit = cockpit;
+	}
+
+	public Gunship getGunship() {
+		return gunship;
+	}
+
+	public void setGunship(Gunship gunship) {
+		this.gunship = gunship;
 	}
 
 	

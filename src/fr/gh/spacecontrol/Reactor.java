@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 public class Reactor {
@@ -57,7 +56,6 @@ public class Reactor {
 		speed = enemy.getCockpit().getSpeed();
 
 		sprite.setRotation(0);
-		sprite.setPosition(-sprite.getWidth(), -sprite.getHeight());
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
 

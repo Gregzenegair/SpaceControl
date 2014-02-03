@@ -1,7 +1,5 @@
 package fr.gh.spacecontrol;
 
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
@@ -60,7 +58,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		case MENU_BACKTOGAME:
 			if (activity.isGameStarted()) {
 				activity.setCurrentScene(activity.getGameScene());
-				activity.setCurrentScreen(activity.GAME_SCREEN);
+				activity.setCurrentScreen(BaseActivity.GAME_SCREEN);
 				return true;
 			}
 			return false;

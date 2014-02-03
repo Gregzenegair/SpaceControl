@@ -35,16 +35,19 @@ public class WaveMaker {
 			enemy.init();
 			
 			enemy.getCockpit().getSprite().detachSelf();
+			enemy.getGunship().getSprite().detachSelf();
 			enemy.getReactorLeft().getSprite().detachSelf();
 			enemy.getReactorRight().getSprite().detachSelf();
 			
 			scene.attachChild(enemy.getCockpit().getSprite());
+			scene.attachChild(enemy.getGunship().getSprite());
 			scene.attachChild(enemy.getReactorLeft().getSprite());
 			scene.attachChild(enemy.getReactorRight().getSprite());
-
+			
 			scene.getEnemyList().add(enemy);
 			
 			enemy.getCockpit().getSprite().setVisible(true);
+			enemy.getGunship().getSprite().setVisible(true);
 			enemy.getReactorLeft().getSprite().setVisible(true);
 			enemy.getReactorRight().getSprite().setVisible(true);
 

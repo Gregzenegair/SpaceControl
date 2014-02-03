@@ -1,13 +1,12 @@
 package fr.gh.spacecontrol;
 
-import org.andengine.entity.shape.IShape;
 import org.andengine.util.adt.pool.GenericPool;
 
 public class CockpitPool extends GenericPool<Cockpit> {
 
 	public static CockpitPool instance;
 
-	public static CockpitPool sharedEnemyBodyPool() {
+	public static CockpitPool sharedCockpitPool() {
 		if (instance == null)
 			instance = new CockpitPool();
 		return instance;

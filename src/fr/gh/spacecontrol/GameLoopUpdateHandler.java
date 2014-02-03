@@ -1,14 +1,8 @@
 package fr.gh.spacecontrol;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.IUpdateHandler;
-
-import fr.gh.spacecontrol.ShootingDelay.Task;
 
 public class GameLoopUpdateHandler implements IUpdateHandler {
 
@@ -86,9 +80,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 		Iterator<Enemy> itE = scene.getEnemyList().iterator();
 		while (itE.hasNext()) {
 			Enemy e = itE.next();
-			e.getCockpit().move();
-			e.getReactorLeft().move();
-			e.getReactorRight().move();
+			e.move();
 		}
 
 		if (scene.getEnemyList().isEmpty()) {

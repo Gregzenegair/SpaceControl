@@ -4,10 +4,10 @@ import java.util.Iterator;
 
 import org.andengine.engine.handler.IUpdateHandler;
 
-import fr.gh.spacecontrol.entities.Enemy;
-import fr.gh.spacecontrol.entities.EnemyPool;
-import fr.gh.spacecontrol.entities.ParticleEmitterExplosion;
-import fr.gh.spacecontrol.entities.Tower;
+import fr.gh.spacecontrol.items.Enemy;
+import fr.gh.spacecontrol.items.ParticleEmitterExplosion;
+import fr.gh.spacecontrol.items.Tower;
+import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 

@@ -1,4 +1,8 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.items;
+
+import fr.gh.spacecontrol.pools.CockpitPool;
+import fr.gh.spacecontrol.pools.GunshipPool;
+import fr.gh.spacecontrol.pools.ReactorPool;
 
 
 public class Enemy {
@@ -7,7 +11,7 @@ public class Enemy {
 	private Cockpit cockpit;
 	private Gunship gunship;
 
-
+private boolean moving;
 	
 	public Enemy() {
 		super();
@@ -38,6 +42,7 @@ public class Enemy {
 		this.getGunship().move();
 		this.getReactorLeft().move();
 		this.getReactorRight().move();
+		moving = true;
 	}
 	
 	public void addPhysics() {
@@ -83,6 +88,14 @@ public class Enemy {
 
 	public void setGunship(Gunship gunship) {
 		this.gunship = gunship;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
 	}
 
 	

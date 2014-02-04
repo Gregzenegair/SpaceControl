@@ -22,22 +22,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-import fr.gh.spacecontrol.entities.Bullet;
-import fr.gh.spacecontrol.entities.BulletPool;
-import fr.gh.spacecontrol.entities.Bunker;
-import fr.gh.spacecontrol.entities.Cockpit;
-import fr.gh.spacecontrol.entities.CockpitPool;
-import fr.gh.spacecontrol.entities.Enemy;
-import fr.gh.spacecontrol.entities.EnemyPool;
-import fr.gh.spacecontrol.entities.Gunship;
-import fr.gh.spacecontrol.entities.GunshipPool;
-import fr.gh.spacecontrol.entities.ParticleEmitterExplosion;
-import fr.gh.spacecontrol.entities.Reactor;
-import fr.gh.spacecontrol.entities.ReactorPool;
-import fr.gh.spacecontrol.entities.Tower;
-import fr.gh.spacecontrol.entities.Wreckage;
+import fr.gh.spacecontrol.items.Bullet;
+import fr.gh.spacecontrol.items.Bunker;
+import fr.gh.spacecontrol.items.Cockpit;
+import fr.gh.spacecontrol.items.Enemy;
+import fr.gh.spacecontrol.items.Gunship;
+import fr.gh.spacecontrol.items.ParticleEmitterExplosion;
+import fr.gh.spacecontrol.items.Reactor;
+import fr.gh.spacecontrol.items.Tower;
+import fr.gh.spacecontrol.items.Wreckage;
 import fr.gh.spacecontrol.logic.GameLoopUpdateHandler;
 import fr.gh.spacecontrol.logic.WaveMaker;
+import fr.gh.spacecontrol.pools.BulletPool;
+import fr.gh.spacecontrol.pools.CockpitPool;
+import fr.gh.spacecontrol.pools.EnemyPool;
+import fr.gh.spacecontrol.pools.GunshipPool;
+import fr.gh.spacecontrol.pools.ReactorPool;
 
 public class GameScene extends Scene implements IOnSceneTouchListener {
 
@@ -212,13 +212,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		if (element.getClass().getSimpleName().equals("Cockpit")) {
 			Cockpit c = (Cockpit) element;
 			Enemy e = c.getEnemy();
-			if (c.gotHitnDestroyed(b.getAngle()) == 1) {
-				if (!c.isPhysic()) {
+			if (c.gotHitnDestroyed(b.getAngle()) == 1 && !c.isPhysic()) {
 					ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
 							.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
 							BaseActivity.getSharedInstance(), 4, 3, 3, b.getSprite().getRotation());
 					e.addPhysics();
-				}
 			} else if (c.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
 				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
@@ -246,13 +244,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		} else if (element.getClass().getSimpleName().equals("Reactor")) {
 			Reactor r = (Reactor) element;
 			Enemy e = r.getEnemy();
-			if (r.gotHitnDestroyed(b.getAngle()) == 1) {
-				if (!r.isPhysic()) {
+			if (r.gotHitnDestroyed(b.getAngle()) == 1 && !r.isPhysic()) {
 					ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
 							.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
 							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 					e.addPhysics();
-				}
 			} else if (r.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
 				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
@@ -279,13 +275,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		} else if (element.getClass().getSimpleName().equals("Gunship")) {
 			Gunship gs = (Gunship) element;
 			Enemy e = gs.getEnemy();
-			if (gs.gotHitnDestroyed(b.getAngle()) == 1) {
-				if (!gs.isPhysic()) {
+			if (gs.gotHitnDestroyed(b.getAngle()) == 1 && !gs.isPhysic()) {
 					ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs
 							.getSprite().getY() + gs.getSprite().getHeight() / 2, gs.getSprite().getParent(),
 							BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 					e.addPhysics();
-				}
 			} else if (gs.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
 				ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs

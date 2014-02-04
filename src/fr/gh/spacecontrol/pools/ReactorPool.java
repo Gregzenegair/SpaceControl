@@ -1,6 +1,8 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.pools;
 
 import org.andengine.util.adt.pool.GenericPool;
+
+import fr.gh.spacecontrol.items.Reactor;
 
 public class ReactorPool extends GenericPool<Reactor> {
 

@@ -1,4 +1,4 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.items;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
@@ -10,18 +10,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import fr.gh.spacecontrol.logic.RandomTool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
-public class Gunship {
+public class Cockpit {
 
 	private Rectangle sprite;
 	private Body body;
 	private int hp;
-	private int speed;
+	private int speed = 2;
 	private boolean physic;
 	private boolean destroyed;
 	private int finalPosX;
@@ -30,58 +29,66 @@ public class Gunship {
 	private MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
 	private Enemy enemy;
+
 	private int scoreValue;
-	protected final int MAX_HEALTH = 6;
-	protected final int PHYSIC_HEALTH = 1;
+	protected final int MAX_HEALTH = 10;
+	protected final int PHYSIC_HEALTH = 2;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
-	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
-	private static final Vector2 HIT_VECTOR_RIGHT = new Vector2(-1, 1);
-	protected static final int REACTOR_RIGHT = 0;
-	protected static final int REACTOR_LEFT = 1;
+	private static final Vector2 HIT_VECTOR_L = new Vector2(1, 1);
+	private static final Vector2 HIT_VECTOR_R = new Vector2(-1, 1);
 
-	public Gunship() {
+	public Cockpit() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 6, 10, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.3f, 0.004f, 0.5f);
+		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		sprite.setColor(0.06f, 0.004f, 0.004f);
 	}
 
-	// method for initializing the Gunship object , used by the constructor and
-	// the GunshipPool class
+	// method for initializing the Enemy object , used by the constructor and
+	// the EnemyPool class
 	public void init(Enemy enemy) {
 
 		this.enemy = enemy;
-		this.scoreValue = 30;
+		this.scoreValue = 120;
 		hp = MAX_HEALTH;
 		destroyed = false;
 		physic = false;
-		speed = enemy.getCockpit().getSpeed();
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);
-		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
+		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
 
-		this.finalPosX = enemy.getCockpit().getFinalPosX();
-		this.finalPosY = enemy.getCockpit().getFinalPosY();
+		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
+		this.finalPosY = RandomTool.randInt(0, 100);
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
 
 	}
 
 	public void move() {
-
-		if (!this.physic && !this.destroyed) {
-			this.finalPosX = enemy.getCockpit().getFinalPosX();
-			this.finalPosY = enemy.getCockpit().getFinalPosY();
+		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic() && !this.isDestroyed()) {
+			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
+			this.finalPosY = RandomTool.randInt(0, 500);
 
 			if (this.moveModifier != null)
 				sprite.unregisterEntityModifier(this.moveModifier);
-
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit().getSprite()
-					.getX()
-					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, this.finalPosX, enemy
-					.getCockpit().getSprite().getY()
-					+ enemy.getCockpit().getSprite().getHeight(), this.finalPosY));
-
+			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
+					sprite.getY(), this.finalPosY));
 		}
+	}
+
+	public void moveCenter() {
+		this.finalPosX = (int) mCamera.getWidth() / 2 - 15;
+		this.finalPosY = (int) mCamera.getHeight() / 2;
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
+				.getY(), this.finalPosY));
+
 	}
 
 	public int gotHitnDestroyed(int angle) {
@@ -92,11 +99,11 @@ public class Gunship {
 			} else if (hp <= PHYSIC_HEALTH) {
 				if (this.physic) {
 					if (angle >= 0) {
-						body.setLinearVelocity(HIT_VECTOR_LEFT);
-						body.setAngularVelocity(1f);
+						body.setLinearVelocity(HIT_VECTOR_L);
+						body.setAngularVelocity(-0.3f);
 					} else {
-						body.setLinearVelocity(HIT_VECTOR_RIGHT);
-						body.setAngularVelocity(-1f);
+						body.setLinearVelocity(HIT_VECTOR_R);
+						body.setAngularVelocity(0.3f);
 					}
 				}
 				return 1;
@@ -107,29 +114,15 @@ public class Gunship {
 	}
 
 	public void addPhysics() {
-		if (!this.destroyed && !this.physic) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
 
-			this.sprite.unregisterEntityModifier(this.moveModifier);
+		this.sprite.unregisterEntityModifier(this.moveModifier);
 
-			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody,
-					FIXTURE_DEF);
+		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
-			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
-			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-			this.physic = true;
-
-			int random = RandomTool.randInt(-5, 5);
-			body.setAngularVelocity(random);
-			random = RandomTool.randInt(0, 4);
-			if (random != 0) {
-				final WeldJointDef joint = new WeldJointDef();
-				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
-
-				scene.mPhysicsWorld.createJoint(joint);
-			}
-		}
-
+		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
+		this.physic = true;
 	}
 
 	public void remove() {
@@ -146,6 +139,7 @@ public class Gunship {
 		sprite.detachSelf();
 		this.physic = false;
 		this.destroyed = true;
+
 	}
 
 	public Rectangle getSprite() {
@@ -236,20 +230,20 @@ public class Gunship {
 		this.scoreValue = scoreValue;
 	}
 
-	public PhysicsConnector getPhysicsConnector() {
-		return PhysicsConnector;
+	public int getSpeed() {
+		return speed;
 	}
 
-	public void setPhysicsConnector(PhysicsConnector physicsConnector) {
-		PhysicsConnector = physicsConnector;
-	}
-
-	public void setEnemy(Enemy enemy) {
-		this.enemy = enemy;
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public Enemy getEnemy() {
 		return enemy;
+	}
+
+	public void setEnemy(Enemy enemy) {
+		this.enemy = enemy;
 	}
 
 }

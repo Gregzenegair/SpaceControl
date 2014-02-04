@@ -1,4 +1,4 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.items;
 
 import java.util.LinkedList;
 
@@ -7,6 +7,7 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 
 import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.pools.BulletPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 

@@ -1,6 +1,5 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.items;
 
-import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.physics.PhysicsHandler;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
@@ -20,6 +19,7 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
 import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.pools.WreckagePool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
@@ -94,13 +94,6 @@ public final class ParticleEmitterExplosion {
 		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.getSprite());
 		wreckage.getSprite().registerUpdateHandler(movMod2);
 		movMod2.setVelocity(0, 100);
-
-		// final MoveModifier movMod2 = new MoveModifier(1.2f, posX - ((float)
-		// Math.cos(Math.toRadians(mReveredRotation)) * 20),
-		// wreckage.sprite.getX() + ((float)
-		// Math.cos(Math.toRadians(mReveredRotation)) * 4), posY + (float)
-		// Math.sin(Math.toRadians(mReveredRotation)) * 20,
-		// mCamera.getHeight());
 
 		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);

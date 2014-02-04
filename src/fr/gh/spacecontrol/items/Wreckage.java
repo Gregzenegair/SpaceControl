@@ -1,4 +1,4 @@
-package fr.gh.spacecontrol.entities;
+package fr.gh.spacecontrol.items;
 
 import org.andengine.entity.primitive.Rectangle;
 

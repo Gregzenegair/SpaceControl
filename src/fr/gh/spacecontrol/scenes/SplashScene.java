@@ -9,6 +9,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 
 import fr.gh.spacecontrol.R;
+import fr.gh.spacecontrol.items.SplashLogo;
 
 public class SplashScene extends Scene {
 
@@ -35,6 +36,11 @@ public class SplashScene extends Scene {
 
 		attachChild(titleG);
 		attachChild(title);
+		
+		SplashLogo logo = new SplashLogo();
+		attachChild(logo.getSprite1());
+		attachChild(logo.getSprite2());
+		attachChild(logo.getSprite3());
 
 		title.registerEntityModifier(new MoveXModifier(1, title.getX(), activity.getmCamera().getWidth() / 2));
 

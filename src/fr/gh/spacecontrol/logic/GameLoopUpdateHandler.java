@@ -14,6 +14,8 @@ import fr.gh.spacecontrol.scenes.GameScene;
 public class GameLoopUpdateHandler implements IUpdateHandler {
 
 	private int scoreTemp = 0;
+	private int enemyDestroyedCounter;
+	private int enemyCounter;
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
@@ -89,22 +91,27 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 					EnemyPool.sharedEnemyPool().recyclePoolItem(enemy);
 					eIt.remove();
 				}
+
+				// Moving enemies
+				enemy.move();
+
+				// Count number of destroyed enemies
+				if (enemy.isDamaged()) {
+					enemyDestroyedCounter++;
+				}
+
 			}
 		}
 
-		// System.out.println(WaveMaker.getSharedWaveMaker(scene).getWave());
+		System.out.println(WaveMaker.getSharedWaveMaker(scene).getEnemyCount());
+		System.out.println(enemyDestroyedCounter);
 
-		Iterator<Enemy> itE = scene.getEnemyList().iterator();
-		while (itE.hasNext()) {
-			Enemy e = itE.next();
-			e.move();
+		enemyCounter = WaveMaker.getSharedWaveMaker(scene).getEnemyCount();
+		// New wave creator
+		if (enemyCounter == enemyDestroyedCounter) {
+			WaveMaker.getSharedWaveMaker(scene).newWave();
 		}
-
-		if (scene.getEnemyList().isEmpty()) {
-			WaveMaker waveMaker = WaveMaker.getSharedWaveMaker(scene);
-			waveMaker.newWave();
-		}
-
+		enemyDestroyedCounter = 0;
 	}
 
 	@Override

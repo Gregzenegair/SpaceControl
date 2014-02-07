@@ -97,12 +97,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 12,
 				activity.getVertexBufferObjectManager());
 		scoreText.setPosition(mCamera.getWidth() / 2 - scoreText.getWidth() / 2, 20);
-		scoreText.setScale(0.5f);
+		scoreText.setScale(0.25f);
 		attachChild(scoreText);
 
 		debugText = new Text(0, 0, activity.getmFont(), "DEBUG", 12, activity.getVertexBufferObjectManager());
 		debugText.setPosition(mCamera.getWidth() / 2 - debugText.getWidth() / 2, 60);
-		debugText.setScale(0.5f);
+		debugText.setScale(0.25f);
 		attachChild(debugText);
 
 		// Enregistrement d'un update handler

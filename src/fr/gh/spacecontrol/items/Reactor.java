@@ -66,6 +66,8 @@ public class Reactor {
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
 
+		this.move();
+		
 	}
 
 	public void move() {
@@ -81,13 +83,15 @@ public class Reactor {
 			case REACTOR_LEFT:
 				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
 						.getSprite().getX()
-						- sprite.getWidth(), this.finalPosX, enemy.getCockpit().getSprite().getY(), this.finalPosY));
+						- sprite.getWidth(), this.finalPosX - sprite.getWidth(), enemy.getCockpit().getSprite().getY(),
+						this.finalPosY));
 				break;
 			case REACTOR_RIGHT:
 				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
 						.getSprite().getX()
-						+ enemy.getCockpit().getSprite().getWidth(), this.finalPosX, enemy.getCockpit().getSprite()
-						.getY(), this.finalPosY));
+						+ enemy.getCockpit().getSprite().getWidth(), this.finalPosX
+						+ enemy.getCockpit().getSprite().getWidth(), enemy.getCockpit().getSprite().getY(),
+						this.finalPosY));
 				break;
 
 			default:

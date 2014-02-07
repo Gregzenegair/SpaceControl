@@ -1,9 +1,13 @@
 package fr.gh.spacecontrol.items;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.QuadraticBezierCurveMoveModifier;
+import org.andengine.entity.modifier.ScaleModifier;
+import org.andengine.entity.text.Text;
 import org.andengine.util.modifier.ease.EaseLinear;
 
+import fr.gh.spacecontrol.R;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier.BezierPath;
 import fr.gh.spacecontrol.primitive.Ellipse;
@@ -16,12 +20,16 @@ public class SplashLogo {
 	private Ellipse sprite1;
 	private Ellipse sprite2;
 	private Ellipse sprite3;
-	private Ellipse sprite4;
+	private BaseActivity activity;
+	private Text titleG;
+	private Text title;
 
 	protected static final int ELLIPSE_WIDTH_HEIGHT = 96;
 
 	public SplashLogo() {
+		this.activity = BaseActivity.getSharedInstance();
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
+
 		int centerX = (int) mCamera.getWidth() / 2;
 		int centerY = (int) mCamera.getHeight() / 2;
 
@@ -45,17 +53,35 @@ public class SplashLogo {
 
 		QuadraticBezierCurveMoveModifier bezierCurveModifier1 = new QuadraticBezierCurveMoveModifier(2.5f,
 				0 - ELLIPSE_WIDTH_HEIGHT, 0 - ELLIPSE_WIDTH_HEIGHT, mCamera.getWidth() * 2 / 3, 0, centerX, centerY);
-		
+
 		QuadraticBezierCurveMoveModifier bezierCurveModifier2 = new QuadraticBezierCurveMoveModifier(2.5f,
-				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, mCamera.getHeight() * 2 / 3, 0, mCamera.getHeight()/2,
+				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, mCamera.getHeight() * 2 / 3, 0, mCamera.getHeight() / 2,
 				centerX, centerY);
-		
+
 		QuadraticBezierCurveMoveModifier bezierCurveModifier3 = new QuadraticBezierCurveMoveModifier(2.5f,
-				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, 0, mCamera.getWidth() * 2 / 3, mCamera.getWidth() / 2, centerX, centerY);
+				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, 0, mCamera.getWidth() * 2 / 3, mCamera.getWidth() / 2,
+				centerX, centerY);
 
 		sprite1.registerEntityModifier(bezierCurveModifier1);
 		sprite2.registerEntityModifier(bezierCurveModifier2);
 		sprite3.registerEntityModifier(bezierCurveModifier3);
+
+		titleG = new Text(0, 0, activity.getmFont(), activity.getString(R.string.title_1),
+				activity.getVertexBufferObjectManager());
+
+		titleG.setPosition((activity.getmCamera().getWidth() - titleG.getWidth()) / 2, (activity.getmCamera()
+				.getHeight() - titleG.getHeight()) / 2);
+		titleG.registerEntityModifier(new ScaleModifier(2.5f, 0.0f, 1.0f));
+		titleG.setColor(0.0f, 0.0f, 0.0f);
+
+		title = new Text(0, 0, activity.getmFont(), activity.getString(R.string.title_2),
+				activity.getVertexBufferObjectManager());
+		title.setScale(0.5f);
+		title.setPosition(activity.getmCamera().getWidth() + title.getWidth() / 1.5f,
+				titleG.getX() + titleG.getHeight() * 1.5f + title.getHeight() / 2);
+
+		title.registerEntityModifier(new MoveXModifier(2.5f, title.getX(), activity.getmCamera().getWidth() / 2));
+		
 	}
 
 	public Ellipse getSprite1() {
@@ -80,6 +106,22 @@ public class SplashLogo {
 
 	public void setSprite3(Ellipse sprite3) {
 		this.sprite3 = sprite3;
+	}
+
+	public Text getTitleG() {
+		return titleG;
+	}
+
+	public void setTitleG(Text titleG) {
+		this.titleG = titleG;
+	}
+
+	public Text getTitle() {
+		return title;
+	}
+
+	public void setTitle(Text title) {
+		this.title = title;
 	}
 
 }

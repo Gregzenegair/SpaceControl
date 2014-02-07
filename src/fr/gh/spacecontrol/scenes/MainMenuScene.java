@@ -26,16 +26,19 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 				activity.getString(R.string.startGame), activity.getVertexBufferObjectManager());
 		startButton.setPosition((mCamera.getWidth() / 2 - startButton.getWidth() / 2), mCamera.getHeight() / 2
 				- startButton.getHeight() / 2);
+		startButton.setScale(0.5f);
 
 		IMenuItem backToGameButton = new TextMenuItem(MENU_BACKTOGAME, activity.getmFont(),
 				activity.getString(R.string.backToGame), activity.getVertexBufferObjectManager());
 		backToGameButton.setPosition((mCamera.getWidth() / 2 - backToGameButton.getWidth() / 2),
 				(mCamera.getHeight() / 2 - backToGameButton.getHeight() / 2) + (backToGameButton.getHeight() * 2));
+		backToGameButton.setScale(0.5f);
 
 		IMenuItem exitButton = new TextMenuItem(MENU_EXIT, activity.getmFont(), activity.getString(R.string.exitGame),
 				activity.getVertexBufferObjectManager());
 		exitButton.setPosition((mCamera.getWidth() / 2 - exitButton.getWidth() / 2),
 				(mCamera.getHeight() / 2 - exitButton.getHeight() / 2) + (exitButton.getHeight() * 4));
+		exitButton.setScale(0.5f);
 
 		addMenuItem(startButton);
 		if (activity.isGameStarted())

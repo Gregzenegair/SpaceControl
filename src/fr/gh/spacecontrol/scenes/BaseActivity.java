@@ -63,11 +63,11 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	}
 
 	protected void onCreateResources() {
-		mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256,
-				Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 32, Color.WHITE.hashCode());
-		mFont.load();
-
 		try {
+			mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256,
+					Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64, Color.WHITE.hashCode());
+			mFont.load();
+			
 			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
 					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGun.mp3");
 			soundTowerGunb = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),

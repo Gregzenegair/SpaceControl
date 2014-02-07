@@ -21,25 +21,25 @@ import fr.gh.spacecontrol.scenes.GameScene;
 public class Gunship {
 
 	private Camera mCamera;
-	
+
 	private Rectangle sprite;
 	private Enemy enemy;
 	private Body body;
 	private MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
-	
+
 	private int hp;
 	private int speed;
 	private int scoreValue;
-	
+
 	private boolean physic;
 	private boolean destroyed;
-	
+
 	private int finalPosX;
 	private int finalPosY;
 	private int rotationCenterX;
 	private int rotationCenterY;
-	
+
 	protected final int MAX_HEALTH = 6;
 	protected final int PHYSIC_HEALTH = 1;
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
@@ -72,6 +72,7 @@ public class Gunship {
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
 
+		this.move();
 	}
 
 	public void move() {
@@ -85,10 +86,12 @@ public class Gunship {
 
 			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit().getSprite()
 					.getX()
-					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, this.finalPosX, enemy
-					.getCockpit().getSprite().getY()
-					+ enemy.getCockpit().getSprite().getHeight(), this.finalPosY));
-			
+					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, this.finalPosX
+					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, enemy.getCockpit()
+					.getSprite().getY()
+					+ enemy.getCockpit().getSprite().getHeight(), this.finalPosY
+					+ enemy.getCockpit().getSprite().getHeight()));
+
 			this.rotationCenterX = (int) (sprite.getX() + sprite.getHeight());
 			this.rotationCenterY = (int) (sprite.getY() + sprite.getWidth() / 2);
 
@@ -114,7 +117,7 @@ public class Gunship {
 
 		return (float) Math.toDegrees(Math.atan(opposed / adjacent));
 	}
-	
+
 	public void shoot(int angle) {
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();

@@ -14,8 +14,6 @@ import fr.gh.spacecontrol.scenes.GameScene;
 public class GameLoopUpdateHandler implements IUpdateHandler {
 
 	private int scoreTemp = 0;
-	private int enemyDestroyedCounter;
-	private int enemyCounter;
 
 	@Override
 	public void onUpdate(float pSecondsElapsed) {
@@ -46,6 +44,18 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 					tower.getSprite().setScaleY(tower.getScaleYSaved());
 				}
 			}
+		}
+
+		
+		
+		WaveMaker.getSharedWaveMaker(scene).trackDamaged();
+		System.out.println(WaveMaker.getSharedWaveMaker(scene).getEnemyCount());
+		System.out.println(WaveMaker.getSharedWaveMaker(scene).getEnemyDamagedCount());		
+
+		if (scene.getEnemyDamagedCount() == WaveMaker.getSharedWaveMaker(scene).getEnemyCount()) {
+			// New wave of enemies
+			WaveMaker.getSharedWaveMaker(scene).newWave();
+			WaveMaker.getSharedWaveMaker(scene).resetTrackDamaged();
 		}
 
 		if (CycleDelay.getSharedInstance().checkValidity()) {
@@ -95,23 +105,8 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 				// Moving enemies
 				enemy.move();
 
-				// Count number of destroyed enemies
-				if (enemy.isDamaged()) {
-					enemyDestroyedCounter++;
-				}
-
 			}
 		}
-
-		System.out.println(WaveMaker.getSharedWaveMaker(scene).getEnemyCount());
-		System.out.println(enemyDestroyedCounter);
-
-		enemyCounter = WaveMaker.getSharedWaveMaker(scene).getEnemyCount();
-		// New wave creator
-		if (enemyCounter == enemyDestroyedCounter) {
-			WaveMaker.getSharedWaveMaker(scene).newWave();
-		}
-		enemyDestroyedCounter = 0;
 	}
 
 	@Override

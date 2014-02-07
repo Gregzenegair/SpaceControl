@@ -1,5 +1,8 @@
 package fr.gh.spacecontrol.logic;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 
@@ -11,6 +14,7 @@ public class WaveMaker {
 
 	private int wave;
 	private int enemyCount;
+	private int enemyDamagedCount;
 	private GameScene scene;
 
 	public static WaveMaker instance;
@@ -63,6 +67,21 @@ public class WaveMaker {
 		this.wave++;
 	}
 
+	public void trackDamaged() {
+		LinkedList<Enemy> enemyList = scene.getEnemyList();
+		Iterator<Enemy> eIt = enemyList.iterator();
+		while (eIt.hasNext()) {
+			Enemy enemy = (Enemy) eIt.next();
+			if (enemy.isDamaged()) {
+				this.enemyDamagedCount++;
+			}
+		}
+	}
+
+	public void resetTrackDamaged() {
+		this.enemyDamagedCount = 0;
+	}
+
 	public int getWave() {
 		return wave;
 	}
@@ -77,6 +96,14 @@ public class WaveMaker {
 
 	public void setEnemyCount(int enemyCount) {
 		this.enemyCount = enemyCount;
+	}
+
+	public int getEnemyDamagedCount() {
+		return enemyDamagedCount;
+	}
+
+	public void setEnemyDamagedCount(int enemyDamagedCount) {
+		this.enemyDamagedCount = enemyDamagedCount;
 	}
 
 }

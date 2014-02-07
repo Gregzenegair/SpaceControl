@@ -59,6 +59,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private LinkedList<Wreckage> wreckageList;
 	private LinkedList<Enemy> enemyList;
 
+	private int enemyDamagedCount;
 	private BaseActivity activity;
 	private Text scoreText;
 	private Text debugText;
@@ -203,7 +204,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					} else if (b.getSprite().collidesWith(e.getGunship().getSprite()) && !e.getGunship().isDestroyed()) {
 						damagingElement(b, e.getGunship(), bIt, eIt);
 					}
-				}
+				}			
 			}
 		}
 	}
@@ -515,6 +516,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setDebugText(Text debugText) {
 		this.debugText = debugText;
+	}
+
+	public int getEnemyDamagedCount() {
+		return enemyDamagedCount;
+	}
+
+	public void setEnemyDamagedCount(int enemyDamagedCount) {
+		this.enemyDamagedCount = enemyDamagedCount;
 	}
 
 }

@@ -69,7 +69,7 @@ public class Tower {
 
 	public void shoot(int angle) {
 
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 

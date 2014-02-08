@@ -65,8 +65,6 @@ public class Reactor {
 
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
-
-		this.move();
 		
 	}
 
@@ -124,7 +122,7 @@ public class Reactor {
 
 	public void addPhysics() {
 		if (!this.destroyed && !this.physic) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 			this.sprite.unregisterEntityModifier(this.moveModifier);
 
@@ -150,7 +148,7 @@ public class Reactor {
 
 	public void remove() {
 		if (this.isPhysic()) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);

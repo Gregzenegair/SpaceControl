@@ -56,28 +56,20 @@ public class Cockpit {
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);
-		sprite.setPosition((RandomTool.randInt(100, (int) mCamera.getWidth() - 100)), RandomTool.randInt(-300, 0));
+		sprite.setPosition((finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100)),
+				finalPosY = RandomTool.randInt(-300, -100));
 
-		this.finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100);
-		this.finalPosY = RandomTool.randInt(0, 100);
+	}
+
+	public void move() {
+		this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
+		this.finalPosY = RandomTool.randInt(0, 500);
 
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);
 		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite
 				.getY(), this.finalPosY));
 
-	}
-
-	public void move() {
-		if ((int) sprite.getX() == this.finalPosX && !this.isPhysic() && !this.isDestroyed()) {
-			this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
-			this.finalPosY = RandomTool.randInt(0, 500);
-
-			if (this.moveModifier != null)
-				sprite.unregisterEntityModifier(this.moveModifier);
-			sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX,
-					sprite.getY(), this.finalPosY));
-		}
 	}
 
 	public void moveCenter() {
@@ -114,7 +106,7 @@ public class Cockpit {
 	}
 
 	public void addPhysics() {
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 		this.sprite.unregisterEntityModifier(this.moveModifier);
 
@@ -127,7 +119,7 @@ public class Cockpit {
 
 	public void remove() {
 		if (this.isPhysic()) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);

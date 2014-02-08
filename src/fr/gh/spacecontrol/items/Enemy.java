@@ -1,8 +1,15 @@
 package fr.gh.spacecontrol.items;
 
+import java.util.LinkedList;
+
+import android.R.bool;
+import android.transition.Scene;
+import fr.gh.spacecontrol.logic.RandomTool;
 import fr.gh.spacecontrol.pools.CockpitPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
 import fr.gh.spacecontrol.pools.ReactorPool;
+import fr.gh.spacecontrol.scenes.BaseActivity;
+import fr.gh.spacecontrol.scenes.GameScene;
 
 public class Enemy {
 	private Reactor reactorLeft;
@@ -10,10 +17,15 @@ public class Enemy {
 	private Cockpit cockpit;
 	private Gunship gunship;
 
+	private Tower aimedTower;
 	private boolean moving;
+	private boolean aiming;
+	private boolean hasShot;
+	private GameScene scene;
 
 	public Enemy() {
 		super();
+		this.scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 	}
 
 	public void init() {
@@ -26,6 +38,10 @@ public class Enemy {
 		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		this.reactorRight.init(this, Reactor.REACTOR_RIGHT);
+		hasShot = true;
+		moving = false;
+		aiming = false;
+
 	}
 
 	public void remove() {
@@ -36,12 +52,40 @@ public class Enemy {
 
 	}
 
+	public void moveNShoot() {
+		move();
+		aim();
+		shoot();
+	}
+
 	public void move() {
-		this.getCockpit().move();
-		this.getGunship().move();
-		this.getReactorLeft().move();
-		this.getReactorRight().move();
-		moving = true;
+		if (!this.isDamaged() && hasShot) {
+			this.getCockpit().move();
+			this.getGunship().move();
+			this.getReactorLeft().move();
+			this.getReactorRight().move();
+			moving = true;
+			hasShot = false;
+		}
+	}
+
+	public void aim() {
+		LinkedList<Tower> towerList = scene.getTowerList();
+		int towerNumber = RandomTool.randInt(0, 3);
+		aimedTower = towerList.get(towerNumber);
+		this.getGunship().aim(aimedTower);
+		if (this.gunship.getSprite().getRotation() == this.getGunship().aim(aimedTower))
+			aiming = false;
+		else
+			aiming = true;
+	}
+
+	public void shoot() {
+		if (!aiming) {
+			this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
+			hasShot = true;
+			moving = false;
+		}
 	}
 
 	public void addPhysics() {
@@ -59,11 +103,6 @@ public class Enemy {
 		} else {
 			return false;
 		}
-	}
-
-	public boolean shoot() {
-
-		return true;
 	}
 
 	// Getters and setters
@@ -106,6 +145,30 @@ public class Enemy {
 
 	public void setMoving(boolean moving) {
 		this.moving = moving;
+	}
+
+	public Tower getAimedTower() {
+		return aimedTower;
+	}
+
+	public void setAimedTower(Tower aimedTower) {
+		this.aimedTower = aimedTower;
+	}
+
+	public boolean isAiming() {
+		return aiming;
+	}
+
+	public void setAiming(boolean aiming) {
+		this.aiming = aiming;
+	}
+
+	public boolean hasShot() {
+		return hasShot;
+	}
+
+	public void setHasShot(boolean hasShot) {
+		this.hasShot = hasShot;
 	}
 
 }

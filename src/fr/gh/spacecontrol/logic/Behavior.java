@@ -1,14 +1,9 @@
 package fr.gh.spacecontrol.logic;
 
-import org.andengine.entity.modifier.MoveModifier;
-
 import fr.gh.spacecontrol.items.Enemy;
 
 public class Behavior {
 
-	private boolean moving;
-	private boolean shooting;
-	private boolean aiming;
 	private Enemy enemy;
 
 	static final protected int STANDARD_MOVEMENT = 1;
@@ -20,13 +15,13 @@ public class Behavior {
 	public void move(int movementType) {
 		switch (movementType) {
 		case STANDARD_MOVEMENT:
+			enemy.move();
 
-			
 			break;
 
 		default:
 			break;
 		}
-		
+
 	}
 }

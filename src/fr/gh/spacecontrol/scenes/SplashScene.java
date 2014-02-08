@@ -20,7 +20,7 @@ public class SplashScene extends Scene {
 		activity = BaseActivity.getSharedInstance();
 		activity.setCurrentScreen(1);
 		
-		SplashLogo logo = new SplashLogo();
+		SplashLogo logo = new SplashLogo(this);
 		attachChild(logo.getSprite1());
 		attachChild(logo.getSprite2());
 		attachChild(logo.getSprite3());

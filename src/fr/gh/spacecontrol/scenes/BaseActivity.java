@@ -198,7 +198,7 @@ public class BaseActivity extends SimpleBaseGameActivity {
 		this.gameStarted = gameStarted;
 	}
 
-	public Scene getmCurrentScene() {
+	public Scene getCurrentScene() {
 		return mCurrentScene;
 	}
 

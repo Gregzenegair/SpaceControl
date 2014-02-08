@@ -79,7 +79,7 @@ public final class ParticleEmitterExplosion {
 			return;
 		}
 
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 		int mTimePart = 2;
 		int mReveredRotation = (int) (rotation - 90 + rotation / 2);
 

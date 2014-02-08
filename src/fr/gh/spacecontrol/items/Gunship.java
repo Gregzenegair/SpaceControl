@@ -71,8 +71,6 @@ public class Gunship {
 
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
-
-		this.move();
 	}
 
 	public void move() {
@@ -103,9 +101,6 @@ public class Gunship {
 			this.finalPosX = enemy.getCockpit().getFinalPosX();
 			this.finalPosY = enemy.getCockpit().getFinalPosY();
 
-			if (this.moveModifier != null)
-				sprite.unregisterEntityModifier(this.moveModifier);
-
 			sprite.registerEntityModifier(new RotationModifier(0.5f, sprite.getRotation(), rotation));
 
 		}
@@ -115,12 +110,14 @@ public class Gunship {
 		float adjacent = target.getSprite().getX() - this.sprite.getX();
 		float opposed = target.getSprite().getY() - this.sprite.getY();
 
-		return (float) Math.toDegrees(Math.atan(opposed / adjacent));
+		float rotation = (float) Math.toDegrees(Math.atan(opposed / adjacent) - 180);
+		rotate(rotation);
+		return rotation;
 	}
 
 	public void shoot(int angle) {
 
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
 
@@ -177,7 +174,7 @@ public class Gunship {
 
 	public void addPhysics() {
 		if (!this.destroyed && !this.physic) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 			this.sprite.unregisterEntityModifier(this.moveModifier);
 
@@ -203,7 +200,7 @@ public class Gunship {
 
 	public void remove() {
 		if (this.isPhysic()) {
-			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getmCurrentScene();
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.modifier.MoveYModifier;
 
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.pools.EnemyPool;
@@ -13,8 +14,9 @@ import fr.gh.spacecontrol.scenes.GameScene;
 public class WaveMaker {
 
 	private int wave;
-	private int enemyCount;
+	private boolean creatingWave;
 	private int enemyDamagedCount;
+	private int enemyCount;
 	private GameScene scene;
 
 	public static WaveMaker instance;
@@ -28,46 +30,71 @@ public class WaveMaker {
 	private WaveMaker(GameScene scene) {
 		super();
 		this.scene = scene;
+		this.creatingWave = false;
+		this.wave = 1;
+	}
+
+	public void createNewWave() {
+		if (getEnemyDamagedCount() == scene.getEnemyList().size() && !creatingWave) {
+			creatingWave = true;
+			newWave();
+		}
 	}
 
 	public void newWave() {
-		scene.registerUpdateHandler(new TimerHandler(2, new ITimerCallback() {
 
+		enemyCount = (int) (this.wave * 1.3f);
+
+		scene.registerUpdateHandler(new TimerHandler(1, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-
+				scene.getWaveText().setText("Wave " + Integer.toString(getWave() - 1));				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2,
+						scene.getmCamera().getHeight() / 2);
+				scene.getWaveText().registerEntityModifier(
+						new MoveYModifier(1, scene.getWaveText().getY(), scene.getmCamera().getHeight() / 2));
 			}
 		}));
 
-		this.enemyCount = (int) (this.wave * 1.3f);
-		for (int x = 0; x < this.enemyCount; x++) {
-			Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
+		scene.registerUpdateHandler(new TimerHandler(3, new ITimerCallback() {
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				scene.getWaveText().registerEntityModifier(new MoveYModifier(1, scene.getWaveText().getY(), -100));
+			}
+		}));
 
-			enemy.init();
+		scene.registerUpdateHandler(new TimerHandler(6, new ITimerCallback() {
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				for (int x = 0; x < enemyCount; x++) {
+					Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
 
-			enemy.getCockpit().getSprite().detachSelf();
-			enemy.getGunship().getSprite().detachSelf();
-			enemy.getReactorLeft().getSprite().detachSelf();
-			enemy.getReactorRight().getSprite().detachSelf();
+					enemy.init();
 
-			scene.attachChild(enemy.getCockpit().getSprite());
-			scene.attachChild(enemy.getGunship().getSprite());
-			scene.attachChild(enemy.getReactorLeft().getSprite());
-			scene.attachChild(enemy.getReactorRight().getSprite());
+					enemy.getCockpit().getSprite().detachSelf();
+					enemy.getGunship().getSprite().detachSelf();
+					enemy.getReactorLeft().getSprite().detachSelf();
+					enemy.getReactorRight().getSprite().detachSelf();
 
-			scene.getEnemyList().add(enemy);
+					scene.attachChild(enemy.getCockpit().getSprite());
+					scene.attachChild(enemy.getGunship().getSprite());
+					scene.attachChild(enemy.getReactorLeft().getSprite());
+					scene.attachChild(enemy.getReactorRight().getSprite());
 
-			enemy.getCockpit().getSprite().setVisible(true);
-			enemy.getGunship().getSprite().setVisible(true);
-			enemy.getReactorLeft().getSprite().setVisible(true);
-			enemy.getReactorRight().getSprite().setVisible(true);
+					scene.getEnemyList().add(enemy);
 
-		}
-
+					enemy.getCockpit().getSprite().setVisible(true);
+					enemy.getGunship().getSprite().setVisible(true);
+					enemy.getReactorLeft().getSprite().setVisible(true);
+					enemy.getReactorRight().getSprite().setVisible(true);
+				}
+				creatingWave = false;
+			}
+		}));
 		this.wave++;
 	}
 
 	public void trackDamaged() {
+		this.enemyDamagedCount = 0;
 		LinkedList<Enemy> enemyList = scene.getEnemyList();
 		Iterator<Enemy> eIt = enemyList.iterator();
 		while (eIt.hasNext()) {
@@ -78,10 +105,6 @@ public class WaveMaker {
 		}
 	}
 
-	public void resetTrackDamaged() {
-		this.enemyDamagedCount = 0;
-	}
-
 	public int getWave() {
 		return wave;
 	}
@@ -90,20 +113,20 @@ public class WaveMaker {
 		this.wave = wave;
 	}
 
-	public int getEnemyCount() {
-		return enemyCount;
-	}
-
-	public void setEnemyCount(int enemyCount) {
-		this.enemyCount = enemyCount;
-	}
-
 	public int getEnemyDamagedCount() {
 		return enemyDamagedCount;
 	}
 
 	public void setEnemyDamagedCount(int enemyDamagedCount) {
 		this.enemyDamagedCount = enemyDamagedCount;
+	}
+
+	public int getEnemyCount() {
+		return enemyCount;
+	}
+
+	public void setEnemyCount(int enemyCount) {
+		this.enemyCount = enemyCount;
 	}
 
 }

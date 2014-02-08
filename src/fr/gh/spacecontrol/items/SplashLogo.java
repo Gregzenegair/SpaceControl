@@ -1,6 +1,8 @@
 package fr.gh.spacecontrol.items;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.QuadraticBezierCurveMoveModifier;
 import org.andengine.entity.modifier.ScaleModifier;
@@ -10,28 +12,31 @@ import org.andengine.util.modifier.ease.EaseLinear;
 import fr.gh.spacecontrol.R;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier.BezierPath;
+import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.primitive.Ellipse;
 import fr.gh.spacecontrol.primitive.Mesh.DrawMode;
 import fr.gh.spacecontrol.scenes.BaseActivity;
+import fr.gh.spacecontrol.scenes.GameScene;
+import fr.gh.spacecontrol.scenes.SplashScene;
 
 public class SplashLogo {
 
-	private Camera mCamera;
 	private Ellipse sprite1;
 	private Ellipse sprite2;
 	private Ellipse sprite3;
-	private BaseActivity activity;
 	private Text titleG;
 	private Text title;
 
 	protected static final int ELLIPSE_WIDTH_HEIGHT = 96;
 
-	public SplashLogo() {
-		this.activity = BaseActivity.getSharedInstance();
-		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
+	public SplashLogo(SplashScene scene) {
+		BaseActivity activity = BaseActivity.getSharedInstance();
+		Camera mCamera = BaseActivity.getSharedInstance().getmCamera();
+		
 
 		int centerX = (int) mCamera.getWidth() / 2;
 		int centerY = (int) mCamera.getHeight() / 2;
+		float animatedTime = 2.5f;
 
 		sprite1 = new Ellipse(centerX, centerY, ELLIPSE_WIDTH_HEIGHT, ELLIPSE_WIDTH_HEIGHT, BaseActivity
 				.getSharedInstance().getVertexBufferObjectManager());
@@ -51,14 +56,14 @@ public class SplashLogo {
 		sprite3.setDrawMode(DrawMode.TRIANGLE_FAN);
 		sprite3.setAlpha(0.33f);
 
-		QuadraticBezierCurveMoveModifier bezierCurveModifier1 = new QuadraticBezierCurveMoveModifier(2.5f,
+		QuadraticBezierCurveMoveModifier bezierCurveModifier1 = new QuadraticBezierCurveMoveModifier(animatedTime,
 				0 - ELLIPSE_WIDTH_HEIGHT, 0 - ELLIPSE_WIDTH_HEIGHT, mCamera.getWidth() * 2 / 3, 0, centerX, centerY);
 
-		QuadraticBezierCurveMoveModifier bezierCurveModifier2 = new QuadraticBezierCurveMoveModifier(2.5f,
+		QuadraticBezierCurveMoveModifier bezierCurveModifier2 = new QuadraticBezierCurveMoveModifier(animatedTime,
 				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, mCamera.getHeight() * 2 / 3, 0, mCamera.getHeight() / 2,
 				centerX, centerY);
 
-		QuadraticBezierCurveMoveModifier bezierCurveModifier3 = new QuadraticBezierCurveMoveModifier(2.5f,
+		QuadraticBezierCurveMoveModifier bezierCurveModifier3 = new QuadraticBezierCurveMoveModifier(animatedTime,
 				mCamera.getWidth() + ELLIPSE_WIDTH_HEIGHT, 0, mCamera.getWidth() * 2 / 3, mCamera.getWidth() / 2,
 				centerX, centerY);
 
@@ -71,7 +76,7 @@ public class SplashLogo {
 
 		titleG.setPosition((activity.getmCamera().getWidth() - titleG.getWidth()) / 2, (activity.getmCamera()
 				.getHeight() - titleG.getHeight()) / 2);
-		titleG.registerEntityModifier(new ScaleModifier(2.5f, 0.0f, 1.0f));
+		titleG.registerEntityModifier(new ScaleModifier(animatedTime, 0.0f, 1.0f));
 		titleG.setColor(0.0f, 0.0f, 0.0f);
 
 		title = new Text(0, 0, activity.getmFont(), activity.getString(R.string.title_2),
@@ -80,8 +85,15 @@ public class SplashLogo {
 		title.setPosition(activity.getmCamera().getWidth() + title.getWidth() / 1.5f,
 				titleG.getX() + titleG.getHeight() * 1.5f + title.getHeight() / 2);
 
-		title.registerEntityModifier(new MoveXModifier(2.5f, title.getX(), activity.getmCamera().getWidth() / 2));
+		title.registerEntityModifier(new MoveXModifier(animatedTime, title.getX(), activity.getmCamera().getWidth() / 2));
 		
+		scene.registerUpdateHandler(new TimerHandler(animatedTime, new ITimerCallback() {
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				sprite3.setAlpha(1.0f);
+				sprite3.setColor(1.0f, 1.0f, 1.0f);
+			}
+		}));
 	}
 
 	public Ellipse getSprite1() {

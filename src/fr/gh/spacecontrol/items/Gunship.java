@@ -1,11 +1,15 @@
 package fr.gh.spacecontrol.items;
 
+import java.util.LinkedList;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
+
+import android.transition.Scene;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -14,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import fr.gh.spacecontrol.logic.RandomTool;
-import fr.gh.spacecontrol.pools.BulletPool;
+import fr.gh.spacecontrol.pools.EnemyBulletPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
@@ -37,8 +41,8 @@ public class Gunship {
 
 	private int finalPosX;
 	private int finalPosY;
-	private int rotationCenterX;
-	private int rotationCenterY;
+	private int shootingPositionX;
+	private int shootingPositionY;
 
 	protected final int MAX_HEALTH = 6;
 	protected final int PHYSIC_HEALTH = 1;
@@ -65,7 +69,8 @@ public class Gunship {
 		physic = false;
 		speed = enemy.getCockpit().getSpeed();
 
-		sprite.setRotation(0);
+		sprite.setRotationCenterY(sprite.getY() + 4);
+		sprite.setRotation(180);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
 
@@ -90,8 +95,9 @@ public class Gunship {
 					+ enemy.getCockpit().getSprite().getHeight(), this.finalPosY
 					+ enemy.getCockpit().getSprite().getHeight()));
 
-			this.rotationCenterX = (int) (sprite.getX() + sprite.getHeight());
-			this.rotationCenterY = (int) (sprite.getY() + sprite.getWidth() / 2);
+			this.shootingPositionX = (int) (this.finalPosX + enemy.getCockpit().getSprite().getWidth() / 2 - sprite
+					.getWidth() / 2);
+			this.shootingPositionY = (int) (this.finalPosY + enemy.getCockpit().getSprite().getHeight());
 
 		}
 	}
@@ -106,11 +112,21 @@ public class Gunship {
 		}
 	}
 
-	public float aim(Tower target) {
-		float adjacent = target.getSprite().getX() - this.sprite.getX();
-		float opposed = target.getSprite().getY() - this.sprite.getY();
+	// angle 0 to up
+	public float aim(int tower) {
+		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
+		LinkedList<Tower> towerList = scene.getTowerList();
+		Tower target = towerList.get(2);
 
-		float rotation = (float) Math.toDegrees(Math.atan(opposed / adjacent) - 180);
+		float rotation = 0;
+		float adjacent = Math.abs(target.getSprite().getX() + target.getSprite().getWidth() / 2 - this.sprite.getX());
+		float opposed = Math.abs(target.getSprite().getY() + target.getSprite().getHeight() - this.sprite.getY());
+		// Here adjust is required !!!!! angles and abs 
+		if (tower == 0 || tower == 1) {
+			rotation = (float) (270 - Math.toDegrees(Math.atan(opposed / adjacent)));
+		} else {
+			rotation = (float) (180 - Math.toDegrees(Math.atan(adjacent / opposed)));
+		}
 		rotate(rotation);
 		return rotation;
 	}
@@ -119,28 +135,20 @@ public class Gunship {
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
-		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
+		EnemyBullet eB = EnemyBulletPool.sharedBulletPool().obtainPoolItem();
+		eB.getSprite().setPosition(shootingPositionX, shootingPositionY);
 
-		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
-		b.getSprite().setPosition(
-				rotationCenterX - ((float) Math.cos(Math.toRadians(270 - randAngle)) * sprite.getHeight())
-						+ sprite.getWidth() / 2 - sprite.getHeight() - 1,
-				rotationCenterY + (float) Math.sin(Math.toRadians(270 - randAngle)) * sprite.getHeight()
-						- sprite.getWidth() / 2 + sprite.getHeight() - 1);
+		eB.getSprite().setRotation(angle);
+		MoveModifier movMod = new MoveModifier(7, eB.getSprite().getX(), shootingPositionX
+				- ((float) Math.cos(Math.toRadians(270 - angle)) * 1000) + sprite.getWidth() / 2 - sprite.getHeight(),
+				eB.getSprite().getY(), shootingPositionY + (float) Math.sin(Math.toRadians(270 - angle)) * 1000
+						- sprite.getWidth() / 2 + sprite.getHeight());
 
-		b.getSprite().setRotation(randAngle);
-		MoveModifier movMod = new MoveModifier(1.5f, b.getSprite().getX(), rotationCenterX
-				- ((float) Math.cos(Math.toRadians(270 - randAngle)) * 1000) + sprite.getWidth() / 2
-				- sprite.getHeight(), b.getSprite().getY(), rotationCenterY
-				+ (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000 - sprite.getWidth() / 2 + sprite.getHeight());
-
-		sprite.setScaleY(0.8f);
-
-		b.setAngle(angle);
-		b.getSprite().setVisible(true);
-		scene.attachChild(b.getSprite());
-		scene.getBulletList().add(b);
-		b.getSprite().registerEntityModifier(movMod);
+		eB.setAngle(angle);
+		eB.getSprite().setVisible(true);
+		scene.attachChild(eB.getSprite());
+		scene.getEnemyBulletList().add(eB);
+		eB.getSprite().registerEntityModifier(movMod);
 		scene.setBulletCount(scene.getBulletCount() + 1);
 
 		int soundRandom = RandomTool.randInt(0, 3);

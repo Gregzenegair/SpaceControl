@@ -10,5 +10,6 @@
     <string name="backToGame">Back to game</string>
     <string name="exitGame">Exit game</string>
     
+    <string name="wave">Wave</string>
 
 </resources>

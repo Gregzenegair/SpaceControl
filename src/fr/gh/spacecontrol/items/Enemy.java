@@ -17,10 +17,11 @@ public class Enemy {
 	private Cockpit cockpit;
 	private Gunship gunship;
 
-	private Tower aimedTower;
+	private int aimedTower;
 	private boolean moving;
-	private boolean aiming;
+	private boolean aimed;
 	private boolean hasShot;
+	private boolean aiming;
 	private GameScene scene;
 
 	public Enemy() {
@@ -38,10 +39,10 @@ public class Enemy {
 		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		this.reactorRight.init(this, Reactor.REACTOR_RIGHT);
-		hasShot = true;
+		hasShot = false;
 		moving = false;
-		aiming = false;
-
+		aimed = false;
+		move();
 	}
 
 	public void remove() {
@@ -53,35 +54,41 @@ public class Enemy {
 	}
 
 	public void moveNShoot() {
-		move();
-		aim();
-		shoot();
+		moving = this.cockpit.isMooving();
+		if (!hasShot && !moving && !aimed && !aiming) {
+			aim();
+			aiming = true;
+		} else if (hasShot) {
+			move();
+		} else {
+			shoot();
+		}
 	}
 
 	public void move() {
-		if (!this.isDamaged() && hasShot) {
+		if (!this.isDamaged()) {
 			this.getCockpit().move();
 			this.getGunship().move();
 			this.getReactorLeft().move();
 			this.getReactorRight().move();
 			moving = true;
+			aiming = false;
 			hasShot = false;
 		}
 	}
 
 	public void aim() {
-		LinkedList<Tower> towerList = scene.getTowerList();
-		int towerNumber = RandomTool.randInt(0, 3);
-		aimedTower = towerList.get(towerNumber);
+
+		aimedTower = RandomTool.randInt(0, 3); // shoot to tower 1 for debug -- 3 and 4 not working
 		this.getGunship().aim(aimedTower);
-		if (this.gunship.getSprite().getRotation() == this.getGunship().aim(aimedTower))
-			aiming = false;
-		else
-			aiming = true;
+
+		aimed = true;
+		aiming = false;
+
 	}
 
 	public void shoot() {
-		if (!aiming) {
+		if (aimed) {
 			this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
 			hasShot = true;
 			moving = false;
@@ -147,20 +154,12 @@ public class Enemy {
 		this.moving = moving;
 	}
 
-	public Tower getAimedTower() {
-		return aimedTower;
-	}
-
-	public void setAimedTower(Tower aimedTower) {
-		this.aimedTower = aimedTower;
-	}
-
 	public boolean isAiming() {
-		return aiming;
+		return aimed;
 	}
 
-	public void setAiming(boolean aiming) {
-		this.aiming = aiming;
+	public void setAimed(boolean aimed) {
+		this.aimed = aimed;
 	}
 
 	public boolean hasShot() {

@@ -86,8 +86,6 @@ public class Tower {
 				- sprite.getHeight(), b.getSprite().getY(), rotationCenterY
 				+ (float) Math.sin(Math.toRadians(270 - randAngle)) * 1000 - sprite.getWidth() / 2 + sprite.getHeight());
 
-		sprite.setScaleY(0.8f);
-
 		b.setAngle(angle);
 		b.getSprite().setVisible(true);
 		scene.attachChild(b.getSprite());

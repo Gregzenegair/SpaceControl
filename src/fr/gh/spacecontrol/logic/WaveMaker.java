@@ -7,8 +7,10 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveYModifier;
 
+import android.R;
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.pools.EnemyPool;
+import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
 public class WaveMaker {
@@ -18,6 +20,7 @@ public class WaveMaker {
 	private int enemyDamagedCount;
 	private int enemyCount;
 	private GameScene scene;
+	BaseActivity activity;
 
 	public static WaveMaker instance;
 
@@ -41,14 +44,15 @@ public class WaveMaker {
 		}
 	}
 
+	// Here we have wave word to put into strings
 	public void newWave() {
-
+		activity = BaseActivity.getSharedInstance();
 		enemyCount = (int) (this.wave * 1.3f);
-
 		scene.registerUpdateHandler(new TimerHandler(1, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				scene.getWaveText().setText("Wave " + Integer.toString(getWave() - 1));				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2,
+				scene.getWaveText().setText("Wave " + Integer.toString(getWave() - 1));
+				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2,
 						scene.getmCamera().getHeight() / 2);
 				scene.getWaveText().registerEntityModifier(
 						new MoveYModifier(1, scene.getWaveText().getY(), scene.getmCamera().getHeight() / 2));

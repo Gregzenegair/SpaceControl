@@ -26,6 +26,7 @@ import fr.gh.spacecontrol.items.Bullet;
 import fr.gh.spacecontrol.items.Bunker;
 import fr.gh.spacecontrol.items.Cockpit;
 import fr.gh.spacecontrol.items.Enemy;
+import fr.gh.spacecontrol.items.EnemyBullet;
 import fr.gh.spacecontrol.items.Gunship;
 import fr.gh.spacecontrol.items.ParticleEmitterExplosion;
 import fr.gh.spacecontrol.items.Reactor;
@@ -56,6 +57,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	private LinkedList<Tower> towerList;
 	private LinkedList<Bullet> bulletList;
+	private LinkedList<EnemyBullet> enemyBulletList;
 	private LinkedList<Wreckage> wreckageList;
 	private LinkedList<Enemy> enemyList;
 
@@ -88,6 +90,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.towerList = new LinkedList<Tower>();
 		this.bulletList = new LinkedList<Bullet>();
+		this.enemyBulletList = new LinkedList<EnemyBullet>();
 		this.wreckageList = new LinkedList<Wreckage>();
 		this.enemyList = new LinkedList<Enemy>();
 
@@ -449,6 +452,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void setBulletList(LinkedList<Bullet> bulletList) {
 		this.bulletList = bulletList;
+	}
+
+	public LinkedList<EnemyBullet> getEnemyBulletList() {
+		return enemyBulletList;
+	}
+
+	public void setEnemyBulletList(LinkedList<EnemyBullet> enemyBulletList) {
+		this.enemyBulletList = enemyBulletList;
 	}
 
 	public LinkedList<Enemy> getEnemyList() {

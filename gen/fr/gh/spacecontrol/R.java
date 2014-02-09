@@ -41,6 +41,7 @@ public final class R {
         public static final int startGame=0x7f050005;
         public static final int title_1=0x7f050003;
         public static final int title_2=0x7f050004;
+        public static final int wave=0x7f050008;
     }
     public static final class style {
         /** 

@@ -83,6 +83,14 @@ public class Cockpit {
 
 	}
 
+	public boolean isMooving() {
+		if (this.getSprite().getX() == this.finalPosX && this.getSprite().getY() == this.finalPosY) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	public int gotHitnDestroyed(int angle) {
 		synchronized (this) {
 			hp--;

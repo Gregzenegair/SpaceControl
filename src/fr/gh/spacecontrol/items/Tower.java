@@ -6,7 +6,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.Sprite;
 
-import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.BulletPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
@@ -71,7 +71,7 @@ public class Tower {
 
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
-		float randAngle = (float) (angle + RandomTool.randInt(-3, 3));
+		float randAngle = (float) (angle + MathTool.randInt(-3, 3));
 
 		Bullet b = BulletPool.sharedBulletPool().obtainPoolItem();
 		b.getSprite().setPosition(
@@ -93,7 +93,7 @@ public class Tower {
 		b.getSprite().registerEntityModifier(movMod);
 		scene.setBulletCount(scene.getBulletCount() + 1);
 
-		int soundRandom = RandomTool.randInt(0, 3);
+		int soundRandom = MathTool.randInt(0, 3);
 		if (soundRandom == 0 || soundRandom == 1 || soundRandom == 2)
 			scene.getSoundTowerGun().play();
 		else

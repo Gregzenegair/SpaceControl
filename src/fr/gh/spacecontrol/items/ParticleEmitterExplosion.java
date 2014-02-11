@@ -18,7 +18,7 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
-import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.WreckagePool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
@@ -95,7 +95,7 @@ public final class ParticleEmitterExplosion {
 		wreckage.getSprite().registerUpdateHandler(movMod2);
 		movMod2.setVelocity(0, 100);
 
-		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, RandomTool.randInt(360, 1440));
+		final RotationModifier rotMod = new RotationModifier(1.0f, mReveredRotation, MathTool.randInt(360, 1440));
 		AlphaModifier alphaMod = new AlphaModifier(mTimePart * 2, 1.0f, 0.0f);
 		wreckage.getSprite().setVisible(true);
 		scene.attachChild(wreckage.getSprite());

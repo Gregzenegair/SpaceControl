@@ -13,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
-import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
@@ -34,7 +34,7 @@ public class Reactor {
 	private Enemy enemy;
 	private int scoreValue;
 	protected final int MAX_HEALTH = 3;
-	protected final int PHYSIC_HEALTH = 1;
+	protected final int PHYSIC_HEALTH = 2;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
@@ -140,9 +140,9 @@ public class Reactor {
 			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
 			this.physic = true;
 
-			int random = RandomTool.randInt(-5, 5);
+			int random = MathTool.randInt(-5, 5);
 			body.setAngularVelocity(random);
-			random = RandomTool.randInt(0, 4);
+			random = MathTool.randInt(0, 4);
 			if (random != 0) {
 				final WeldJointDef joint = new WeldJointDef();
 				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());

@@ -4,14 +4,14 @@ import java.util.LinkedList;
 
 import android.R.bool;
 import android.transition.Scene;
-import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.CockpitPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
 import fr.gh.spacecontrol.pools.ReactorPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
-public class Enemy {
+public abstract class Enemy {
 	private Reactor reactorLeft;
 	private Reactor reactorRight;
 	private Cockpit cockpit;
@@ -73,10 +73,10 @@ public class Enemy {
 			this.getGunship().move();
 			this.getReactorLeft().move();
 			this.getReactorRight().move();
-			moving = true;
+			moving = this.cockpit.isMooving();
 			aiming = false;
 			hasShot = false;
-			aimedTower = RandomTool.randInt(0, 3);
+			aimedTower = MathTool.randInt(0, 3);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class Enemy {
 			if (aimed) {
 				this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
 				hasShot = true;
-				moving = false;
+				moving = this.cockpit.isMooving();
 			}
 		}
 	}

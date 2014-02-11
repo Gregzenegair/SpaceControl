@@ -3,6 +3,7 @@ package fr.gh.spacecontrol.pools;
 import org.andengine.util.adt.pool.GenericPool;
 
 import fr.gh.spacecontrol.items.Enemy;
+import fr.gh.spacecontrol.items.EnemyType001;
 
 public class EnemyPool extends GenericPool<Enemy> {
 
@@ -20,7 +21,7 @@ public class EnemyPool extends GenericPool<Enemy> {
 
 	@Override
 	protected Enemy onAllocatePoolItem() {
-		return new Enemy();
+		return new EnemyType001();
 	}
 
 	@Override

@@ -12,7 +12,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
-import fr.gh.spacecontrol.logic.RandomTool;
+import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
@@ -58,14 +58,14 @@ public class Cockpit {
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);
-		sprite.setPosition((finalPosX = RandomTool.randInt(100, (int) mCamera.getWidth() - 100)),
-				finalPosY = RandomTool.randInt(-300, -100));
+		sprite.setPosition((finalPosX = MathTool.randInt(100, (int) mCamera.getWidth() - 100)),
+				finalPosY = MathTool.randInt(-300, -100));
 
 	}
 
 	public void move() {
-		this.finalPosX = RandomTool.randInt(50, (int) mCamera.getWidth() - 50);
-		this.finalPosY = RandomTool.randInt(0, 500);
+		this.finalPosX = MathTool.randInt(50, (int) mCamera.getWidth() - 50);
+		this.finalPosY = MathTool.randInt(0, 500);
 
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);

@@ -7,7 +7,6 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveYModifier;
 
-import android.R;
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;

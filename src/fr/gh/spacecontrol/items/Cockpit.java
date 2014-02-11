@@ -42,8 +42,8 @@ public class Cockpit {
 	public Cockpit() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 
-		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyCockpitTexture, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyCockpitTexture, BaseActivity
+				.getSharedInstance().getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Enemy object , used by the constructor and
@@ -134,6 +134,9 @@ public class Cockpit {
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);
 		}
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
 
 		sprite.clearEntityModifiers();
 		sprite.clearUpdateHandlers();

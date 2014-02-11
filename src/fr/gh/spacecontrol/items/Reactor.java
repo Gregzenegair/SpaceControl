@@ -45,8 +45,8 @@ public class Reactor {
 	public Reactor() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 
-		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyReactorTexture, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyReactorTexture, BaseActivity
+				.getSharedInstance().getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Reactor object , used by the constructor and
@@ -64,7 +64,7 @@ public class Reactor {
 		sprite.setRotation(0);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
-		if(reactorSide == REACTOR_LEFT){
+		if (reactorSide == REACTOR_LEFT) {
 			sprite.setFlippedHorizontal(true);
 		} else {
 			sprite.setFlippedHorizontal(false);
@@ -72,10 +72,7 @@ public class Reactor {
 
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
-		
-		if (this.moveModifier != null)
-			sprite.unregisterEntityModifier(this.moveModifier);
-		
+
 	}
 
 	public void move() {
@@ -163,6 +160,9 @@ public class Reactor {
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);
 		}
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
 
 		sprite.clearEntityModifiers();
 		sprite.clearUpdateHandlers();

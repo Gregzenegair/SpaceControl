@@ -28,16 +28,7 @@ public class EnemyType002 extends Enemy {
 
 	@Override
 	public void move() {
-		if (!this.isDamaged()) {
-			this.getCockpit().moveCenter();
-			this.getGunship().move();
-			this.getReactorLeft().move();
-			this.getReactorRight().move();
-			setMoving(this.getCockpit().isMooving());
-			setAiming(false);
-			setHasShot(false);
-			setAimedTower(MathTool.randInt(0, 3));
-		}
+		super.move();
 	}
 
 	@Override

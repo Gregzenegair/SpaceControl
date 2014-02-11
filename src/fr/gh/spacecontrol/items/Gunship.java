@@ -79,9 +79,7 @@ public class Gunship {
 
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
-		
-		if (this.moveModifier != null)
-			sprite.unregisterEntityModifier(this.moveModifier);
+
 	}
 
 	public void move() {
@@ -217,6 +215,9 @@ public class Gunship {
 			scene.mPhysicsWorld.destroyBody(this.getBody());
 			scene.mPhysicsWorld.unregisterPhysicsConnector(this.PhysicsConnector);
 		}
+
+		if (this.moveModifier != null)
+			sprite.unregisterEntityModifier(this.moveModifier);
 
 		sprite.clearEntityModifiers();
 		sprite.clearUpdateHandlers();

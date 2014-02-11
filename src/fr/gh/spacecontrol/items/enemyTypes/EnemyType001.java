@@ -1,4 +1,9 @@
-package fr.gh.spacecontrol.items;
+package fr.gh.spacecontrol.items.enemyTypes;
+
+import fr.gh.spacecontrol.items.Cockpit;
+import fr.gh.spacecontrol.items.Enemy;
+import fr.gh.spacecontrol.items.Gunship;
+import fr.gh.spacecontrol.items.Reactor;
 
 public class EnemyType001 extends Enemy {
 

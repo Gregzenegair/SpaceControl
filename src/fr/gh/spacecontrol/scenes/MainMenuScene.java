@@ -20,7 +20,7 @@ public class MainMenuScene extends MenuScene implements IOnMenuItemClickListener
 		activity = BaseActivity.getSharedInstance();
 		activity.setCurrentScreen(2);
 
-		setBackground(new Background(0.09804f, 0.6274f, 0.8784f));
+		setBackground(new Background(0.29804f, 0.274f, 0.28784f));
 
 		IMenuItem startButton = new TextMenuItem(MENU_START, activity.getmFont(),
 				activity.getString(R.string.startGame), activity.getVertexBufferObjectManager());

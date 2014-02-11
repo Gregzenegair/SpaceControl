@@ -56,9 +56,9 @@ public abstract class Enemy {
 	public void moveNShoot() {
 		if (!this.isDamaged()) {
 			moving = this.cockpit.isMooving();
-			if (!hasShot && !moving && !aimed && !aiming) {
+			if (!hasShot && !moving && !aimed && !isAiming()) {
 				aim();
-				aiming = true;
+				setAiming(true);
 			} else if (hasShot) {
 				move();
 			} else {
@@ -74,25 +74,25 @@ public abstract class Enemy {
 			this.getReactorLeft().move();
 			this.getReactorRight().move();
 			moving = this.cockpit.isMooving();
-			aiming = false;
+			setAiming(false);
 			hasShot = false;
-			aimedTower = MathTool.randInt(0, 3);
+			setAimedTower(MathTool.randInt(0, 3));
 		}
 	}
 
 	public void aim() {
 		if (!this.isDamaged()) {
-			this.getGunship().aim(aimedTower);
+			this.getGunship().aim(getAimedTower());
 
 			aimed = true;
-			aiming = false;
+			setAiming(false);
 		}
 	}
 
 	public void shoot() {
 		if (!this.isDamaged()) {
 			if (aimed) {
-				this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
+				this.getGunship().shoot((int) this.getGunship().aim(getAimedTower()));
 				hasShot = true;
 				moving = this.cockpit.isMooving();
 			}
@@ -162,6 +162,10 @@ public abstract class Enemy {
 		return aimed;
 	}
 
+	public void setAiming(boolean aiming) {
+		this.aiming = aiming;
+	}
+
 	public void setAimed(boolean aimed) {
 		this.aimed = aimed;
 	}
@@ -172,6 +176,14 @@ public abstract class Enemy {
 
 	public void setHasShot(boolean hasShot) {
 		this.hasShot = hasShot;
+	}
+
+	public int getAimedTower() {
+		return aimedTower;
+	}
+
+	public void setAimedTower(int aimedTower) {
+		this.aimedTower = aimedTower;
 	}
 
 }

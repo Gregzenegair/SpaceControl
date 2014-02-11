@@ -54,14 +54,16 @@ public class Enemy {
 	}
 
 	public void moveNShoot() {
-		moving = this.cockpit.isMooving();
-		if (!hasShot && !moving && !aimed && !aiming) {
-			aim();
-			aiming = true;
-		} else if (hasShot) {
-			move();
-		} else {
-			shoot();
+		if (!this.isDamaged()) {
+			moving = this.cockpit.isMooving();
+			if (!hasShot && !moving && !aimed && !aiming) {
+				aim();
+				aiming = true;
+			} else if (hasShot) {
+				move();
+			} else {
+				shoot();
+			}
 		}
 	}
 
@@ -74,24 +76,26 @@ public class Enemy {
 			moving = true;
 			aiming = false;
 			hasShot = false;
+			aimedTower = RandomTool.randInt(0, 3);
 		}
 	}
 
 	public void aim() {
+		if (!this.isDamaged()) {
+			this.getGunship().aim(aimedTower);
 
-		aimedTower = RandomTool.randInt(0, 3); // shoot to tower 1 for debug -- 3 and 4 not working
-		this.getGunship().aim(aimedTower);
-
-		aimed = true;
-		aiming = false;
-
+			aimed = true;
+			aiming = false;
+		}
 	}
 
 	public void shoot() {
-		if (aimed) {
-			this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
-			hasShot = true;
-			moving = false;
+		if (!this.isDamaged()) {
+			if (aimed) {
+				this.getGunship().shoot((int) this.getGunship().aim(aimedTower));
+				hasShot = true;
+				moving = false;
+			}
 		}
 	}
 

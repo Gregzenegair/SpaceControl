@@ -3,6 +3,7 @@ package fr.gh.spacecontrol.items;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 
@@ -17,7 +18,7 @@ import fr.gh.spacecontrol.scenes.GameScene;
 
 public class Cockpit {
 
-	private Rectangle sprite;
+	private Sprite sprite;
 	private Body body;
 	private int hp;
 	private int speed = 2;
@@ -31,7 +32,7 @@ public class Cockpit {
 	private Enemy enemy;
 
 	private int scoreValue;
-	protected final int MAX_HEALTH = 10;
+	protected final int MAX_HEALTH = 5;
 	protected final int PHYSIC_HEALTH = 2;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
@@ -40,8 +41,9 @@ public class Cockpit {
 
 	public Cockpit() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 30, 30, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.06f, 0.004f, 0.004f);
+
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyCockpitTexture, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Enemy object , used by the constructor and
@@ -142,11 +144,11 @@ public class Cockpit {
 
 	}
 
-	public Rectangle getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
-	public void setSprite(Rectangle sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 

@@ -46,9 +46,12 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	private Music soundExplosion;
 
 	private BitmapTextureAtlas textureAtlas;
-	private ITextureRegion bunkerTexture;
-	private ITextureRegion towerTexture;
-	private ITextureRegion logoTexture;
+	public ITextureRegion bunkerTexture;
+	public ITextureRegion towerTexture;
+	public ITextureRegion enemyCockpitTexture;
+	public ITextureRegion enemyReactorTexture;
+	public ITextureRegion enemyGunshipTexture;
+	public ITextureRegion logoTexture;
 
 	private static BaseActivity instance;
 
@@ -87,8 +90,17 @@ public class BaseActivity extends SimpleBaseGameActivity {
 			towerTexture = BitmapTextureAtlasTextureRegionFactory
 					.createFromAsset(textureAtlas, this, "tower.png", 32, 0);
 			
-			logoTexture = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(textureAtlas, this, "logo.png", 0, 64);
+			enemyCockpitTexture = BitmapTextureAtlasTextureRegionFactory
+					.createFromAsset(textureAtlas, this, "cockpitGreen_0.png", 64, 0);
+			
+			enemyReactorTexture = BitmapTextureAtlasTextureRegionFactory
+					.createFromAsset(textureAtlas, this, "wingGreen_0.png", 96, 0);
+			
+			enemyGunshipTexture = BitmapTextureAtlasTextureRegionFactory
+					.createFromAsset(textureAtlas, this, "gun00.png", 128, 0);
+			
+//			logoTexture = BitmapTextureAtlasTextureRegionFactory
+//					.createFromAsset(textureAtlas, this, "logo.png", 0, 64);
 
 			textureAtlas.load();
 
@@ -262,28 +274,5 @@ public class BaseActivity extends SimpleBaseGameActivity {
 		this.textureAtlas = textureAtlas;
 	}
 
-	public ITextureRegion getBunkerTexture() {
-		return bunkerTexture;
-	}
-
-	public void setBunkerTexture(ITextureRegion bunkerTexture) {
-		this.bunkerTexture = bunkerTexture;
-	}
-
-	public ITextureRegion getTowerTexture() {
-		return towerTexture;
-	}
-
-	public void setTowerTexture(ITextureRegion towerTexture) {
-		this.towerTexture = towerTexture;
-	}
-
-	public ITextureRegion getLogoTexture() {
-		return logoTexture;
-	}
-
-	public void setLogoTexture(ITextureRegion logoTexture) {
-		this.logoTexture = logoTexture;
-	}
 
 }

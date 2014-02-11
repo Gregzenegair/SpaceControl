@@ -36,6 +36,7 @@ import fr.gh.spacecontrol.logic.GameLoopUpdateHandler;
 import fr.gh.spacecontrol.logic.WaveMaker;
 import fr.gh.spacecontrol.pools.BulletPool;
 import fr.gh.spacecontrol.pools.CockpitPool;
+import fr.gh.spacecontrol.pools.EnemyBulletPool;
 import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
 import fr.gh.spacecontrol.pools.ReactorPool;
@@ -186,6 +187,22 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 	public void collisionerAndCleaner() {
 		synchronized (this) {
+
+			// EnemyBullet and Tower interactions
+			Iterator<EnemyBullet> bEIt = enemyBulletList.iterator();
+			while (bEIt.hasNext()) {
+				EnemyBullet eB = bEIt.next();
+				if (eB.getSprite().getY() <= -eB.getSprite().getHeight()
+						|| eB.getSprite().getY() >= -eB.getSprite().getHeight() + mCamera.getHeight()
+						|| eB.getSprite().getX() <= -eB.getSprite().getHeight()
+						|| eB.getSprite().getX() >= -eB.getSprite().getHeight() + mCamera.getWidth()) {
+					EnemyBulletPool.sharedBulletPool().recyclePoolItem(eB);
+					bEIt.remove();
+					continue;
+				}
+			}
+
+			// Enemy and Bullet interactions
 			Iterator<Enemy> eIt = enemyList.iterator();
 			while (eIt.hasNext()) {
 				Enemy e = eIt.next();

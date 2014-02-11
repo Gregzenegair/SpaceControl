@@ -26,7 +26,7 @@ public class Tower {
 
 	public Tower(int width, int height, LinkedList<Tower> towerList) {
 
-		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().getTowerTexture(), BaseActivity.getSharedInstance()
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().towerTexture, BaseActivity.getSharedInstance()
 				.getVertexBufferObjectManager());
 
 		this.scaleYSaved = sprite.getScaleY();

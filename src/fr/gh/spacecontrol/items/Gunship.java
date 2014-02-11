@@ -6,6 +6,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 
@@ -26,7 +27,7 @@ public class Gunship {
 
 	private Camera mCamera;
 
-	private Rectangle sprite;
+	private Sprite sprite;
 	private Enemy enemy;
 	private Body body;
 	private MoveModifier moveModifier;
@@ -44,7 +45,7 @@ public class Gunship {
 	private int shootingPositionX;
 	private int shootingPositionY;
 
-	protected final int MAX_HEALTH = 6;
+	protected final int MAX_HEALTH = 3;
 	protected final int PHYSIC_HEALTH = 1;
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
@@ -54,8 +55,9 @@ public class Gunship {
 
 	public Gunship() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 6, 10, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.3f, 0.004f, 0.5f);
+
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyGunshipTexture, BaseActivity
+				.getSharedInstance().getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Gunship object , used by the constructor and
@@ -69,8 +71,9 @@ public class Gunship {
 		physic = false;
 		speed = enemy.getCockpit().getSpeed();
 
-		sprite.setRotationCenterY(sprite.getY() + 4);
 		sprite.setRotation(180);
+		sprite.setScale(0.4f);
+		sprite.setFlippedVertical(true);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
 
@@ -92,8 +95,8 @@ public class Gunship {
 					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, this.finalPosX
 					+ enemy.getCockpit().getSprite().getWidth() / 2 - sprite.getWidth() / 2, enemy.getCockpit()
 					.getSprite().getY()
-					+ enemy.getCockpit().getSprite().getHeight(), this.finalPosY
-					+ enemy.getCockpit().getSprite().getHeight()));
+					+ enemy.getCockpit().getSprite().getHeight() - 10, this.finalPosY
+					+ enemy.getCockpit().getSprite().getHeight() - 10));
 
 			this.shootingPositionX = (int) (this.finalPosX + enemy.getCockpit().getSprite().getWidth() / 2 - sprite
 					.getWidth() / 2);
@@ -116,17 +119,15 @@ public class Gunship {
 	public float aim(int tower) {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 		LinkedList<Tower> towerList = scene.getTowerList();
-		Tower target = towerList.get(2);
+		Tower target = towerList.get(tower);
 
 		float rotation = 0;
-		float adjacent = Math.abs(target.getSprite().getX() + target.getSprite().getWidth() / 2 - this.sprite.getX());
-		float opposed = Math.abs(target.getSprite().getY() + target.getSprite().getHeight() - this.sprite.getY());
-		// Here adjust is required !!!!! angles and abs 
-		if (tower == 0 || tower == 1) {
-			rotation = (float) (270 - Math.toDegrees(Math.atan(opposed / adjacent)));
-		} else {
-			rotation = (float) (180 - Math.toDegrees(Math.atan(adjacent / opposed)));
-		}
+		float opposed = (target.getSprite().getX() + target.getSprite().getWidth() / 2 - this.sprite.getX());
+		float adjacent = (target.getSprite().getY() + target.getSprite().getHeight() - this.sprite.getY());
+		// Here adjust is required !!!!! angles and abs
+
+		rotation = (float) (180 - Math.toDegrees(Math.atan(opposed / adjacent)));
+
 		rotate(rotation);
 		return rotation;
 	}
@@ -222,11 +223,11 @@ public class Gunship {
 		this.destroyed = true;
 	}
 
-	public Rectangle getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
-	public void setSprite(Rectangle sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 

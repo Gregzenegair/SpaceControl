@@ -9,7 +9,7 @@ public class Bunker {
 	private Sprite sprite;
 
 	public Bunker(Tower tower) {
-		this.sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().getBunkerTexture(), BaseActivity
+		this.sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().bunkerTexture, BaseActivity
 				.getSharedInstance().getVertexBufferObjectManager());
 
 		this.sprite.setPosition(tower.getSprite().getX(), tower.getSprite().getY() + tower.getSprite().getHeight() - 10);

@@ -3,6 +3,7 @@ package fr.gh.spacecontrol.items;
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 
@@ -18,7 +19,7 @@ import fr.gh.spacecontrol.scenes.GameScene;
 
 public class Reactor {
 
-	private Rectangle sprite;
+	private Sprite sprite;
 	private Body body;
 	private int hp;
 	private int speed;
@@ -32,7 +33,7 @@ public class Reactor {
 	private int reactorSide;
 	private Enemy enemy;
 	private int scoreValue;
-	protected final int MAX_HEALTH = 6;
+	protected final int MAX_HEALTH = 3;
 	protected final int PHYSIC_HEALTH = 1;
 
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
@@ -43,8 +44,9 @@ public class Reactor {
 
 	public Reactor() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
-		sprite = new Rectangle(0, 0, 10, 20, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		sprite.setColor(0.5f, 0.004f, 0.2f);
+
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyReactorTexture, BaseActivity.getSharedInstance()
+				.getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Reactor object , used by the constructor and
@@ -62,6 +64,11 @@ public class Reactor {
 		sprite.setRotation(0);
 		sprite.setVisible(true);
 		sprite.setPosition(enemy.getCockpit().getSprite().getX(), enemy.getCockpit().getSprite().getY());
+		if(reactorSide == REACTOR_LEFT){
+			sprite.setFlippedHorizontal(true);
+		} else {
+			sprite.setFlippedHorizontal(false);
+		}
 
 		this.finalPosX = enemy.getCockpit().getFinalPosX();
 		this.finalPosY = enemy.getCockpit().getFinalPosY();
@@ -162,11 +169,11 @@ public class Reactor {
 		this.destroyed = true;
 	}
 
-	public Rectangle getSprite() {
+	public Sprite getSprite() {
 		return sprite;
 	}
 
-	public void setSprite(Rectangle sprite) {
+	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 

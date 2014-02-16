@@ -39,6 +39,7 @@ public abstract class Enemy {
 		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		this.reactorRight.init(this, Reactor.REACTOR_RIGHT);
+		aiming = false;
 		hasShot = false;
 		moving = false;
 		aimed = false;

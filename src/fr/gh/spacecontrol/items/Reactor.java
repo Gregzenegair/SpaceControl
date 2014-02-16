@@ -142,13 +142,13 @@ public class Reactor {
 
 			int random = MathTool.randInt(-5, 5);
 			body.setAngularVelocity(random);
-			random = MathTool.randInt(0, 4);
-			if (random != 0) {
-				final WeldJointDef joint = new WeldJointDef();
-				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
-
-				scene.mPhysicsWorld.createJoint(joint);
-			}
+//			random = MathTool.randInt(0, 4);
+//			if (random != 0) {
+//				final WeldJointDef joint = new WeldJointDef();
+//				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
+//
+//				scene.mPhysicsWorld.createJoint(joint);
+//			}
 		}
 
 	}

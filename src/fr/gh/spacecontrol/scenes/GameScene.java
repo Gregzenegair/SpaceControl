@@ -211,7 +211,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					Bullet b = bIt.next();
 					if (b.getSprite().getY() <= -b.getSprite().getHeight()
 							|| b.getSprite().getX() <= -b.getSprite().getHeight()
-
 							|| b.getSprite().getX() >= -b.getSprite().getHeight() + mCamera.getWidth()) {
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						bIt.remove();
@@ -251,8 +250,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 				CockpitPool.sharedCockpitPool().recyclePoolItem(c);
 				this.scoreValue += c.getScoreValue();
-
+				System.out.println("Recycling Cockpit");
 			}
+
 			soundImpact.play();
 			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b
 					.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
@@ -265,6 +265,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					&& e.getGunship().isDestroyed()) {
 				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 				eIt.remove();
+				System.out.println("Recycling Enemy");
 			}
 
 		} else if (element.getClass().getSimpleName().equals("Reactor")) {
@@ -283,6 +284,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 				ReactorPool.sharedReactorPool().recyclePoolItem(r);
 				this.scoreValue += r.getScoreValue();
+				System.out.println("Recycling Reactor");
 
 			}
 			soundImpact.play();
@@ -297,6 +299,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					&& e.getGunship().isDestroyed()) {
 				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 				eIt.remove();
+				System.out.println("Recycling Enemy");
 			}
 		} else if (element.getClass().getSimpleName().equals("Gunship")) {
 			Gunship gs = (Gunship) element;
@@ -314,6 +317,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 				GunshipPool.sharedGunshipPool().recyclePoolItem(gs);
 				this.scoreValue += gs.getScoreValue();
+				System.out.println("Recycling Gunship");
 
 			}
 			soundImpact.play();
@@ -328,6 +332,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 					&& e.getGunship().isDestroyed()) {
 				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
 				eIt.remove();
+				System.out.println("Recycling Enemy");
 			}
 		}
 

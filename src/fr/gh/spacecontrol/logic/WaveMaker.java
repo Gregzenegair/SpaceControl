@@ -7,6 +7,7 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveYModifier;
 
+import fr.gh.spacecontrol.R;
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.scenes.BaseActivity;
@@ -43,14 +44,13 @@ public class WaveMaker {
 		}
 	}
 
-	// Here we have wave word to put into strings
 	public void newWave() {
 		activity = BaseActivity.getSharedInstance();
 		enemyCount = (int) (this.wave * 1.3f);
 		scene.registerUpdateHandler(new TimerHandler(1, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				scene.getWaveText().setText("Wave " + Integer.toString(getWave() - 1));
+				scene.getWaveText().setText(activity.getString(R.string.wave) + Integer.toString(getWave() - 1));
 				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2,
 						scene.getmCamera().getHeight() / 2);
 				scene.getWaveText().registerEntityModifier(
@@ -93,6 +93,7 @@ public class WaveMaker {
 				creatingWave = false;
 			}
 		}));
+
 		this.wave++;
 	}
 

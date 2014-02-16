@@ -56,39 +56,39 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 			Iterator<Enemy> eIt = scene.getEnemyList().iterator();
 			while (eIt.hasNext()) {
 				Enemy enemy = eIt.next();
-
-				if (enemy.getReactorLeft().getHp() == 0) {
-					ParticleEmitterExplosion.createExplosion(enemy.getReactorLeft().getSprite().getX()
-							+ enemy.getReactorLeft().getSprite().getWidth() / 2, enemy.getReactorLeft().getSprite()
-							.getY()
-							+ enemy.getReactorLeft().getSprite().getHeight() / 2, enemy.getReactorLeft().getSprite()
-							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
-					enemy.getReactorLeft().remove();
-				}
-
-				if (enemy.getReactorRight().getHp() == 0) {
-					ParticleEmitterExplosion.createExplosion(enemy.getReactorRight().getSprite().getX()
-							+ enemy.getReactorRight().getSprite().getWidth() / 2, enemy.getReactorRight().getSprite()
-							.getY()
-							+ enemy.getReactorRight().getSprite().getHeight() / 2, enemy.getReactorRight().getSprite()
-							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
-					enemy.getReactorRight().remove();
-				}
-
-				if (enemy.getGunship().getHp() == 0) {
-					ParticleEmitterExplosion.createExplosion(enemy.getGunship().getSprite().getX()
-							+ enemy.getGunship().getSprite().getWidth() / 2, enemy.getGunship().getSprite().getY()
-							+ enemy.getGunship().getSprite().getHeight() / 2, enemy.getGunship().getSprite()
-							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
-					enemy.getGunship().remove();
-				}
-
-				// Recycling of enemy
-				if (enemy.getCockpit().isDestroyed() && enemy.getReactorLeft().isDestroyed()
-						&& enemy.getReactorRight().isDestroyed() && enemy.getGunship().isDestroyed()) {
-					EnemyPool.sharedEnemyPool().recyclePoolItem(enemy);
-					eIt.remove();
-				}
+//
+//				if (enemy.getReactorLeft().getHp() == 0) {
+//					ParticleEmitterExplosion.createExplosion(enemy.getReactorLeft().getSprite().getX()
+//							+ enemy.getReactorLeft().getSprite().getWidth() / 2, enemy.getReactorLeft().getSprite()
+//							.getY()
+//							+ enemy.getReactorLeft().getSprite().getHeight() / 2, enemy.getReactorLeft().getSprite()
+//							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
+//					enemy.getReactorLeft().remove();
+//				}
+//
+//				if (enemy.getReactorRight().getHp() == 0) {
+//					ParticleEmitterExplosion.createExplosion(enemy.getReactorRight().getSprite().getX()
+//							+ enemy.getReactorRight().getSprite().getWidth() / 2, enemy.getReactorRight().getSprite()
+//							.getY()
+//							+ enemy.getReactorRight().getSprite().getHeight() / 2, enemy.getReactorRight().getSprite()
+//							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
+//					enemy.getReactorRight().remove();
+//				}
+//
+//				if (enemy.getGunship().getHp() == 0) {
+//					ParticleEmitterExplosion.createExplosion(enemy.getGunship().getSprite().getX()
+//							+ enemy.getGunship().getSprite().getWidth() / 2, enemy.getGunship().getSprite().getY()
+//							+ enemy.getGunship().getSprite().getHeight() / 2, enemy.getGunship().getSprite()
+//							.getParent(), BaseActivity.getSharedInstance(), 2, 3, 3, 0);
+//					enemy.getGunship().remove();
+//				}
+//
+//				// Recycling of enemy
+//				if (enemy.getCockpit().isDestroyed() && enemy.getReactorLeft().isDestroyed()
+//						&& enemy.getReactorRight().isDestroyed() && enemy.getGunship().isDestroyed()) {
+//					EnemyPool.sharedEnemyPool().recyclePoolItem(enemy);
+//					eIt.remove();
+//				}
 
 				// Moving enemies
 				enemy.moveNShoot();

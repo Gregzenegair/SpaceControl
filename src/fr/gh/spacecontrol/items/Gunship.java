@@ -42,16 +42,12 @@ public class Gunship {
 
 	private int finalPosX;
 	private int finalPosY;
-	private int shootingPositionX;
-	private int shootingPositionY;
 
 	protected final int MAX_HEALTH = 3;
 	protected final int PHYSIC_HEALTH = 2;
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
 	private static final Vector2 HIT_VECTOR_RIGHT = new Vector2(-1, 1);
-	protected static final int REACTOR_RIGHT = 0;
-	protected static final int REACTOR_LEFT = 1;
 
 	public Gunship() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
@@ -98,11 +94,6 @@ public class Gunship {
 					.getSprite().getY()
 					+ enemy.getCockpit().getSprite().getHeight() - 10, this.finalPosY
 					+ enemy.getCockpit().getSprite().getHeight() - 10));
-
-			this.shootingPositionX = (int) (this.finalPosX + enemy.getCockpit().getSprite().getWidth() / 2 - sprite
-					.getWidth() / 2);
-			this.shootingPositionY = (int) (this.finalPosY + enemy.getCockpit().getSprite().getHeight());
-
 		}
 	}
 
@@ -138,12 +129,12 @@ public class Gunship {
 		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
 		EnemyBullet eB = EnemyBulletPool.sharedBulletPool().obtainPoolItem();
-		eB.getSprite().setPosition(shootingPositionX, shootingPositionY);
+		eB.getSprite().setPosition(this.getSprite().getX(), this.getSprite().getY());
 
 		eB.getSprite().setRotation(angle);
-		MoveModifier movMod = new MoveModifier(7, eB.getSprite().getX(), shootingPositionX
+		MoveModifier movMod = new MoveModifier(7, eB.getSprite().getX(), this.getSprite().getX()
 				- ((float) Math.cos(Math.toRadians(270 - angle)) * 1000) + sprite.getWidth() / 2 - sprite.getHeight(),
-				eB.getSprite().getY(), shootingPositionY + (float) Math.sin(Math.toRadians(270 - angle)) * 1000
+				eB.getSprite().getY(), this.getSprite().getY() + (float) Math.sin(Math.toRadians(270 - angle)) * 1000
 						- sprite.getWidth() / 2 + sprite.getHeight());
 
 		eB.setAngle(angle);
@@ -197,13 +188,13 @@ public class Gunship {
 
 			int random = MathTool.randInt(-5, 5);
 			body.setAngularVelocity(random);
-			random = MathTool.randInt(0, 4);
-			if (random != 0) {
-				final WeldJointDef joint = new WeldJointDef();
-				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
-
-				scene.mPhysicsWorld.createJoint(joint);
-			}
+//			random = MathTool.randInt(0, 4);
+//			if (random != 0) {
+//				final WeldJointDef joint = new WeldJointDef();
+//				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
+//
+//				scene.mPhysicsWorld.createJoint(joint);
+//			}
 		}
 
 	}

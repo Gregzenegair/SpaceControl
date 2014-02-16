@@ -229,6 +229,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 						damagingElement(b, e.getGunship(), bIt, eIt);
 					}
 				}
+
+				// Recycling of enemy
+				if (e.getCockpit().isDestroyed() && e.getReactorLeft().isDestroyed()
+						&& e.getReactorRight().isDestroyed() && e.getGunship().isDestroyed()) {
+					EnemyPool.sharedEnemyPool().recyclePoolItem(e);
+					eIt.remove();
+					System.out.println("Recycling Enemy");
+				}
 			}
 		}
 	}
@@ -260,14 +268,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
 
-			// Recyclage de l'enemy
-			if (e.getCockpit().isDestroyed() && e.getReactorLeft().isDestroyed() && e.getReactorRight().isDestroyed()
-					&& e.getGunship().isDestroyed()) {
-				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
-				eIt.remove();
-				System.out.println("Recycling Enemy");
-			}
-
 		} else if (element.getClass().getSimpleName().equals("Reactor")) {
 			Reactor r = (Reactor) element;
 			Enemy e = r.getEnemy();
@@ -294,13 +294,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
 
-			// Recyclage de l'enemy
-			if (e.getCockpit().isDestroyed() && e.getReactorLeft().isDestroyed() && e.getReactorRight().isDestroyed()
-					&& e.getGunship().isDestroyed()) {
-				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
-				eIt.remove();
-				System.out.println("Recycling Enemy");
-			}
 		} else if (element.getClass().getSimpleName().equals("Gunship")) {
 			Gunship gs = (Gunship) element;
 			Enemy e = gs.getEnemy();
@@ -327,13 +320,6 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
 
-			// Recyclage de l'enemy
-			if (e.getCockpit().isDestroyed() && e.getReactorLeft().isDestroyed() && e.getReactorRight().isDestroyed()
-					&& e.getGunship().isDestroyed()) {
-				EnemyPool.sharedEnemyPool().recyclePoolItem(e);
-				eIt.remove();
-				System.out.println("Recycling Enemy");
-			}
 		}
 
 	}

@@ -18,9 +18,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.EnemyBulletPool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
 public class Gunship {
@@ -43,7 +43,7 @@ public class Gunship {
 	private int finalPosX;
 	private int finalPosY;
 
-	protected final int MAX_HEALTH = 3;
+	protected final int MAX_HEALTH = 4;
 	protected final int PHYSIC_HEALTH = 2;
 	private static final FixtureDef FIXTURE_DEF = PhysicsFactory.createFixtureDef(10, 0.02f, 0.02f);
 	private static final Vector2 HIT_VECTOR_LEFT = new Vector2(1, 1);
@@ -62,10 +62,10 @@ public class Gunship {
 
 		this.enemy = enemy;
 		this.scoreValue = 30;
-		hp = MAX_HEALTH;
-		destroyed = false;
-		physic = false;
-		speed = enemy.getCockpit().getSpeed();
+		this.hp = MAX_HEALTH;
+		this.destroyed = false;
+		this.physic = false;
+		this.speed = enemy.getCockpit().getSpeed();
 
 		sprite.setRotation(180);
 		sprite.setScale(0.4f);
@@ -188,13 +188,13 @@ public class Gunship {
 
 			int random = MathTool.randInt(-5, 5);
 			body.setAngularVelocity(random);
-//			random = MathTool.randInt(0, 4);
-//			if (random != 0) {
-//				final WeldJointDef joint = new WeldJointDef();
-//				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
-//
-//				scene.mPhysicsWorld.createJoint(joint);
-//			}
+			random = MathTool.randInt(0, 4);
+			if (random != 0) {
+				final WeldJointDef joint = new WeldJointDef();
+				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
+
+				scene.mPhysicsWorld.createJoint(joint);
+			}
 		}
 
 	}

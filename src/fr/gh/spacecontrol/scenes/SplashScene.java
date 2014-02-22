@@ -9,6 +9,7 @@ import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.text.Text;
 
 import fr.gh.spacecontrol.R;
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.items.SplashLogo;
 
 public class SplashScene extends Scene {

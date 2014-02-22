@@ -4,14 +4,14 @@ import java.util.LinkedList;
 
 import android.R.bool;
 import android.transition.Scene;
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.CockpitPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
 import fr.gh.spacecontrol.pools.ReactorPool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
-public abstract class Enemy {
+public class Enemy {
 	private Reactor reactorLeft;
 	private Reactor reactorRight;
 	private Cockpit cockpit;
@@ -39,10 +39,10 @@ public abstract class Enemy {
 		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
 		this.reactorRight.init(this, Reactor.REACTOR_RIGHT);
-		aiming = false;
-		hasShot = false;
-		moving = false;
-		aimed = false;
+		this.aiming = false;
+		this.hasShot = false;
+		this.moving = false;
+		this.aimed = false;
 		move();
 	}
 
@@ -74,9 +74,9 @@ public abstract class Enemy {
 			this.getGunship().move();
 			this.getReactorLeft().move();
 			this.getReactorRight().move();
-			moving = this.cockpit.isMooving();
+			this.moving = this.cockpit.isMooving();
 			setAiming(false);
-			hasShot = false;
+			this.hasShot = false;
 			setAimedTower(MathTool.randInt(0, 3));
 		}
 	}
@@ -85,7 +85,7 @@ public abstract class Enemy {
 		if (!this.isDamaged()) {
 			this.getGunship().aim(getAimedTower());
 
-			aimed = true;
+			this.aimed = true;
 			setAiming(false);
 		}
 	}
@@ -94,8 +94,8 @@ public abstract class Enemy {
 		if (!this.isDamaged()) {
 			if (aimed) {
 				this.getGunship().shoot((int) this.getGunship().aim(getAimedTower()));
-				hasShot = true;
-				moving = this.cockpit.isMooving();
+				this.hasShot = true;
+				this.moving = this.cockpit.isMooving();
 			}
 		}
 	}

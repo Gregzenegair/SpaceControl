@@ -22,12 +22,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.items.Bullet;
 import fr.gh.spacecontrol.items.Bunker;
 import fr.gh.spacecontrol.items.Cockpit;
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.items.EnemyBullet;
 import fr.gh.spacecontrol.items.Gunship;
+import fr.gh.spacecontrol.items.Indicator;
 import fr.gh.spacecontrol.items.ParticleEmitterExplosion;
 import fr.gh.spacecontrol.items.Reactor;
 import fr.gh.spacecontrol.items.Tower;
@@ -100,13 +102,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.setOnSceneTouchListener(this);
 
-		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 12,
+		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 64,
 				activity.getVertexBufferObjectManager());
 		scoreText.setPosition(mCamera.getWidth() / 2 - scoreText.getWidth() / 2, 20);
 		scoreText.setScale(0.25f);
 		attachChild(scoreText);
 
-		debugText = new Text(0, 0, activity.getmFont(), "DEBUG", 12, activity.getVertexBufferObjectManager());
+		debugText = new Text(0, 0, activity.getmFont(), "DEBUG", 64, activity.getVertexBufferObjectManager());
 		debugText.setPosition(mCamera.getWidth() / 2 - debugText.getWidth() / 2, 60);
 		debugText.setScale(0.25f);
 		attachChild(debugText);
@@ -150,6 +152,8 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			attachChild(tower.getSprite());
 			attachChild(tower.getBunker().getSprite());
 		}
+		attachChild(Indicator.getIndicator().getRectangleSprite());
+		attachChild(Indicator.getIndicator().getLevelSprite());
 
 	}
 
@@ -166,26 +170,31 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				this.towerList.get(towerTouched).setActive(true);
 			} else {
 				for (Tower tower : towerList) {
-					if (tower.isActive())
+					if (tower.isActive()) {
 						tower.setStartingAngle(tower.getAngle());
+						Indicator.getIndicator().setStartingPos(pSceneTouchEvent.getX(),  pSceneTouchEvent.getY());
+					}
 				}
 				this.shoot = true;
 			}
 		}
 		if (pSceneTouchEvent.isActionMove()) {
 			for (Tower tower : towerList) {
-				if (tower.isActive())
+				if (tower.isActive()) {
 					tower.rotateTower(pSceneTouchEvent.getY(), towerAxe);
+					Indicator.getIndicator().move(pSceneTouchEvent.getY());
+				}
 			}
 		}
 		if (pSceneTouchEvent.isActionUp()) {
 			this.shoot = false;
+			Indicator.getIndicator().hide();
 		}
 
 		return false;
 	}
 
-	public void collisionerAndCleaner() {
+	public void collisioner() {
 		synchronized (this) {
 
 			// EnemyBullet and Tower interactions
@@ -231,12 +240,14 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				}
 
 				// Recycling of enemy
-				if (e.getCockpit().isDestroyed() && e.getReactorLeft().isDestroyed()
-						&& e.getReactorRight().isDestroyed() && e.getGunship().isDestroyed()) {
-					EnemyPool.sharedEnemyPool().recyclePoolItem(e);
-					eIt.remove();
-					System.out.println("Recycling Enemy");
-				}
+				// if (e.getCockpit().isDestroyed() &&
+				// e.getReactorLeft().isDestroyed()
+				// && e.getReactorRight().isDestroyed() &&
+				// e.getGunship().isDestroyed()) {
+				// EnemyPool.sharedEnemyPool().recyclePoolItem(e);
+				// eIt.remove();
+				// System.out.println("Recycling Enemy");
+				// }
 			}
 		}
 	}
@@ -325,7 +336,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private int isTouchingABunker(int posX, int posY) {
-		final int MARGIN_SELECTION = 20;
+		final int MARGIN_SELECTION = 30;
 		for (Tower tower : towerList) {
 			if (posX < tower.getBunker().getSprite().getX() + tower.getBunker().getSprite().getWidth()
 					+ MARGIN_SELECTION

@@ -10,12 +10,12 @@ import org.andengine.entity.text.Text;
 import org.andengine.util.modifier.ease.EaseLinear;
 
 import fr.gh.spacecontrol.R;
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier;
 import fr.gh.spacecontrol.entity.modifier.BezierPathModifier.BezierPath;
 import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.primitive.Ellipse;
 import fr.gh.spacecontrol.primitive.Mesh.DrawMode;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 import fr.gh.spacecontrol.scenes.SplashScene;
 

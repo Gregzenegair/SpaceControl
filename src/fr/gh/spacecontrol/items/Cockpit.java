@@ -12,8 +12,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.logic.MathTool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
 public class Cockpit {
@@ -52,9 +52,9 @@ public class Cockpit {
 
 		this.enemy = enemy;
 		this.scoreValue = 120;
-		hp = MAX_HEALTH;
-		destroyed = false;
-		physic = false;
+		this.hp = MAX_HEALTH;
+		this.destroyed = false;
+		this.physic = false;
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);

@@ -5,7 +5,13 @@ import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.items.Gunship;
 import fr.gh.spacecontrol.items.Reactor;
 
-public class EnemyType001 extends Enemy {
+public class EnemyType001 extends Enemy{
+
+
+	public EnemyType001() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void init() {

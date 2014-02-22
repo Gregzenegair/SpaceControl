@@ -1,27 +1,27 @@
-package fr.gh.spacecontrol.pools;
+package fr.gh.spacecontrol.items.enemyTypes;
 
 import org.andengine.util.adt.pool.GenericPool;
 
 import fr.gh.spacecontrol.items.Enemy;
 
-public class EnemyPool extends GenericPool<Enemy> {
+public class EnemyType001Pool extends GenericPool<Enemy> {
 
-	public static EnemyPool instance;
+	public static EnemyType001Pool instance;
 
-	public static EnemyPool sharedEnemyPool() {
+	public static EnemyType001Pool sharedEnemyPool() {
 		if (instance == null) {
-			instance = new EnemyPool();
+			instance = new EnemyType001Pool();
 		}
 		return instance;
 	}
 
-	private EnemyPool() {
+	private EnemyType001Pool() {
 		super();
 
 	}
 
 	protected Enemy onAllocatePoolItem() {
-		return new Enemy();
+		return new EnemyType001();
 
 	}
 

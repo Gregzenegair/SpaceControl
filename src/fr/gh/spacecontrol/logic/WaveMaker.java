@@ -8,9 +8,9 @@ import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.modifier.MoveYModifier;
 
 import fr.gh.spacecontrol.R;
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.items.Enemy;
 import fr.gh.spacecontrol.pools.EnemyPool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
 public class WaveMaker {
@@ -73,10 +73,10 @@ public class WaveMaker {
 
 					enemy.init();
 
-					enemy.getCockpit().getSprite().detachSelf();
-					enemy.getGunship().getSprite().detachSelf();
-					enemy.getReactorLeft().getSprite().detachSelf();
-					enemy.getReactorRight().getSprite().detachSelf();
+//					enemy.getCockpit().getSprite().detachSelf();
+//					enemy.getGunship().getSprite().detachSelf();
+//					enemy.getReactorLeft().getSprite().detachSelf();
+//					enemy.getReactorRight().getSprite().detachSelf();
 
 					scene.attachChild(enemy.getCockpit().getSprite());
 					scene.attachChild(enemy.getGunship().getSprite());

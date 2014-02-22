@@ -18,9 +18,9 @@ import org.andengine.entity.primitive.Rectangle;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.WreckagePool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 import fr.gh.spacecontrol.scenes.GameScene;
 
 public final class ParticleEmitterExplosion {

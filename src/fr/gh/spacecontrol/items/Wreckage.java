@@ -2,8 +2,8 @@ package fr.gh.spacecontrol.items;
 
 import org.andengine.entity.primitive.Rectangle;
 
+import fr.gh.spacecontrol.activities.BaseActivity;
 import fr.gh.spacecontrol.logic.MathTool;
-import fr.gh.spacecontrol.scenes.BaseActivity;
 
 public class Wreckage {
 

@@ -1,4 +1,4 @@
-package fr.gh.spacecontrol.scenes;
+package fr.gh.spacecontrol.activities;
 
 import java.io.IOException;
 
@@ -21,16 +21,20 @@ import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
+import fr.gh.spacecontrol.scenes.GameScene;
+import fr.gh.spacecontrol.scenes.MainMenuScene;
+import fr.gh.spacecontrol.scenes.SplashScene;
+
 import android.graphics.Typeface;
 
 public class BaseActivity extends SimpleBaseGameActivity {
 
-	static final int CAMERA_WIDTH = 600;
-	static final int CAMERA_HEIGHT = 800;
-	static final int NO_SCREEN = 0;
-	static final int SPLASH_SCREEN = 1;
-	static final int MAIN_MENU_SCREEN = 2;
-	static final int GAME_SCREEN = 10;
+	public static final int CAMERA_WIDTH = 600;
+	public static final int CAMERA_HEIGHT = 800;
+	public static final int NO_SCREEN = 0;
+	public static final int SPLASH_SCREEN = 1;
+	public static final int MAIN_MENU_SCREEN = 2;
+	public static final int GAME_SCREEN = 10;
 
 	private Font mFont;
 	private Camera mCamera;

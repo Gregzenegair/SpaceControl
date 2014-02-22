@@ -2,7 +2,7 @@ package fr.gh.spacecontrol.items;
 
 import org.andengine.entity.sprite.Sprite;
 
-import fr.gh.spacecontrol.scenes.BaseActivity;
+import fr.gh.spacecontrol.activities.BaseActivity;
 
 public class Bunker {
 

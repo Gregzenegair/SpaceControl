@@ -2,25 +2,19 @@ package fr.gh.spacecontrol.items;
 
 import org.andengine.entity.primitive.Rectangle;
 
+import android.net.NetworkInfo.DetailedState;
+
 import fr.gh.spacecontrol.activities.BaseActivity;
 
 public class Indicator {
 
-	public static Indicator instance;
+	public Indicator instance;
 	private Rectangle rectangleSprite;
 	private Rectangle levelSprite;
 	private boolean leftHanded;
 
-	public static Indicator getIndicator() {
-		if (instance == null)
-			instance = new Indicator();
-		return instance;
-	}
-
-	private Indicator() {
-		rectangleSprite = new Rectangle(0, 0, 8, 60, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		rectangleSprite.setAlpha(0.6f);
-		rectangleSprite = new Rectangle(0, 0, 8, 60, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+	public Indicator() {
+		rectangleSprite = new Rectangle(0, 0, 8, 100, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		rectangleSprite.setAlpha(0.6f);
 		levelSprite = new Rectangle(0, 0, 10, 10, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		levelSprite.setAlpha(0.8f);
@@ -29,16 +23,24 @@ public class Indicator {
 		this.levelSprite.setVisible(false);
 	}
 
+	// implement option for left thumb and hiddden
 	public void setStartingPos(float posX, float posY) {
-		this.rectangleSprite.setPosition(posX - rectangleSprite.getWidth() / 2, posY - rectangleSprite.getHeight() / 2);
-		this.levelSprite.setPosition(posX - (levelSprite.getWidth() / 2), posY);
+		int leftHanded = 60;
+		int rightHanded = -60;
+		this.rectangleSprite.setPosition(posX + rightHanded - rectangleSprite.getWidth() / 2, posY - rectangleSprite.getHeight() / 2);
+		this.levelSprite.setPosition(posX + rightHanded - (levelSprite.getWidth() / 2), posY);
 
 		this.rectangleSprite.setVisible(true);
 		this.levelSprite.setVisible(true);
 	}
 
-	public void move(float inTouch) {
-		this.levelSprite.setY(inTouch);
+	public void move(float towerAxe, boolean facingLeft) {
+		float position = towerAxe;
+		if (facingLeft)
+			position = rectangleSprite.getY() - position;
+		else
+			position = rectangleSprite.getY() + position;
+		this.levelSprite.setY(position);
 
 	}
 

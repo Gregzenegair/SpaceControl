@@ -32,6 +32,7 @@ import fr.gh.spacecontrol.items.Gunship;
 import fr.gh.spacecontrol.items.Indicator;
 import fr.gh.spacecontrol.items.ParticleEmitterExplosion;
 import fr.gh.spacecontrol.items.Reactor;
+import fr.gh.spacecontrol.items.Shield;
 import fr.gh.spacecontrol.items.Tower;
 import fr.gh.spacecontrol.items.Wreckage;
 import fr.gh.spacecontrol.logic.GameLoopUpdateHandler;
@@ -39,7 +40,6 @@ import fr.gh.spacecontrol.logic.WaveMaker;
 import fr.gh.spacecontrol.pools.BulletPool;
 import fr.gh.spacecontrol.pools.CockpitPool;
 import fr.gh.spacecontrol.pools.EnemyBulletPool;
-import fr.gh.spacecontrol.pools.EnemyPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
 import fr.gh.spacecontrol.pools.ReactorPool;
 
@@ -50,6 +50,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private Tower tower2;
 	private Tower tower3;
 	private Tower tower4;
+	private Indicator indicator;
 	private float towerAxe;
 	private boolean shoot;
 
@@ -102,8 +103,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 		this.setOnSceneTouchListener(this);
 
-		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 64,
-				activity.getVertexBufferObjectManager());
+		scoreText = new Text(0, 0, activity.getmFont(), "000000000" + String.valueOf(scoreValue), 64, activity.getVertexBufferObjectManager());
 		scoreText.setPosition(mCamera.getWidth() / 2 - scoreText.getWidth() / 2, 20);
 		scoreText.setScale(0.25f);
 		attachChild(scoreText);
@@ -120,6 +120,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		// registering update handlers
 		registerUpdateHandler(new GameLoopUpdateHandler());
 		registerUpdateHandler(this.mPhysicsWorld);
+
 	}
 
 	private void buildTowers() {
@@ -129,31 +130,39 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		tower1 = new Tower(towerSizeX, towerSizeY, towerList);
 		tower1.setPosition(10, (int) (mCamera.getHeight() - tower1.getSprite().getHeight() - 240));
 		Bunker bunker1 = new Bunker(tower1);
+		Shield shield1 = new Shield(tower1);
 		tower1.setBunker(bunker1);
+		tower1.setShield(shield1);
 
 		tower2 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower2.setPosition(120, (int) (mCamera.getHeight() - tower2.getSprite().getHeight() * 2));
+		tower2.setPosition(100, (int) (mCamera.getHeight() - tower2.getSprite().getHeight() * 3));
 		Bunker bunker2 = new Bunker(tower2);
+		Shield shield2 = new Shield(tower2);
 		tower2.setBunker(bunker2);
+		tower2.setShield(shield2);
 
 		tower3 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower3.setPosition((int) (mCamera.getWidth() - tower3.getSprite().getHeight() - 120),
-				(int) (mCamera.getHeight() - tower3.getSprite().getHeight() * 2));
+		tower3.setPosition((int) (mCamera.getWidth() - tower3.getSprite().getHeight() - 100), (int) (mCamera.getHeight() - tower3.getSprite().getHeight() * 3));
 		Bunker bunker3 = new Bunker(tower3);
+		Shield shield3 = new Shield(tower3);
 		tower3.setBunker(bunker3);
+		tower3.setShield(shield3);
 
 		tower4 = new Tower(towerSizeX, towerSizeY, towerList);
-		tower4.setPosition((int) (mCamera.getWidth() - tower4.getSprite().getHeight() - 10), (int) (mCamera.getHeight()
-				- tower4.getSprite().getHeight() - 240));
+		tower4.setPosition((int) (mCamera.getWidth() - tower4.getSprite().getHeight() - 10), (int) (mCamera.getHeight() - tower4.getSprite().getHeight() - 240));
 		Bunker bunker4 = new Bunker(tower4);
+		Shield shield4 = new Shield(tower4);
 		tower4.setBunker(bunker4);
+		tower4.setShield(shield4);
 
 		for (Tower tower : towerList) {
 			attachChild(tower.getSprite());
 			attachChild(tower.getBunker().getSprite());
+			attachChild(tower.getShield().getSprite());
 		}
-		attachChild(Indicator.getIndicator().getRectangleSprite());
-		attachChild(Indicator.getIndicator().getLevelSprite());
+		indicator = new Indicator();
+		attachChild(indicator.getRectangleSprite());
+		attachChild(indicator.getLevelSprite());
 
 	}
 
@@ -165,14 +174,16 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			towerAxe = pSceneTouchEvent.getY();
 			if ((towerTouched = isTouchingABunker((int) pSceneTouchEvent.getX(), (int) pSceneTouchEvent.getY())) >= 0) {
 				for (Tower tower : towerList) {
-					tower.setActive(false);
+					if (tower != towerList.get(towerTouched))
+						tower.setActive(false);
 				}
-				this.towerList.get(towerTouched).setActive(true);
+				if (!this.towerList.get(towerTouched).isDestroyed())
+					this.towerList.get(towerTouched).setActive(true);
 			} else {
 				for (Tower tower : towerList) {
 					if (tower.isActive()) {
 						tower.setStartingAngle(tower.getAngle());
-						Indicator.getIndicator().setStartingPos(pSceneTouchEvent.getX(),  pSceneTouchEvent.getY());
+						indicator.setStartingPos(pSceneTouchEvent.getX(), pSceneTouchEvent.getY());
 					}
 				}
 				this.shoot = true;
@@ -182,13 +193,13 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			for (Tower tower : towerList) {
 				if (tower.isActive()) {
 					tower.rotateTower(pSceneTouchEvent.getY(), towerAxe);
-					Indicator.getIndicator().move(pSceneTouchEvent.getY());
+					indicator.move(tower.getSprite().getRotation(), tower.isFacingLeft());
 				}
 			}
 		}
 		if (pSceneTouchEvent.isActionUp()) {
 			this.shoot = false;
-			Indicator.getIndicator().hide();
+			indicator.hide();
 		}
 
 		return false;
@@ -198,16 +209,26 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 		synchronized (this) {
 
 			// EnemyBullet and Tower interactions
-			Iterator<EnemyBullet> bEIt = enemyBulletList.iterator();
-			while (bEIt.hasNext()) {
-				EnemyBullet eB = bEIt.next();
-				if (eB.getSprite().getY() <= -eB.getSprite().getHeight()
-						|| eB.getSprite().getY() >= -eB.getSprite().getHeight() + mCamera.getHeight()
-						|| eB.getSprite().getX() <= -eB.getSprite().getHeight()
-						|| eB.getSprite().getX() >= -eB.getSprite().getHeight() + mCamera.getWidth()) {
-					EnemyBulletPool.sharedBulletPool().recyclePoolItem(eB);
-					bEIt.remove();
-					continue;
+			Iterator<Tower> tIt = towerList.iterator();
+			while (tIt.hasNext()) {
+				Tower t = tIt.next();
+				Iterator<EnemyBullet> bEIt = enemyBulletList.iterator();
+				while (bEIt.hasNext()) {
+					EnemyBullet eB = bEIt.next();
+					if (eB.getSprite().getY() <= -eB.getSprite().getHeight() || eB.getSprite().getY() >= -eB.getSprite().getHeight() + mCamera.getHeight()
+							|| eB.getSprite().getX() <= -eB.getSprite().getHeight() || eB.getSprite().getX() >= -eB.getSprite().getHeight() + mCamera.getWidth()) {
+						EnemyBulletPool.sharedBulletPool().recyclePoolItem(eB);
+						bEIt.remove();
+						continue;
+					}
+
+					if (eB.getSprite().collidesWith(t.getShield().getSprite()) && t.getShield().getSprite().getAlpha() > 0.4) {
+
+						EnemyBulletPool.sharedBulletPool().recyclePoolItem(eB);
+						bEIt.remove();
+					} else if (eB.getSprite().collidesWith(t.getBunker().getSprite())) {
+						t.setDestroyed(true);
+					}
 				}
 			}
 
@@ -218,8 +239,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				Iterator<Bullet> bIt = bulletList.iterator();
 				while (bIt.hasNext()) {
 					Bullet b = bIt.next();
-					if (b.getSprite().getY() <= -b.getSprite().getHeight()
-							|| b.getSprite().getX() <= -b.getSprite().getHeight()
+					if (b.getSprite().getY() <= -b.getSprite().getHeight() || b.getSprite().getX() <= -b.getSprite().getHeight()
 							|| b.getSprite().getX() >= -b.getSprite().getHeight() + mCamera.getWidth()) {
 						BulletPool.sharedBulletPool().recyclePoolItem(b);
 						bIt.remove();
@@ -228,11 +248,9 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 					if (b.getSprite().collidesWith(e.getCockpit().getSprite()) && !e.getCockpit().isDestroyed()) {
 						damagingElement(b, e.getCockpit(), bIt, eIt);
-					} else if (b.getSprite().collidesWith(e.getReactorLeft().getSprite())
-							&& !e.getReactorLeft().isDestroyed()) {
+					} else if (b.getSprite().collidesWith(e.getReactorLeft().getSprite()) && !e.getReactorLeft().isDestroyed()) {
 						damagingElement(b, e.getReactorLeft(), bIt, eIt);
-					} else if (b.getSprite().collidesWith(e.getReactorRight().getSprite())
-							&& !e.getReactorRight().isDestroyed()) {
+					} else if (b.getSprite().collidesWith(e.getReactorRight().getSprite()) && !e.getReactorRight().isDestroyed()) {
 						damagingElement(b, e.getReactorRight(), bIt, eIt);
 					} else if (b.getSprite().collidesWith(e.getGunship().getSprite()) && !e.getGunship().isDestroyed()) {
 						damagingElement(b, e.getGunship(), bIt, eIt);
@@ -249,6 +267,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 				// System.out.println("Recycling Enemy");
 				// }
 			}
+
 		}
 	}
 
@@ -257,14 +276,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			Cockpit c = (Cockpit) element;
 			Enemy e = c.getEnemy();
 			if (c.gotHitnDestroyed(b.getAngle()) == 1 && !c.isPhysic()) {
-				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
-						.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 4, 3, 3, b.getSprite().getRotation());
 				e.addPhysics();
 			} else if (c.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
-				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c
-						.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(c.getSprite().getX() + c.getSprite().getWidth() / 2, c.getSprite().getY() + c.getSprite().getHeight() / 2, c.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 8, 3, 3, b.getSprite().getRotation());
 
 				CockpitPool.sharedCockpitPool().recyclePoolItem(c);
@@ -273,8 +290,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			}
 
 			soundImpact.play();
-			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b
-					.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
+			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
 					BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
@@ -283,14 +299,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			Reactor r = (Reactor) element;
 			Enemy e = r.getEnemy();
 			if (r.gotHitnDestroyed(b.getAngle()) == 1 && !r.isPhysic()) {
-				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
-						.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 				e.addPhysics();
 			} else if (r.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
-				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r
-						.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(r.getSprite().getX() + r.getSprite().getWidth() / 2, r.getSprite().getY() + r.getSprite().getHeight() / 2, r.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 
 				ReactorPool.sharedReactorPool().recyclePoolItem(r);
@@ -299,8 +313,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 			}
 			soundImpact.play();
-			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b
-					.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
+			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
 					BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
@@ -309,14 +322,12 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 			Gunship gs = (Gunship) element;
 			Enemy e = gs.getEnemy();
 			if (gs.gotHitnDestroyed(b.getAngle()) == 1 && !gs.isPhysic()) {
-				ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs
-						.getSprite().getY() + gs.getSprite().getHeight() / 2, gs.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs.getSprite().getY() + gs.getSprite().getHeight() / 2, gs.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 				e.addPhysics();
 			} else if (gs.gotHitnDestroyed(b.getAngle()) == 0) {
 				soundExplosion.play();
-				ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs
-						.getSprite().getY() + gs.getSprite().getHeight() / 2, gs.getSprite().getParent(),
+				ParticleEmitterExplosion.createExplosion(gs.getSprite().getX() + gs.getSprite().getWidth() / 2, gs.getSprite().getY() + gs.getSprite().getHeight() / 2, gs.getSprite().getParent(),
 						BaseActivity.getSharedInstance(), 2, 3, 3, b.getSprite().getRotation());
 
 				GunshipPool.sharedGunshipPool().recyclePoolItem(gs);
@@ -325,8 +336,7 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 
 			}
 			soundImpact.play();
-			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b
-					.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
+			ParticleEmitterExplosion.createBulletImpact(b.getSprite().getX() + b.getSprite().getWidth() / 2, b.getSprite().getY() + b.getSprite().getHeight() / 2, b.getSprite().getParent(),
 					BaseActivity.getSharedInstance(), Color.BLACK, 1, 2, 3, b.getSprite().getRotation());
 			BulletPool.sharedBulletPool().recyclePoolItem(b);
 			bIt.remove();
@@ -338,13 +348,11 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	private int isTouchingABunker(int posX, int posY) {
 		final int MARGIN_SELECTION = 30;
 		for (Tower tower : towerList) {
-			if (posX < tower.getBunker().getSprite().getX() + tower.getBunker().getSprite().getWidth()
-					+ MARGIN_SELECTION
-					&& posX > tower.getBunker().getSprite().getX() - MARGIN_SELECTION) {
-				if (posY < tower.getBunker().getSprite().getY() + tower.getBunker().getSprite().getHeight()
-						+ MARGIN_SELECTION
-						&& posY > tower.getBunker().getSprite().getY() - MARGIN_SELECTION) {
-					return towerList.indexOf(tower);
+			if (!tower.isDestroyed()) {
+				if (posX < tower.getBunker().getSprite().getX() + tower.getBunker().getSprite().getWidth() + MARGIN_SELECTION && posX > tower.getBunker().getSprite().getX() - MARGIN_SELECTION) {
+					if (posY < tower.getBunker().getSprite().getY() + tower.getBunker().getSprite().getHeight() + MARGIN_SELECTION && posY > tower.getBunker().getSprite().getY() - MARGIN_SELECTION) {
+						return towerList.indexOf(tower);
+					}
 				}
 			}
 		}
@@ -352,14 +360,10 @@ public class GameScene extends Scene implements IOnSceneTouchListener {
 	}
 
 	private void creatingWalls() {
-		final Rectangle ground = new Rectangle(0, BaseActivity.CAMERA_HEIGHT - 52, BaseActivity.CAMERA_WIDTH, 2,
-				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
-		final Rectangle roof = new Rectangle(0, 0, BaseActivity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
-		final Rectangle left = new Rectangle(0, 0, 2, BaseActivity.CAMERA_HEIGHT, BaseActivity.getSharedInstance()
-				.getVertexBufferObjectManager());
-		final Rectangle right = new Rectangle(BaseActivity.CAMERA_WIDTH - 2, 0, 2, BaseActivity.CAMERA_HEIGHT,
-				BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle ground = new Rectangle(0, BaseActivity.CAMERA_HEIGHT - 52, BaseActivity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle roof = new Rectangle(0, 0, BaseActivity.CAMERA_WIDTH, 2, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle left = new Rectangle(0, 0, 2, BaseActivity.CAMERA_HEIGHT, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
+		final Rectangle right = new Rectangle(BaseActivity.CAMERA_WIDTH - 2, 0, 2, BaseActivity.CAMERA_HEIGHT, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 
 		final FixtureDef wallFixtureDef = PhysicsFactory.createFixtureDef(0, 0.1f, 0.1f);
 		PhysicsFactory.createBoxBody(this.mPhysicsWorld, ground, BodyType.StaticBody, wallFixtureDef);

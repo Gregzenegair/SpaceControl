@@ -31,6 +31,7 @@ public class Reactor {
 	private MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
 	private int reactorSide;
+	private Flames flames;
 	private Enemy enemy;
 	private int scoreValue;
 	protected final int MAX_HEALTH = 4;
@@ -45,8 +46,7 @@ public class Reactor {
 	public Reactor() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 
-		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyReactorTexture, BaseActivity
-				.getSharedInstance().getVertexBufferObjectManager());
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyReactorTexture, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Reactor object , used by the constructor and
@@ -86,17 +86,12 @@ public class Reactor {
 
 			switch (reactorSide) {
 			case REACTOR_LEFT:
-				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
-						.getSprite().getX()
-						- sprite.getWidth(), this.finalPosX - sprite.getWidth(), enemy.getCockpit().getSprite().getY(),
-						this.finalPosY));
+				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit().getSprite().getX() - sprite.getWidth(), this.finalPosX - sprite.getWidth(), enemy
+						.getCockpit().getSprite().getY(), this.finalPosY));
 				break;
 			case REACTOR_RIGHT:
-				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit()
-						.getSprite().getX()
-						+ enemy.getCockpit().getSprite().getWidth(), this.finalPosX
-						+ enemy.getCockpit().getSprite().getWidth(), enemy.getCockpit().getSprite().getY(),
-						this.finalPosY));
+				sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, enemy.getCockpit().getSprite().getX() + enemy.getCockpit().getSprite().getWidth(), this.finalPosX
+						+ enemy.getCockpit().getSprite().getWidth(), enemy.getCockpit().getSprite().getY(), this.finalPosY));
 				break;
 
 			default:
@@ -133,10 +128,23 @@ public class Reactor {
 
 			this.sprite.unregisterEntityModifier(this.moveModifier);
 
-			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody,
-					FIXTURE_DEF);
+//			final Vector2[] vectorRightReactor = { new Vector2(0, 0), new Vector2(this.sprite.getWidth() / 2, 0), new Vector2(this.sprite.getWidth(), this.sprite.getHeight() / 2),
+//					new Vector2(this.sprite.getWidth() * 2 / 3, this.sprite.getHeight()), new Vector2(this.sprite.getWidth() / 2, this.sprite.getHeight()),
+//					new Vector2(this.sprite.getWidth() * 1 / 5, this.sprite.getHeight() * 3 / 4) };
+//
+//			final Vector2[] vectorLeftReactor = { new Vector2(this.sprite.getWidth(), this.sprite.getHeight()), new Vector2(this.sprite.getWidth() * 4 / 5, this.sprite.getHeight() * 3 / 4),
+//					new Vector2(this.sprite.getWidth() / 2, this.sprite.getHeight()), new Vector2(this.sprite.getWidth() * 1 / 3, this.sprite.getHeight()),
+//					new Vector2(0, this.sprite.getHeight() * 1 / 2), new Vector2(this.sprite.getWidth() / 2, 0) };
+//
+//			if (reactorSide == REACTOR_LEFT)
+//				this.body = PhysicsFactory.createPolygonBody(scene.mPhysicsWorld, this.sprite, vectorLeftReactor, BodyType.DynamicBody, FIXTURE_DEF);
+//			else
+//				this.body = PhysicsFactory.createPolygonBody(scene.mPhysicsWorld, this.sprite, vectorRightReactor, BodyType.DynamicBody, FIXTURE_DEF);
+			
+			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
 			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+
 			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
 			this.physic = true;
 
@@ -148,9 +156,15 @@ public class Reactor {
 				joint.initialize(enemy.getCockpit().getBody(), this.body, enemy.getCockpit().getBody().getWorldCenter());
 
 				scene.mPhysicsWorld.createJoint(joint);
+
+				int randomPosX = MathTool.randInt(8, (int) (sprite.getWidth() - 8));
+				int randomPosY = MathTool.randInt(4, (int) (sprite.getHeight() - 10));
+				flames = new Flames(randomPosX, randomPosY);
+				flames.getSprite().setScale(1.4f);
+				sprite.attachChild(flames.getSprite());
+
 			}
 		}
-
 	}
 
 	public void remove() {
@@ -170,6 +184,9 @@ public class Reactor {
 		sprite.detachSelf();
 		this.physic = false;
 		this.destroyed = true;
+
+		if (flames != null)
+			sprite.detachChild(flames.getSprite());
 	}
 
 	public Sprite getSprite() {

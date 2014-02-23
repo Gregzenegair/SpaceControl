@@ -11,6 +11,7 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -18,14 +19,14 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
+import android.graphics.Typeface;
 import fr.gh.spacecontrol.scenes.GameScene;
 import fr.gh.spacecontrol.scenes.MainMenuScene;
 import fr.gh.spacecontrol.scenes.SplashScene;
-
-import android.graphics.Typeface;
 
 public class BaseActivity extends SimpleBaseGameActivity {
 
@@ -57,13 +58,25 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	public ITextureRegion enemyGunshipTexture;
 	public ITextureRegion logoTexture;
 
+	// -- Animated Sprites
+
+	public BitmapTextureAtlas shieldTexture;
+	public TiledTextureRegion shieldRegion;
+	
+	public BitmapTextureAtlas flamesTexture;
+	public TiledTextureRegion flamesRegion;
+	
+	private static int SPR_COLUMN = 4;
+	private static int SPR_ROWS = 2;
+
+	// -- End Animated Sprites
+
 	private static BaseActivity instance;
 
 	public EngineOptions onCreateEngineOptions() {
 		instance = this;
 		mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
-		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR,
-				new FillResolutionPolicy(), mCamera);
+		EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_SENSOR, new FillResolutionPolicy(), mCamera);
 		engineOptions.getAudioOptions().setNeedsSound(true);
 		engineOptions.getAudioOptions().setNeedsMusic(true);
 		return engineOptions;
@@ -71,40 +84,44 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	protected void onCreateResources() {
 		try {
-			mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256,
-					Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64, Color.WHITE.hashCode());
+			mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64, Color.WHITE.hashCode());
 			mFont.load();
-			
-			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
-					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGun.mp3");
-			soundTowerGunb = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
-					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGunb.mp3");
-			soundImpact = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(),
-					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundImpact.mp3");
-			soundExplosion = MusicFactory.createMusicFromAsset(BaseActivity.getSharedInstance().getMusicManager(),
-					BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundExplosion.mp3");
+
+			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(), BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGun.mp3");
+			soundTowerGunb = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(), BaseActivity.getSharedInstance().getApplicationContext(),
+					"sounds/soundTowerGunb.mp3");
+			soundImpact = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(), BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundImpact.mp3");
+			soundExplosion = MusicFactory.createMusicFromAsset(BaseActivity.getSharedInstance().getMusicManager(), BaseActivity.getSharedInstance().getApplicationContext(),
+					"sounds/soundExplosion.mp3");
 			soundTowerGun.setVolume(0.2f);
 			soundTowerGunb.setVolume(0.2f);
 			soundImpact.setVolume(0.05f);
 
+			// set path to gfx
 			BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
+
 			textureAtlas = new BitmapTextureAtlas(getTextureManager(), 256, 256, TextureOptions.DEFAULT);
-			bunkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "bunker.png", 0,
-					0);
-			towerTexture = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(textureAtlas, this, "tower.png", 32, 0);
+			bunkerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "bunker.png", 0, 0);
+			towerTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "tower.png", 32, 0);
+
+			// 64,0 free
+
+			enemyCockpitTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "cockpitGreen_0.png", 96, 0);
+
+			enemyReactorTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "wingGreen_0.png", 128, 0);
+
+			enemyGunshipTexture = BitmapTextureAtlasTextureRegionFactory.createFromAsset(textureAtlas, this, "gun00.png", 160, 0);
+
+			// -- Animated Sprites
+			shieldTexture = new BitmapTextureAtlas(this.getTextureManager(), 128, 64, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+			shieldRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(shieldTexture, this.getAssets(), "shield.png", 0, 0, SPR_COLUMN, SPR_ROWS);
+			shieldTexture.load();
 			
-			enemyCockpitTexture = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(textureAtlas, this, "cockpitGreen_0.png", 64, 0);
-			
-			enemyReactorTexture = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(textureAtlas, this, "wingGreen_0.png", 96, 0);
-			
-			enemyGunshipTexture = BitmapTextureAtlasTextureRegionFactory
-					.createFromAsset(textureAtlas, this, "gun00.png", 128, 0);
-			
-//			logoTexture = BitmapTextureAtlasTextureRegionFactory
-//					.createFromAsset(textureAtlas, this, "logo.png", 0, 64);
+			flamesTexture = new BitmapTextureAtlas(this.getTextureManager(), 32, 16, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+			flamesRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(flamesTexture, this.getAssets(), "flames.png", 0, 0, SPR_COLUMN, SPR_ROWS);
+			flamesTexture.load();
+
+			// -- End Animated Sprites
 
 			textureAtlas.load();
 
@@ -277,6 +294,5 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	public void setTextureAtlas(BitmapTextureAtlas textureAtlas) {
 		this.textureAtlas = textureAtlas;
 	}
-
 
 }

@@ -12,7 +12,7 @@ public class Flames {
 
 		aSprite = new AnimatedSprite(posX, posY, BaseActivity.getSharedInstance().flamesRegion, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 
-		aSprite.animate(150);
+		aSprite.animate(100);
 
 	}
 

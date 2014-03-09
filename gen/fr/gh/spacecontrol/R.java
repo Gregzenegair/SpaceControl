@@ -43,18 +43,22 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     public static final class string {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
-        public static final int backToGame=0x7f050007;
-        public static final int exitGame=0x7f050008;
+        public static final int backToGame=0x7f050008;
+        public static final int exitGame=0x7f050009;
         public static final int hello_world=0x7f050002;
-        public static final int options=0x7f050006;
+        public static final int options=0x7f050007;
+        public static final int quitOptions=0x7f05000c;
+        /**  /menu 
+ option menu 
+         */
+        public static final int rightHanded=0x7f05000a;
+        public static final int showIndicator=0x7f05000b;
         /**  menu 
          */
-        public static final int startGame=0x7f050005;
+        public static final int startGame=0x7f050006;
         public static final int title_1=0x7f050003;
         public static final int title_2=0x7f050004;
-        /**  /menu 
-         */
-        public static final int wave=0x7f050009;
+        public static final int wave=0x7f050005;
     }
     public static final class style {
         /** 

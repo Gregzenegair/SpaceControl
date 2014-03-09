@@ -6,6 +6,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_1">G</string>
     <string name="title_2">" Softwares"</string>
+    <string name="wave">"Wave "</string>
+    
     <!-- menu -->
     <string name="startGame">Start a new game</string>
     <string name="options">Options</string>
@@ -13,7 +15,12 @@
     <string name="exitGame">Exit game</string>
     <!-- /menu -->
 
-    <string name="wave">"Wave "</string>
+    
 
+    <!-- option menu -->
+    <string name="rightHanded">Right Handed</string>
+    <string name="showIndicator">Show turret indicator</string>
+    <string name="quitOptions">Quit options</string>
+    <!-- /menu -->
 
 </resources>

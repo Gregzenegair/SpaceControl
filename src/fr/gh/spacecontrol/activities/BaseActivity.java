@@ -11,7 +11,6 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.FillResolutionPolicy;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -23,6 +22,8 @@ import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.color.Color;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import fr.gh.spacecontrol.scenes.GameScene;
 import fr.gh.spacecontrol.scenes.MainMenuScene;
@@ -30,11 +31,12 @@ import fr.gh.spacecontrol.scenes.SplashScene;
 
 public class BaseActivity extends SimpleBaseGameActivity {
 
-	public static final int CAMERA_WIDTH = 600;
-	public static final int CAMERA_HEIGHT = 800;
-	public static final int NO_SCREEN = 0;
-	public static final int SPLASH_SCREEN = 1;
-	public static final int MAIN_MENU_SCREEN = 2;
+	public final static int CAMERA_WIDTH = 600;
+	public final static int CAMERA_HEIGHT = 800;
+	public final int NO_SCREEN = 0;
+	public final int SPLASH_SCREEN = 1;
+	public final int MAIN_MENU_SCREEN = 2;
+	public final int OPTION_SCREEN = 3;
 	public static final int GAME_SCREEN = 10;
 
 	private Font mFont;
@@ -43,8 +45,11 @@ public class BaseActivity extends SimpleBaseGameActivity {
 	private Scene gameScene;
 	private boolean gameStarted = false;
 
+	private SharedPreferences settings;
+
 	// A reference to the current scene
 	private Scene mCurrentScene;
+
 	private Sound soundTowerGun;
 	private Sound soundTowerGunb;
 	private Sound soundImpact;
@@ -62,10 +67,10 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	public BitmapTextureAtlas shieldTexture;
 	public TiledTextureRegion shieldRegion;
-	
+
 	public BitmapTextureAtlas flamesTexture;
 	public TiledTextureRegion flamesRegion;
-	
+
 	private static int SPR_COLUMN = 4;
 	private static int SPR_ROWS = 2;
 
@@ -84,7 +89,9 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	protected void onCreateResources() {
 		try {
-			mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 256, 256, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64, Color.WHITE.hashCode());
+			settings = this.getPreferences(0);
+			
+			mFont = FontFactory.create(this.getFontManager(), this.getTextureManager(), 512, 512, Typeface.create(Typeface.DEFAULT, Typeface.BOLD), 64, Color.WHITE.hashCode());
 			mFont.load();
 
 			soundTowerGun = SoundFactory.createSoundFromAsset(BaseActivity.getSharedInstance().getSoundManager(), BaseActivity.getSharedInstance().getApplicationContext(), "sounds/soundTowerGun.mp3");
@@ -116,7 +123,7 @@ public class BaseActivity extends SimpleBaseGameActivity {
 			shieldTexture = new BitmapTextureAtlas(this.getTextureManager(), 128, 64, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 			shieldRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(shieldTexture, this.getAssets(), "shield.png", 0, 0, SPR_COLUMN, SPR_ROWS);
 			shieldTexture.load();
-			
+
 			flamesTexture = new BitmapTextureAtlas(this.getTextureManager(), 32, 16, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 			flamesRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(flamesTexture, this.getAssets(), "flames.png", 0, 0, SPR_COLUMN, SPR_ROWS);
 			flamesTexture.load();
@@ -189,11 +196,15 @@ public class BaseActivity extends SimpleBaseGameActivity {
 		if (this.isGameLoaded()) {
 			System.exit(0);
 		}
+
+		Editor editor = settings.edit();
+		editor.commit();
+
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (this.currentScreen == GAME_SCREEN) {
+		if (this.currentScreen == GAME_SCREEN || this.currentScreen == OPTION_SCREEN) {
 			this.gameScene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
 			this.setCurrentScene(new MainMenuScene());
 		}
@@ -293,6 +304,14 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	public void setTextureAtlas(BitmapTextureAtlas textureAtlas) {
 		this.textureAtlas = textureAtlas;
+	}
+
+	public SharedPreferences getSettings() {
+		return settings;
+	}
+
+	public void setSettings(SharedPreferences settings) {
+		this.settings = settings;
 	}
 
 }

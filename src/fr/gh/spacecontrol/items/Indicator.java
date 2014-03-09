@@ -2,18 +2,27 @@ package fr.gh.spacecontrol.items;
 
 import org.andengine.entity.primitive.Rectangle;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.location.SettingInjectorService;
 import android.net.NetworkInfo.DetailedState;
+import android.widget.SeekBar;
 
 import fr.gh.spacecontrol.activities.BaseActivity;
 
 public class Indicator {
 
+	private BaseActivity activity;
+	SharedPreferences settings;
 	public Indicator instance;
 	private Rectangle rectangleSprite;
 	private Rectangle levelSprite;
-	private boolean leftHanded;
 
 	public Indicator() {
+		activity = BaseActivity.getSharedInstance();
+		activity.setCurrentScreen(activity.OPTION_SCREEN);
+		settings = activity.getSettings();
+
 		rectangleSprite = new Rectangle(0, 0, 8, 100, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 		rectangleSprite.setAlpha(0.6f);
 		levelSprite = new Rectangle(0, 0, 10, 10, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
@@ -27,11 +36,17 @@ public class Indicator {
 	public void setStartingPos(float posX, float posY) {
 		int leftHanded = 60;
 		int rightHanded = -60;
-		this.rectangleSprite.setPosition(posX + rightHanded - rectangleSprite.getWidth() / 2, posY - rectangleSprite.getHeight() / 2);
-		this.levelSprite.setPosition(posX + rightHanded - (levelSprite.getWidth() / 2), posY);
-
-		this.rectangleSprite.setVisible(true);
-		this.levelSprite.setVisible(true);
+		if (settings.getBoolean("rightHanded", true)) {
+			this.rectangleSprite.setPosition(posX + rightHanded - rectangleSprite.getWidth() / 2, posY - rectangleSprite.getHeight() / 2);
+			this.levelSprite.setPosition(posX + rightHanded - (levelSprite.getWidth() / 2), posY);
+		} else {
+			this.rectangleSprite.setPosition(posX + leftHanded - rectangleSprite.getWidth() / 2, posY - rectangleSprite.getHeight() / 2);
+			this.levelSprite.setPosition(posX + leftHanded - (levelSprite.getWidth() / 2), posY);
+		}
+		if (settings.getBoolean("showIndicator", true)) {
+			this.rectangleSprite.setVisible(true);
+			this.levelSprite.setVisible(true);
+		}
 	}
 
 	public void move(float towerAxe, boolean facingLeft) {

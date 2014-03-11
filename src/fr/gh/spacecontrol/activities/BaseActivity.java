@@ -204,8 +204,10 @@ public class BaseActivity extends SimpleBaseGameActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (this.currentScreen == GAME_SCREEN || this.currentScreen == OPTION_SCREEN) {
+		if (this.currentScreen == GAME_SCREEN) {
 			this.gameScene = (GameScene) BaseActivity.getSharedInstance().mCurrentScene;
+			this.setCurrentScene(new MainMenuScene());
+		} else if ( this.currentScreen == OPTION_SCREEN){
 			this.setCurrentScene(new MainMenuScene());
 		}
 	}

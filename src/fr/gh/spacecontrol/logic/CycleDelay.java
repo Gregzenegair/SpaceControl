@@ -6,7 +6,7 @@ import java.util.TimerTask;
 public class CycleDelay {
 	private boolean valid;
 	private Timer timer;
-	private long delay = 2000;
+	private long delay = 1000;
 	private static CycleDelay instance = null;
 
 	public static CycleDelay getSharedInstance() {

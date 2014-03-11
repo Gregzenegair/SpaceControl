@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import android.R.bool;
 import android.transition.Scene;
 import fr.gh.spacecontrol.activities.BaseActivity;
+import fr.gh.spacecontrol.logic.Behavior;
 import fr.gh.spacecontrol.logic.MathTool;
 import fr.gh.spacecontrol.pools.CockpitPool;
 import fr.gh.spacecontrol.pools.GunshipPool;
@@ -17,11 +18,14 @@ public class Enemy {
 	private Cockpit cockpit;
 	private Gunship gunship;
 
+	private Behavior behavior;
+
 	private int aimedTower;
 	private boolean moving;
 	private boolean aimed;
 	private boolean hasShot;
 	private boolean aiming;
+	private boolean reloaded;
 	private GameScene scene;
 
 	public Enemy() {
@@ -35,6 +39,7 @@ public class Enemy {
 		this.reactorLeft = ReactorPool.sharedReactorPool().obtainPoolItem();
 		this.reactorRight = ReactorPool.sharedReactorPool().obtainPoolItem();
 
+		this.behavior = new Behavior(this, Behavior.STANDARD_MOVEMENT);
 		this.cockpit.init(this);
 		this.gunship.init(this);
 		this.reactorLeft.init(this, Reactor.REACTOR_LEFT);
@@ -43,6 +48,7 @@ public class Enemy {
 		this.hasShot = false;
 		this.moving = false;
 		this.aimed = false;
+		this.reloaded = true;
 		move();
 	}
 
@@ -68,16 +74,41 @@ public class Enemy {
 		}
 	}
 
+	// public void move() {
+	// if (!this.isDamaged()) {
+	// this.getCockpit().move();
+	// this.getGunship().move();
+	// this.getReactorLeft().move();
+	// this.getReactorRight().move();
+	// this.moving = this.cockpit.isMooving();
+	// setAiming(false);
+	// this.hasShot = false;
+	// setAimedTower(MathTool.randInt(0, 3));
+	// }
+	// }
+
 	public void move() {
 		if (!this.isDamaged()) {
-			this.getCockpit().move();
-			this.getGunship().move();
-			this.getReactorLeft().move();
-			this.getReactorRight().move();
-			this.moving = this.cockpit.isMooving();
-			setAiming(false);
-			this.hasShot = false;
-			setAimedTower(MathTool.randInt(0, 3));
+			// Add random chance to fire, else just move
+			int randomFire = MathTool.randInt(0, behavior.getMovePath().size());
+			if (randomFire == 0) { // will shoot less than one time per passage
+				if (reloaded) {
+					reloaded = this.behavior.move(cockpit);
+					this.getGunship().move();
+					this.getReactorLeft().move();
+					this.getReactorRight().move();
+					this.moving = this.cockpit.isMooving();
+					setAiming(false);
+					this.hasShot = false;
+					setAimedTower(MathTool.randInt(0, 3));
+				}
+			} else { // Else just move
+				reloaded = this.behavior.move(cockpit);
+				this.getGunship().move();
+				this.getReactorLeft().move();
+				this.getReactorRight().move();
+				this.moving = this.cockpit.isMooving();
+			}
 		}
 	}
 
@@ -96,6 +127,7 @@ public class Enemy {
 				this.getGunship().shoot((int) this.getGunship().aim(getAimedTower()));
 				this.hasShot = true;
 				this.moving = this.cockpit.isMooving();
+				reloaded = false;
 			}
 		}
 	}
@@ -108,8 +140,7 @@ public class Enemy {
 	}
 
 	public boolean isDamaged() {
-		if (this.reactorLeft.isDestroyed() || this.reactorLeft.isPhysic() || this.reactorRight.isDestroyed()
-				|| this.reactorRight.isPhysic() || this.cockpit.isDestroyed() || this.cockpit.isPhysic()
+		if (this.reactorLeft.isDestroyed() || this.reactorLeft.isPhysic() || this.reactorRight.isDestroyed() || this.reactorRight.isPhysic() || this.cockpit.isDestroyed() || this.cockpit.isPhysic()
 				|| this.cockpit.isDestroyed() || this.cockpit.isPhysic()) {
 			return true;
 		} else {

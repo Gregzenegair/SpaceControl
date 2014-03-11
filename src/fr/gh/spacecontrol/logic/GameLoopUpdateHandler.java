@@ -45,6 +45,14 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 
 		// removes parts and enemies from list when completely destroyed
 		if (CycleDelay.getSharedInstance().checkValidity()) {
+
+			for (Tower tower : scene.getTowerList()) {
+				if (tower.isDestroyed()) {
+					ParticleEmitterExplosion.createSmoke(tower.getBunker().getSprite().getX() + tower.getBunker().getSprite().getWidth() / 2, tower.getBunker().getSprite().getY(), tower.getBunker()
+							.getSprite().getParent(), scene.getActivity(), 4, 2, 2);
+				}
+			}
+
 			Iterator<Enemy> eIt = scene.getEnemyList().iterator();
 			System.out.println(" En  |  Co |  Rl |  Rr |  Gs");
 			while (eIt.hasNext()) {

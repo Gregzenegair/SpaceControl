@@ -1,5 +1,7 @@
 package fr.gh.spacecontrol.items;
 
+import java.util.ArrayList;
+
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.primitive.Rectangle;
@@ -21,7 +23,7 @@ public class Cockpit {
 	private Sprite sprite;
 	private Body body;
 	private int hp;
-	private int speed = 2;
+	private int speed = 1;
 	private boolean physic;
 	private boolean destroyed;
 	private int finalPosX;
@@ -42,8 +44,7 @@ public class Cockpit {
 	public Cockpit() {
 		this.mCamera = BaseActivity.getSharedInstance().getmCamera();
 
-		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyCockpitTexture, BaseActivity
-				.getSharedInstance().getVertexBufferObjectManager());
+		sprite = new Sprite(0, 0, BaseActivity.getSharedInstance().enemyCockpitTexture, BaseActivity.getSharedInstance().getVertexBufferObjectManager());
 	}
 
 	// method for initializing the Enemy object , used by the constructor and
@@ -58,19 +59,22 @@ public class Cockpit {
 
 		sprite.setRotation(0);
 		sprite.setVisible(true);
-		sprite.setPosition((finalPosX = MathTool.randInt(100, (int) mCamera.getWidth() - 100)),
-				finalPosY = MathTool.randInt(-300, -100));
+		sprite.setPosition((finalPosX = -100), finalPosY = -100);
 
 	}
 
-	public void move() {
-		this.finalPosX = MathTool.randInt(50, (int) mCamera.getWidth() - 50);
-		this.finalPosY = MathTool.randInt(0, 500);
+	// public void move() {
+	// this.finalPosX = MathTool.randInt(50, (int) mCamera.getWidth() - 50);
+	// this.finalPosY = MathTool.randInt(0, 500);
+	//
+	// if (this.moveModifier != null)
+	// sprite.unregisterEntityModifier(this.moveModifier);
+	// sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed,
+	// sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
+	//
+	// }
 
-		if (this.moveModifier != null)
-			sprite.unregisterEntityModifier(this.moveModifier);
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(speed, sprite.getX(), this.finalPosX, sprite
-				.getY(), this.finalPosY));
+	public void move() {
 
 	}
 
@@ -80,8 +84,7 @@ public class Cockpit {
 
 		if (this.moveModifier != null)
 			sprite.unregisterEntityModifier(this.moveModifier);
-		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite
-				.getY(), this.finalPosY));
+		sprite.registerEntityModifier(this.moveModifier = new MoveModifier(1, sprite.getX(), this.finalPosX, sprite.getY(), this.finalPosY));
 
 	}
 

@@ -25,8 +25,7 @@ import fr.gh.spacecontrol.scenes.GameScene;
 
 public final class ParticleEmitterExplosion {
 
-	public static void createExplosion(final float posX, final float posY, final IEntity target,
-			final SimpleBaseGameActivity activity, int mNumPart, final int width, final int height, float rotation) {
+	public static void createExplosion(final float posX, final float posY, final IEntity target, final SimpleBaseGameActivity activity, int mNumPart, final int width, final int height, float rotation) {
 
 		if (target == null) {
 			return;
@@ -51,8 +50,7 @@ public final class ParticleEmitterExplosion {
 			particleSystem.addParticleInitializer(new VelocityParticleInitializer(-10, 10, -10, -20));
 		}
 
-		particleSystem.addParticleModifier(new ColorParticleModifier(0, 1.6f * mTimePart, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-				0.0f));
+		particleSystem.addParticleModifier(new ColorParticleModifier(0, 1.6f * mTimePart, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f));
 
 		particleSystem.addParticleModifier(new AlphaParticleModifier(0, 2.6f * mTimePart, 1, 0));
 
@@ -60,7 +58,7 @@ public final class ParticleEmitterExplosion {
 
 		target.attachChild(particleSystem);
 
-		// clean the sprties of the particle system to keep fps
+		// clean the sprites of the particle system to keep fps
 		target.registerUpdateHandler(new TimerHandler(mTimePart * 4, new ITimerCallback() {
 			@Override
 			public void onTimePassed(final TimerHandler pTimerHandler) {
@@ -71,9 +69,45 @@ public final class ParticleEmitterExplosion {
 		}));
 	}
 
-	public static void createBulletImpact(final float posX, final float posY, final IEntity target,
-			final SimpleBaseGameActivity activity, final Color color, int mNumPart, final int width, final int height,
-			float rotation) {
+	public static void createSmoke(final float posX, final float posY, final IEntity target, final SimpleBaseGameActivity activity, int mNumPart, final int width, final int height) {
+
+		if (target == null) {
+			return;
+		}
+
+		int mTimePart = 2;
+
+		PointParticleEmitter particleEmitter = new PointParticleEmitter(posX, posY);
+		IEntityFactory<Rectangle> recFact = new IEntityFactory<Rectangle>() {
+			@Override
+			public Rectangle create(float pX, float pY) {
+				Rectangle rect = new Rectangle(posX, posY, width, height, activity.getVertexBufferObjectManager());
+				return rect;
+			}
+		};
+		final ParticleSystem particleSystem = new ParticleSystem(recFact, particleEmitter, 500, 500, mNumPart);
+
+		particleSystem.addParticleInitializer(new VelocityParticleInitializer(-10, 10, -10, -3));
+
+		particleSystem.addParticleModifier(new ColorParticleModifier(0, 2.6f * mTimePart, 0.2f, 0.2f, 0.2f, 0.6123f, 0.513f, 0.545f));
+
+		particleSystem.addParticleModifier(new AlphaParticleModifier(0, 2.6f * mTimePart, 1, 0));
+
+		target.attachChild(particleSystem);
+
+		// clean the sprites of the particle system to keep fps
+		target.registerUpdateHandler(new TimerHandler(mTimePart * 4, new ITimerCallback() {
+			@Override
+			public void onTimePassed(final TimerHandler pTimerHandler) {
+				particleSystem.detachSelf();
+				target.sortChildren();
+				target.unregisterUpdateHandler(pTimerHandler);
+			}
+		}));
+	}
+
+	public static void createBulletImpact(final float posX, final float posY, final IEntity target, final SimpleBaseGameActivity activity, final Color color, int mNumPart, final int width,
+			final int height, float rotation) {
 
 		if (target == null) {
 			return;
@@ -87,9 +121,7 @@ public final class ParticleEmitterExplosion {
 		wreckage.getSprite().setPosition(posX, posY);
 
 		wreckage.getSprite().setRotation(mReveredRotation);
-		MoveModifier movMod = new MoveModifier(0.2f, posX, posX
-				- ((float) Math.cos(Math.toRadians(mReveredRotation)) * 10), posY, posY
-				+ (float) Math.sin(Math.toRadians(mReveredRotation)) * 10);
+		MoveModifier movMod = new MoveModifier(0.2f, posX, posX - ((float) Math.cos(Math.toRadians(mReveredRotation)) * 10), posY, posY + (float) Math.sin(Math.toRadians(mReveredRotation)) * 10);
 
 		PhysicsHandler movMod2 = new PhysicsHandler(wreckage.getSprite());
 		wreckage.getSprite().registerUpdateHandler(movMod2);

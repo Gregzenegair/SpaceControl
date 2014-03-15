@@ -29,7 +29,7 @@ public class Cockpit {
 	private int finalPosX;
 	private int finalPosY;
 	private Camera mCamera;
-	private MoveModifier moveModifier;
+	public MoveModifier moveModifier;
 	private PhysicsConnector PhysicsConnector;
 	private Enemy enemy;
 
@@ -119,15 +119,17 @@ public class Cockpit {
 	}
 
 	public void addPhysics() {
-		GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
+		if (!this.destroyed && !this.physic) {
+			GameScene scene = (GameScene) BaseActivity.getSharedInstance().getCurrentScene();
 
-		this.sprite.unregisterEntityModifier(this.moveModifier);
+			this.sprite.unregisterEntityModifier(this.moveModifier);
 
-		this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
+			this.body = PhysicsFactory.createBoxBody(scene.mPhysicsWorld, this.sprite, BodyType.DynamicBody, FIXTURE_DEF);
 
-		this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
-		scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
-		this.physic = true;
+			this.PhysicsConnector = new PhysicsConnector(this.sprite, body, true, true);
+			scene.mPhysicsWorld.registerPhysicsConnector(PhysicsConnector);
+			this.physic = true;
+		}
 	}
 
 	public void remove() {
@@ -208,10 +210,6 @@ public class Cockpit {
 
 	public MoveModifier getMoveModifier() {
 		return moveModifier;
-	}
-
-	public void setMoveModifier(MoveModifier moveModifier) {
-		this.moveModifier = moveModifier;
 	}
 
 	public int getMAX_HEALTH() {

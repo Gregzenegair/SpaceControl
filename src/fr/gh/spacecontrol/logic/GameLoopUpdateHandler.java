@@ -54,7 +54,7 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 			}
 
 			Iterator<Enemy> eIt = scene.getEnemyList().iterator();
-			System.out.println(" En  |  Co |  Rl |  Rr |  Gs");
+//			System.out.println(" En  |  Co |  Rl |  Rr |  Gs");
 			while (eIt.hasNext()) {
 				Enemy enemy = eIt.next();
 
@@ -62,12 +62,12 @@ public class GameLoopUpdateHandler implements IUpdateHandler {
 				// Moving enemies
 				enemy.moveNShoot();
 
-				String sEPhysic = (enemy.isDamaged()) ? "T" : "F";
-				String sCoPhysic = Integer.toString(enemy.getCockpit().getHp());
-				String sRlPhysic = Integer.toString(enemy.getReactorRight().getHp());
-				String sRrPhysic = Integer.toString(enemy.getReactorLeft().getHp());
-				String sGsPhysic = Integer.toString(enemy.getGunship().getHp());
-				System.out.println("  " + sEPhysic + "  |  " + sCoPhysic + "  |  " + sRlPhysic + "  |  " + sRrPhysic + "  |  " + sGsPhysic);
+//				String sEPhysic = (enemy.isDamaged()) ? "T" : "F";
+//				String sCoPhysic = Integer.toString(enemy.getCockpit().getHp());
+//				String sRlPhysic = Integer.toString(enemy.getReactorRight().getHp());
+//				String sRrPhysic = Integer.toString(enemy.getReactorLeft().getHp());
+//				String sGsPhysic = Integer.toString(enemy.getGunship().getHp());
+//				System.out.println("  " + sEPhysic + "  |  " + sCoPhysic + "  |  " + sRlPhysic + "  |  " + sRrPhysic + "  |  " + sGsPhysic);
 
 			}
 			// track number of damaged

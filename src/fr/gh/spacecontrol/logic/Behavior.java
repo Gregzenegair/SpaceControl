@@ -16,10 +16,9 @@ public class Behavior {
 	private Enemy enemy;
 	private int movementType;
 
-	private int moveState = 0;
+	private boolean reloaded;
+	private int moveState;
 	private ArrayList<int[]> movePath;
-
-	private boolean reversePath;
 
 	static final public int STANDARD_MOVEMENT = 1;
 
@@ -29,32 +28,40 @@ public class Behavior {
 		this.movementType = movementType;
 
 		movePath = new ArrayList<int[]>();
-		int[] coord01 = { 40, 50 };
-		int[] coord02 = { (int) (mCamera.getWidth() / 3), 200 };
-		int[] coord03 = { (int) (mCamera.getWidth() * 2 / 3), 50 };
-		int[] coord04 = { (int) (mCamera.getWidth() - 40), 200 };
+		int[] coord01 = { 40, 50, 0 };
+		int[] coord02 = { (int) (mCamera.getWidth() / 3), 200, 0 };
+		int[] coord03 = { (int) (mCamera.getWidth() * 2 / 3), 50, 1 };
+		int[] coord04 = { (int) (mCamera.getWidth() - 40), 200, 1 };
+		int[] coord05 = { (int) (mCamera.getWidth() + 80), 50, 1 };
+		int[] coord06 = { (int) (mCamera.getWidth() - 40), 200, 1 };
+		int[] coord07 = { (int) (mCamera.getWidth() * 2 / 3), 50, 1 };
+		int[] coord08 = { (int) (mCamera.getWidth() / 3), 200, 1 };
+		int[] coord09 = { 40, 50, 0 };
+		int[] coord10 = { -80, 200, 0 };
 
 		movePath.add(coord01);
 		movePath.add(coord02);
 		movePath.add(coord03);
 		movePath.add(coord04);
+		movePath.add(coord05);
+		movePath.add(coord06);
+		movePath.add(coord07);
+		movePath.add(coord08);
+		movePath.add(coord09);
+		movePath.add(coord10);
 
-		setReversePath(false);
+		setReloaded(true);
+		setMoveState(0);
 	}
 
-	public boolean move(Cockpit cockpit) {
+	public void move(Cockpit cockpit) {
 		int[] coords = movePath.get(getMoveState());
-		boolean travelCompleteAndReloaded = false;
 
-		if (!isReversePath()) {
-			setMoveState(getMoveState() + 1);
-		} else {
-			setMoveState(getMoveState() - 1);
-		}
+		setMoveState(getMoveState() + 1);
 
-		if (getMoveState() == 0 || getMoveState() == movePath.size() - 1) {
-			setReversePath(!isReversePath());
-			travelCompleteAndReloaded = true;
+		if (getMoveState() == movePath.size()) {
+			setMoveState(0);
+			setReloaded(true);
 		}
 
 		cockpit.setFinalPosX(coords[0]);
@@ -63,11 +70,25 @@ public class Behavior {
 		if (cockpit.getMoveModifier() != null)
 			cockpit.getSprite().unregisterEntityModifier(cockpit.getMoveModifier());
 
-		cockpit.getSprite().registerEntityModifier(new MoveModifier(cockpit.getSpeed(), cockpit.getSprite().getX(), cockpit.getFinalPosX(), cockpit.getSprite().getY(), cockpit.getFinalPosY()));
-//		cockpit.getSprite().registerEntityModifier(
-//				new QuadraticBezierCurveMoveModifier(1, cockpit.getSprite().getX(), cockpit.getSprite().getY(), cockpit.getSprite().getX(), cockpit.getSprite().getY() + 50, cockpit.getFinalPosX(),
-//						cockpit.getFinalPosY()));
-		return travelCompleteAndReloaded;
+		cockpit.getSprite().registerEntityModifier(
+				cockpit.moveModifier = new MoveModifier(cockpit.getSpeed(), cockpit.getSprite().getX(), cockpit.getFinalPosX(), cockpit.getSprite().getY(), cockpit.getFinalPosY()));
+		// cockpit.getSprite().registerEntityModifier(
+		// new QuadraticBezierCurveMoveModifier(1, cockpit.getSprite().getX(),
+		// cockpit.getSprite().getY(), cockpit.getSprite().getX(),
+		// cockpit.getSprite().getY() + 50, cockpit.getFinalPosX(),
+		// cockpit.getFinalPosY()));
+
+	}
+
+	public boolean randomShoot() { // will do 1 shoot per passage, sure thing
+		System.out.println(" size : " + movePath.size());
+		System.out.println(" move stat + 1 : " + getMoveState() + 1);
+		int randomShooter = MathTool.randInt(getMoveState() + 1, movePath.size());
+		if (randomShooter == movePath.size()) {
+			return true;
+		}
+		return false;
+
 	}
 
 	public int getMoveState() {
@@ -76,14 +97,6 @@ public class Behavior {
 
 	public void setMoveState(int moveState) {
 		this.moveState = moveState;
-	}
-
-	public boolean isReversePath() {
-		return reversePath;
-	}
-
-	public void setReversePath(boolean reversePath) {
-		this.reversePath = reversePath;
 	}
 
 	public int getMovementType() {
@@ -100,5 +113,13 @@ public class Behavior {
 
 	public void setMovePath(ArrayList<int[]> movePath) {
 		this.movePath = movePath;
+	}
+
+	public boolean isReloaded() {
+		return reloaded;
+	}
+
+	public void setReloaded(boolean reloaded) {
+		this.reloaded = reloaded;
 	}
 }

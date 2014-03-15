@@ -51,10 +51,8 @@ public class WaveMaker {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
 				scene.getWaveText().setText(activity.getString(R.string.wave) + Integer.toString(getWave() - 1));
-				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2,
-						scene.getmCamera().getHeight() / 2);
-				scene.getWaveText().registerEntityModifier(
-						new MoveYModifier(1, scene.getWaveText().getY(), scene.getmCamera().getHeight() / 2));
+				scene.getWaveText().setPosition(scene.getmCamera().getWidth() / 2 - scene.getWaveText().getWidth() / 2, scene.getmCamera().getHeight() / 2);
+				scene.getWaveText().registerEntityModifier(new MoveYModifier(1, scene.getWaveText().getY(), scene.getmCamera().getHeight() / 2));
 			}
 		}));
 
@@ -68,30 +66,30 @@ public class WaveMaker {
 		scene.registerUpdateHandler(new TimerHandler(6, new ITimerCallback() {
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				for (int x = 0; x < enemyCount; x++) {
-					Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
+					for (int x = 0; x < enemyCount; x++) {
+						Enemy enemy = EnemyPool.sharedEnemyPool().obtainPoolItem();
 
-					enemy.init();
+						enemy.init();
 
-//					enemy.getCockpit().getSprite().detachSelf();
-//					enemy.getGunship().getSprite().detachSelf();
-//					enemy.getReactorLeft().getSprite().detachSelf();
-//					enemy.getReactorRight().getSprite().detachSelf();
+						// enemy.getCockpit().getSprite().detachSelf();
+						// enemy.getGunship().getSprite().detachSelf();
+						// enemy.getReactorLeft().getSprite().detachSelf();
+						// enemy.getReactorRight().getSprite().detachSelf();
 
-					scene.attachChild(enemy.getCockpit().getSprite());
-					scene.attachChild(enemy.getGunship().getSprite());
-					scene.attachChild(enemy.getReactorLeft().getSprite());
-					scene.attachChild(enemy.getReactorRight().getSprite());
+						scene.attachChild(enemy.getCockpit().getSprite());
+						scene.attachChild(enemy.getGunship().getSprite());
+						scene.attachChild(enemy.getReactorLeft().getSprite());
+						scene.attachChild(enemy.getReactorRight().getSprite());
 
-					scene.getEnemyList().add(enemy);
+						scene.getEnemyList().add(enemy);
 
-					enemy.getCockpit().getSprite().setVisible(true);
-					enemy.getGunship().getSprite().setVisible(true);
-					enemy.getReactorLeft().getSprite().setVisible(true);
-					enemy.getReactorRight().getSprite().setVisible(true);
+						enemy.getCockpit().getSprite().setVisible(true);
+						enemy.getGunship().getSprite().setVisible(true);
+						enemy.getReactorLeft().getSprite().setVisible(true);
+						enemy.getReactorRight().getSprite().setVisible(true);
+					}
+					creatingWave = false;
 				}
-				creatingWave = false;
-			}
 		}));
 
 		this.wave++;

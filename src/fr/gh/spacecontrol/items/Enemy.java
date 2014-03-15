@@ -1,5 +1,6 @@
 package fr.gh.spacecontrol.items;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import android.R.bool;
@@ -19,13 +20,13 @@ public class Enemy {
 	private Gunship gunship;
 
 	private Behavior behavior;
+	private int currentPosition;
 
 	private int aimedTower;
 	private boolean moving;
 	private boolean aimed;
 	private boolean hasShot;
 	private boolean aiming;
-	private boolean reloaded;
 	private GameScene scene;
 
 	public Enemy() {
@@ -48,7 +49,6 @@ public class Enemy {
 		this.hasShot = false;
 		this.moving = false;
 		this.aimed = false;
-		this.reloaded = true;
 		move();
 	}
 
@@ -88,12 +88,11 @@ public class Enemy {
 	// }
 
 	public void move() {
-		if (!this.isDamaged()) {
-			// Add random chance to fire, else just move
-			int randomFire = MathTool.randInt(0, behavior.getMovePath().size());
-			if (randomFire == 0) { // will shoot less than one time per passage
-				if (reloaded) {
-					reloaded = this.behavior.move(cockpit);
+		if (isPathFree()) { // if no one in on the way go, else, do nothing
+			if (!this.isDamaged()) {
+				// Add random chance to fire, else just move
+				if (this.behavior.isReloaded() && this.behavior.randomShoot()) {
+					this.behavior.move(cockpit);
 					this.getGunship().move();
 					this.getReactorLeft().move();
 					this.getReactorRight().move();
@@ -101,14 +100,33 @@ public class Enemy {
 					setAiming(false);
 					this.hasShot = false;
 					setAimedTower(MathTool.randInt(0, 3));
+					currentPosition = behavior.getMoveState();
+				} else { // Else just move
+					this.behavior.move(cockpit);
+					this.getGunship().move();
+					this.getReactorLeft().move();
+					this.getReactorRight().move();
+					this.moving = this.cockpit.isMooving();
+					currentPosition = behavior.getMoveState();
 				}
-			} else { // Else just move
-				reloaded = this.behavior.move(cockpit);
-				this.getGunship().move();
-				this.getReactorLeft().move();
-				this.getReactorRight().move();
-				this.moving = this.cockpit.isMooving();
 			}
+		}
+	}
+
+	private boolean isPathFree() {
+		Iterator<Enemy> eIt = scene.getEnemyList().iterator();
+		int i = 0;
+		while (eIt.hasNext()) {
+			Enemy e = eIt.next();
+			if (this.currentPosition == e.currentPosition) {
+				i++;
+			}
+		}
+		System.out.println("i : " + i);
+		if (i >= 2) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 
@@ -127,12 +145,13 @@ public class Enemy {
 				this.getGunship().shoot((int) this.getGunship().aim(getAimedTower()));
 				this.hasShot = true;
 				this.moving = this.cockpit.isMooving();
-				reloaded = false;
+				this.behavior.setReloaded(false);
 			}
 		}
 	}
 
 	public void addPhysics() {
+		this.currentPosition = -1;
 		this.getCockpit().addPhysics();
 		this.getGunship().addPhysics();
 		this.getReactorLeft().addPhysics();
@@ -216,6 +235,14 @@ public class Enemy {
 
 	public void setAimedTower(int aimedTower) {
 		this.aimedTower = aimedTower;
+	}
+
+	public Behavior getBehavior() {
+		return behavior;
+	}
+
+	public void setBehavior(Behavior behavior) {
+		this.behavior = behavior;
 	}
 
 }
